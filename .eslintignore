@@ -1,0 +1,12 @@
+# Ignore folders
+node_modules/
+build/
+dist/
+.next/
+coverage/
+
+# Ignore specific files
+eslint.config.js
+commitlint.config.cjs
+*.config.*
+*.ignore.*
