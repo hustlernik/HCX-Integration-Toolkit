@@ -3,6 +3,7 @@ node_modules/
 build/
 dist/
 .next/
+docker/
 coverage/
 
 # Ignore specific files

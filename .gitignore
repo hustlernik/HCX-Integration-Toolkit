@@ -135,3 +135,23 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .husky/_
+
+# Monorepo build outputs
+/dist
+/build
+/.next
+/apps/*/dist
+/apps/*/build
+/services/*/dist
+/services/*/build
+/packages/*/dist
+/packages/*/build
+/tools/*/dist
+/tools/*/build
+
+# Node modules
+node_modules/
+
+# Docker
+/docker/*.log
+/docker/*.pid

@@ -1,0 +1,33 @@
+name: Lint, Format, and Commitlint Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm exec eslint .
+
+      - name: Run Prettier (check mode)
+        run: pnpm exec prettier --check .
+
+      - name: Run Commitlint on PR title and commits
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: commitlint.config.cjs
+          checkCommits: true
