@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+  - "services/*"
+  - "packages/*"
+  - "tools/*"
+  - "docs"
+  - "config"
