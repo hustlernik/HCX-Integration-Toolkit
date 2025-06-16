@@ -30,4 +30,3 @@ jobs:
 
       - name: Run Prettier (check mode)
         run: pnpm exec prettier --check .
-
