@@ -31,6 +31,9 @@ jobs:
       - name: Run Prettier (check mode)
         run: pnpm exec prettier --check .
 
+      - name: Fetch all history for all branches
+        run: git fetch --prune --unshallow --tags
+
       - name: Run Commitlint on PR commits
         run: |
           COMMITS=$(git log origin/main..HEAD --pretty=format:'%H')
