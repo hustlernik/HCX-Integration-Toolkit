@@ -30,3 +30,11 @@ jobs:
 
       - name: Run Prettier (check mode)
         run: pnpm exec prettier --check .
+
+      - name: Run Commitlint on PR commits
+        run: |
+          COMMITS=$(git log origin/main..HEAD --pretty=format:'%H')
+          for commit in $COMMITS; do
+            COMMIT_MSG=$(git log --format=%B -n 1 $commit)
+            echo "$COMMIT_MSG" | pnpm exec commitlint
+          done
