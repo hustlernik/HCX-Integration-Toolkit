@@ -1,11 +1,11 @@
-node_modules
-build
-dist
-coverage
-.next
+node_modules/
+build/
+dist/
+coverage/
+.next/
 out
 public
 .env
 package-lock.json
 pnpm-lock.yaml
- 
+docker/

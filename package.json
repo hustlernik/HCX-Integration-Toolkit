@@ -5,13 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint . --ext .js,.cjs,.jsx,.ts,.tsx --config eslint.config.js",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
     "lint:fix": "eslint . --ext .js,.cjs,.jsx,.ts,.tsx --config eslint.config.js --fix",
     "format": "prettier --write .",
     "commit": "cz",
     "release": "standard-version",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build": "turbo run build",
+    "dev": "turbo run dev"
   },
   "config": {
     "commitizen": {
@@ -23,14 +25,15 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md,css,html}": [
+    "*.{json,md,css,html,yml,yaml}": [
       "prettier --write"
     ]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.7.0",
+  "private": true,
+  "packageManager": "pnpm@8.15.5",
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
@@ -52,6 +55,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "prettier-plugin-tailwindcss": "^0.6.12",
-    "standard-version": "^9.5.0"
+    "standard-version": "^9.5.0",
+    "turbo": "^1.13.0"
   }
 }

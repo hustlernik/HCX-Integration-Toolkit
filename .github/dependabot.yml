@@ -1,26 +1,26 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/HCX-Integration-Toolkit"
+  - package-ecosystem: 'npm'
+    directory: '/HCX-Integration-Toolkit'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "chore"
-      include: "scope"
+      prefix: 'chore'
+      include: 'scope'
     labels:
-      - "dependencies"
-      - "conventional-commits"
+      - 'dependencies'
+      - 'conventional-commits'
     versioning-strategy: increase
-    groups:                      
+    groups:
       dev-dependencies:
         patterns:
-          - "eslint*"
-          - "prettier*"
-          - "husky"
-          - "*-plugin-*"
+          - 'eslint*'
+          - 'prettier*'
+          - 'husky'
+          - '*-plugin-*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
     allow:
-      - dependency-type: "all"
+      - dependency-type: 'all'
