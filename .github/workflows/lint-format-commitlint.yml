@@ -1,0 +1,43 @@
+name: Lint, Format, and Commitlint Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm exec eslint .
+
+      - name: Run Prettier (check mode)
+        run: pnpm exec prettier --check .
+
+      - name: Fetch all history for all branches
+        run: git fetch --prune --unshallow --tags
+
+      - name: Run Commitlint on PR commits
+        run: |
+          COMMITS=$(git log origin/main..HEAD --pretty=format:'%H')
+          for commit in $COMMITS; do
+            COMMIT_MSG=$(git log --format=%B -n 1 $commit)
+            echo "$COMMIT_MSG" | pnpm exec commitlint
+          done
