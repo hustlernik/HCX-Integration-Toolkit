@@ -19,18 +19,6 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
-            <div className="p-1 rounded-md bg-hcx-600">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="h-5 w-5 text-white"
-              >
-                <path
-                  fill="currentColor"
-                  d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"
-                />
-              </svg>
-            </div>
             <span className="font-bold text-lg sm:text-xl">HCX Integration Toolkit</span>
           </Link>
         </div>
