@@ -18,8 +18,6 @@ interface FeatureCardProps {
   buttonText: string;
 }
 
-let test;
-
 export function FeatureCard({
   title,
   description,
