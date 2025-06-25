@@ -8,13 +8,13 @@ const Footer = () => (
           </p>
         </div>
         <div className="flex gap-6">
-          <a href="#" className="text-sm text-gray-600 hover:text-hcx-600">
+          <a href="/terms" className="text-sm text-gray-600 hover:text-hcx-600">
             Terms
           </a>
-          <a href="#" className="text-sm text-gray-600 hover:text-hcx-600">
+          <a href="/privacy" className="text-sm text-gray-600 hover:text-hcx-600">
             Privacy
           </a>
-          <a href="#" className="text-sm text-gray-600 hover:text-hcx-600">
+          <a href="/contact" className="text-sm text-gray-600 hover:text-hcx-600">
             Contact
           </a>
         </div>
