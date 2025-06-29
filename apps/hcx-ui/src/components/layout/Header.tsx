@@ -4,7 +4,7 @@ import { Menu, Github } from 'lucide-react';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-export function Header() {
+const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -63,7 +63,7 @@ export function Header() {
                   </Link>
                 ))}
                 <a
-                  href="https://github.com/your-repo/hcx-integration-toolkit"
+                  href="https://github.com/hustlernik/HCX-Integration-Toolkit/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 py-2 text-sm font-medium"
@@ -78,6 +78,6 @@ export function Header() {
       </div>
     </header>
   );
-}
+};
 
 export default Header;

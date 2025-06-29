@@ -12,7 +12,7 @@ interface StatsCardProps {
   };
 }
 
-export function StatsCard({ title, value, description, icon: Icon, trend }: StatsCardProps) {
+const StatsCard = ({ title, value, description, icon: Icon, trend }: StatsCardProps) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -36,6 +36,6 @@ export function StatsCard({ title, value, description, icon: Icon, trend }: Stat
       </CardContent>
     </Card>
   );
-}
+};
 
 export default StatsCard;
