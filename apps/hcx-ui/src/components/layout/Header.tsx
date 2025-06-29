@@ -4,24 +4,40 @@ import { Menu, Github } from 'lucide-react';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+interface NavItem {
+  title: string;
+  href: string;
+}
 
-  const navItems = [
-    { title: 'Dashboard', href: '/' },
-    { title: 'FHIR Tools', href: '/fhir-tools' },
-    { title: 'API Testing', href: '/api-testing' },
-    { title: 'Documentation', href: '/docs' },
-  ];
+interface HeaderProps {
+  navItems?: NavItem[];
+}
+
+const defaultNavItems: NavItem[] = [
+  { title: 'Dashboard', href: '/' },
+  { title: 'FHIR Tools', href: '/fhir-tools' },
+  { title: 'API Testing', href: '/api-testing' },
+  { title: 'Documentation', href: '/docs' },
+];
+
+const Header = ({ navItems = defaultNavItems }: HeaderProps) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  const handleMobileMenuClose = (): void => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
+        {/* Logo/Brand - Using Link for internal navigation */}
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
             <span className="font-bold text-lg sm:text-xl">HCX Integration Toolkit</span>
           </Link>
         </div>
+
+        {/* Desktop Navigation - All internal links use Link component */}
         <nav className="hidden md:flex items-center gap-6">
           {navItems.map((item) => (
             <Link
@@ -32,6 +48,7 @@ const Header = () => {
               {item.title}
             </Link>
           ))}
+          {/* External GitHub link uses regular anchor tag */}
           <a
             href="https://github.com/hustlernik/HCX-Integration-Toolkit/"
             target="_blank"
@@ -42,6 +59,8 @@ const Header = () => {
             <span className="sr-only">GitHub</span>
           </a>
         </nav>
+
+        {/* Mobile Menu */}
         <div className="flex md:hidden">
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -52,16 +71,18 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="right">
               <nav className="flex flex-col gap-4 mt-8">
+                {/* Mobile Navigation - All internal links use Link component */}
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     to={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={handleMobileMenuClose}
                     className="text-sm font-medium transition-colors hover:text-hcx-600 py-2"
                   >
                     {item.title}
                   </Link>
                 ))}
+                {/* External GitHub link uses regular anchor tag */}
                 <a
                   href="https://github.com/hustlernik/HCX-Integration-Toolkit/"
                   target="_blank"

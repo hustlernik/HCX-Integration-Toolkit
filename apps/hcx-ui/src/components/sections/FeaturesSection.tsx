@@ -1,7 +1,27 @@
 import FeatureCard from '@/components/dashboard/FeatureCard';
-import { FileJson, FileSpreadsheet, Activity, Laptop, Search, GitMerge } from 'lucide-react';
+import {
+  FileJson,
+  FileSpreadsheet,
+  Activity,
+  Laptop,
+  Search,
+  GitMerge,
+  LucideIcon,
+} from 'lucide-react';
 
-const features = [
+interface Feature {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  href: string;
+  buttonText: string;
+}
+
+interface FeaturesSectionProps {
+  features?: Feature[];
+}
+
+const defaultFeatures: Feature[] = [
   {
     title: 'FHIR Bundle Validator',
     description: 'Validate and explore FHIR bundles with an interactive viewer',
@@ -46,7 +66,7 @@ const features = [
   },
 ];
 
-const FeaturesSection = () => (
+const FeaturesSection = ({ features = defaultFeatures }: FeaturesSectionProps) => (
   <section className="py-8 md:py-12">
     <div className="container px-4">
       <div className="max-w-3xl mx-auto text-center mb-10">
