@@ -33,7 +33,7 @@ const Header = () => {
             </Link>
           ))}
           <a
-            href="https://github.com/your-repo/hcx-integration-toolkit"
+            href="https://github.com/hustlernik/HCX-Integration-Toolkit/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center text-sm font-medium transition-colors hover:text-foreground/80"
