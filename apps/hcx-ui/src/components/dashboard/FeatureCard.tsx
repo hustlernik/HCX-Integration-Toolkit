@@ -18,13 +18,7 @@ interface FeatureCardProps {
   buttonText: string;
 }
 
-export function FeatureCard({
-  title,
-  description,
-  icon: Icon,
-  href,
-  buttonText,
-}: FeatureCardProps) {
+const FeatureCard = ({ title, description, icon: Icon, href, buttonText }: FeatureCardProps) => {
   return (
     <Card className="flex flex-col h-full transition-all duration-200 hover:shadow-md">
       <CardHeader>
@@ -44,6 +38,6 @@ export function FeatureCard({
       </CardFooter>
     </Card>
   );
-}
+};
 
 export default FeatureCard;
