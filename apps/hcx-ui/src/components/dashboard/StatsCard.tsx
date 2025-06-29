@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
 
@@ -17,7 +18,7 @@ const StatsCard = ({ title, value, description, icon: Icon, trend }: StatsCardPr
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <div className="p-1 bg-hcx-50 rounded-md">
+        <div className="p-1 bg-blue-50 rounded-md">
           <Icon className="h-4 w-4 text-hcx-600" />
         </div>
       </CardHeader>

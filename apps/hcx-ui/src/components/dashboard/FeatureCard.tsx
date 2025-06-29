@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Card,
   CardContent,
@@ -22,7 +23,7 @@ const FeatureCard = ({ title, description, icon: Icon, href, buttonText }: Featu
   return (
     <Card className="flex flex-col h-full transition-all duration-200 hover:shadow-md">
       <CardHeader>
-        <div className="p-2 w-12 h-12 rounded-lg bg-hcx-100 flex items-center justify-center mb-2">
+        <div className="p-2 w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-2">
           <Icon className="h-6 w-6 text-hcx-600" />
         </div>
         <CardTitle className="text-xl">{title}</CardTitle>
