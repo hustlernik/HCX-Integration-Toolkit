@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:7.0
     container_name: hcx-mongo-db
     env_file:
       - ../.env
