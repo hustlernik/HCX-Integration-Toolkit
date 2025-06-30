@@ -1,9 +1,8 @@
 import process from 'process';
-
 import { MongoClient, Db } from 'mongodb';
 import dbConfig from './database.config';
 
-const client = new MongoClient(dbConfig.url, dbConfig.options);
+const client: MongoClient = new MongoClient(dbConfig.url, dbConfig.options);
 
 let dbConnection: MongoClient | null = null;
 
@@ -16,9 +15,10 @@ export const connectToDatabase = async (): Promise<MongoClient> => {
     dbConnection = await client.connect();
     console.log('Successfully connected to MongoDB.');
     return dbConnection;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error connecting to MongoDB:', error);
-    throw new Error(`Database connection failed: ${error}`);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Database connection failed: ${errorMessage}`);
   }
 };
 
@@ -37,8 +37,8 @@ export const closeConnection = async (): Promise<void> => {
   }
 };
 
-const gracefulShutdown = () => {
-  closeConnection().catch((error) => {
+const gracefulShutdown = (): void => {
+  closeConnection().catch((error: unknown) => {
     console.error('Error during graceful shutdown:', error);
   });
 };
