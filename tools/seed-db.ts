@@ -40,11 +40,19 @@ async function seedDatabase(): Promise<void> {
       const patientIndex: number = seedData.patients.findIndex(
         (p) => p.abhaNumber === coverage.patientAbhaNumber,
       );
+
+      if (patientIndex === -1) {
+        throw new Error(`Patient with ABHA number ${coverage.patientAbhaNumber} not found`);
+      }
+
       const patientObjectId: ObjectId = patientResult.insertedIds[patientIndex];
 
       const planIndex: number = seedData.insurancePlans.findIndex(
         (p) => p.planId === coverage.planId,
       );
+      if (planIndex === -1) {
+        throw new Error(`Plan with ID ${coverage.planId} not found`);
+      }
       const planObjectId: ObjectId = planResult.insertedIds[planIndex];
 
       return {
