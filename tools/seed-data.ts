@@ -1,4 +1,51 @@
-export const seedData = {
+interface Patient {
+  abhaNumber: string;
+  name: string;
+  dob: Date;
+  gender: 'Male' | 'Female' | 'Other';
+}
+
+interface InsuranceCompany {
+  companyId: string;
+  name: string;
+  code: string;
+  phone: string;
+  customerServicePhone: string;
+  website: string;
+}
+
+interface InsurancePlan {
+  planId: string;
+  companyId: string;
+  name: string;
+  description: string;
+  premium: number;
+  deductible: number;
+  coveragePercentage: number;
+  maxCoverageAmount: number;
+}
+
+interface PatientCoverage {
+  coverageId: string;
+  patientAbhaNumber: string;
+  planId: string;
+  policyNumber: string;
+  subscriberId: string;
+  effectiveDate: Date;
+  expirationDate: Date;
+  isActive: boolean;
+  copayAmount: number;
+  yearToDateDeductible: number;
+}
+
+interface SeedData {
+  patients: Patient[];
+  insuranceCompany: InsuranceCompany;
+  insurancePlans: InsurancePlan[];
+  patientCoverage: PatientCoverage[];
+}
+
+export const seedData: SeedData = {
   patients: [
     {
       abhaNumber: '12-3456-7890-1234',
@@ -101,3 +148,5 @@ export const seedData = {
     },
   ],
 };
+
+export type { Patient, InsuranceCompany, InsurancePlan, PatientCoverage, SeedData };

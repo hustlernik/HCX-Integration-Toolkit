@@ -1,9 +1,21 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const isDev = process.env.NODE_ENV !== 'production';
+interface DbOptions {
+  authSource?: string;
+  w?: 'majority';
+  [key: string]: any;
+}
 
-const dbConfig = {
+interface DbConfig {
+  url: string;
+  dbName: string;
+  options: DbOptions;
+}
+
+const isDev: boolean = process.env.NODE_ENV !== 'production';
+
+const dbConfig: DbConfig = {
   url: isDev ? process.env.MONGO_URL_DEV || '' : process.env.MONGO_URL_PROD || '',
 
   dbName: process.env.MONGO_DB_NAME || (isDev ? 'hcx-toolkit' : 'hcx-toolkit-prod'),
