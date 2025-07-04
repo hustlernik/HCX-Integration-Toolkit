@@ -1,0 +1,18 @@
+# Ignore SSR build output (if specific to this app)
+dist-ssr
+
+# Ignore local environment/config files
+*.local
+
+# Editor settings (keep recommended extensions)
+.vscode/*
+!.vscode/extensions.json
+
+# IDE/project files
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
