@@ -1,0 +1,17 @@
+{
+  "buildCommand": "turbo run build --filter=hcx-ui",
+  "outputDirectory": "apps/hcx-ui/dist",
+  "installCommand": "pnpm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "feat/*": true
+    }
+  }
+}

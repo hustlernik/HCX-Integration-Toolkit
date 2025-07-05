@@ -1,16 +1,14 @@
-import eslint from '@eslint/js';
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsparser from '@typescript-eslint/parser';
-import prettierConfig from 'eslint-config-prettier';
-import importPlugin from 'eslint-plugin-import';
-import prettierPlugin from 'eslint-plugin-prettier';
-import reactPlugin from 'eslint-plugin-react';
+import js from '@eslint/js';
+import globals from 'globals';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import unusedImportsPlugin from 'eslint-plugin-unused-imports';
+import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
+import typescriptParser from '@typescript-eslint/parser';
+import reactPlugin from 'eslint-plugin-react';
+import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 
 export default [
-  eslint.configs.recommended,
-  prettierConfig,
+  js.configs.recommended,
   {
     ignores: [
       'node_modules/**',
@@ -21,30 +19,21 @@ export default [
       '**/*.config.js',
     ],
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-      parser: tsparser,
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parser: typescriptParser,
       parserOptions: {
         ecmaFeatures: { jsx: true },
         project: ['./tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     plugins: {
-      '@typescript-eslint': tseslint,
-      react: reactPlugin,
+      '@typescript-eslint': typescriptEslintPlugin,
       'react-hooks': reactHooksPlugin,
-      import: importPlugin,
       'unused-imports': unusedImportsPlugin,
-      prettier: prettierPlugin,
-    },
-    settings: {
-      react: { version: 'detect' },
-      'import/resolver': {
-        typescript: {
-          alwaysTryTypes: true,
-          project: ['./tsconfig.json'],
-        },
-      },
+      'react-refresh': reactRefreshPlugin,
+      react: reactPlugin,
     },
     rules: {
       ...reactHooksPlugin.configs.recommended.rules,
@@ -59,15 +48,38 @@ export default [
     },
   },
   {
-    files: ['*.config.*', '*.ignore.*', 'eslint.config.js'],
+    files: ['**/*.{js,jsx}'],
     languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
       parserOptions: {
-        project: null,
+        ecmaFeatures: { jsx: true },
       },
     },
-    rules: {
-      '@typescript-eslint/no-floating-promises': 'off',
-      '@typescript-eslint/no-misused-promises': 'off',
+    plugins: {
+      'react-hooks': reactHooksPlugin,
+      'unused-imports': unusedImportsPlugin,
+      'react-refresh': reactRefreshPlugin,
+      react: reactPlugin,
     },
+    rules: {
+      ...reactHooksPlugin.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'no-console': 'warn',
+      'no-debugger': 'error',
+      'react/prop-types': 'off',
+    },
+    ignores: ['dist', '**/*.config.js'],
+  },
+  {
+    files: ['**/postcss.config.js', '**/eslint.config.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {},
   },
 ];
