@@ -13,7 +13,8 @@
     "release": "standard-version",
     "prepare": "husky",
     "build": "turbo run build",
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "seed": "tsx tools/seed-db.ts"
   },
   "config": {
     "commitizen": {
@@ -38,6 +39,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.28.0",
+    "@types/node": "^22.5.5",
     "@typescript-eslint/eslint-plugin": "^8.34.0",
     "@typescript-eslint/parser": "^8.34.0",
     "commitizen": "^4.3.1",
@@ -58,11 +60,14 @@
     "prettier-plugin-organize-imports": "^4.1.0",
     "prettier-plugin-tailwindcss": "^0.6.12",
     "standard-version": "^9.5.0",
+    "tsx": "^4.20.3",
     "turbo": "^1.13.0"
   },
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "socket.io-client": "^4.8.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "dotenv": "^16.5.0",
+    "mongodb": "^6.17.0"
   }
 }

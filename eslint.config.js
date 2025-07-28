@@ -10,7 +10,14 @@ import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 export default [
   js.configs.recommended,
   {
-    files: ['**/*.{ts,tsx}'],
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      '.next/**',
+      'commitlint.config.cjs',
+      '**/*.config.js',
+    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -32,15 +39,13 @@ export default [
       ...reactHooksPlugin.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': 'off',
-      'no-console': 'warn',
+      'no-console': 'off',
       'no-debugger': 'error',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-misused-promises': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       'react/prop-types': 'off',
-      // Removed 'prettier/prettier': 'error' since plugin is not installed
     },
-    ignores: ['dist', '**/*.config.js'],
   },
   {
     files: ['**/*.{js,jsx}'],
