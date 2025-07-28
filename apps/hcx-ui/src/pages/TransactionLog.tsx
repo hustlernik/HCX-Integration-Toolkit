@@ -47,9 +47,12 @@ const TransactionLog: React.FC = () => {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
     setLoading(true);
     axios
-      .get<Transaction[] | ApiResponse>(API_ENDPOINTS.PROVIDER.TRANSACTIONS)
+      .get<Transaction[] | ApiResponse>(API_ENDPOINTS.PROVIDER.TRANSACTIONS, {
+        signal: controller.signal,
+      })
       .then((res) => {
         const data = res.data;
         if (Array.isArray(data)) {
@@ -62,10 +65,26 @@ const TransactionLog: React.FC = () => {
         setLoading(false);
       })
       .catch((err) => {
+        if (err.name === 'CanceledError') return;
         setError(err.message || 'Error fetching transactions');
         setLoading(false);
       });
+
+    return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setModalOpen(false);
+      }
+    };
+
+    if (modalOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [modalOpen]);
 
   return (
     <>
@@ -145,17 +164,27 @@ const TransactionLog: React.FC = () => {
             )}
 
             {modalOpen && modalTxn && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-3xl mx-auto max-h-[90vh] overflow-y-auto relative">
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+                onClick={() => setModalOpen(false)}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+              >
+                <div
+                  className="bg-white rounded-lg shadow-xl p-8 w-full max-w-3xl mx-auto max-h-[90vh] overflow-y-auto relative"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Button
                     variant="link"
                     size="sm"
                     onClick={() => setModalOpen(false)}
                     className="absolute top-2 right-2"
+                    aria-label="Close modal"
                   >
                     Close
                   </Button>
-                  <div className="mb-2 font-semibold">
+                  <div id="modal-title" className="mb-2 font-semibold">
                     {modalType === 'request' ? 'Request' : 'Response'}
                   </div>
                   {modalType === 'request' && modalTxn.requestFHIR && (

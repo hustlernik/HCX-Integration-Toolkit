@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sections }) => {
       )}
       <aside
         className={`
-          fixed left-0 top-18 w-64 h-[calc(100vh-4rem)] flex flex-col bg-gray-50 border-r p-6 z-50
+          fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] flex flex-col bg-gray-50 border-r p-6 z-50
           transition-transform duration-200
           ${open ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:block

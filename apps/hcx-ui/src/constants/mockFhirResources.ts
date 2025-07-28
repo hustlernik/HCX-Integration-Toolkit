@@ -265,7 +265,7 @@ export const mockFhirResources = {
       name: 'Insurance Plan Request Bundle',
       resource: {
         identifier: {
-          system: 'https:/dummypayer.com/',
+          system: 'https://dummypayer.com/',
           value: '75b1340f-bfe7-4856-ae4e-3d0f06e2a8cc',
         },
         entry: [
