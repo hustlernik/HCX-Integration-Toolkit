@@ -15,6 +15,9 @@ export const API_CONFIG = {
     BASE_URL: import.meta.env.VITE_PAYER_API_BASE_URL || 'http://localhost:3001',
     ENDPOINTS: {},
   },
+  FHIR: {
+    SERVER_URL: import.meta.env.VITE_FHIR_SERVER_URL || 'http://hapi.fhir.org/baseR4',
+  },
 } as const;
 
 export const getProviderApiUrl = (endpoint: string): string => {

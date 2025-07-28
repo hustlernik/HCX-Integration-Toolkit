@@ -17,7 +17,7 @@ import { ArrowRight } from 'lucide-react';
 import { mockFhirResources } from '@/constants/mockFhirResources';
 import { io } from 'socket.io-client';
 import { workflows } from '@/constants/workflows';
-import { DEFAULT_HEADERS } from '@/constants/defaultHeaders';
+import { generateDefaultHeaders } from '@/constants/defaultHeaders';
 import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 import { getISTTimestamp } from '@/utils/getISTTImestamp';
 
@@ -47,7 +47,7 @@ const ApiTesting: React.FC = () => {
   const selectedMocks = mockFhirResources[workflow] || [];
   const selectedResource = selectedMocks[selectedMock]?.resource;
   const [headers, setHeaders] = useState<RequestHeader[]>(() => {
-    const filled = DEFAULT_HEADERS.map((h) => h);
+    const filled = generateDefaultHeaders().map((h) => h);
     return filled;
   });
   const [rawView, setRawView] = useState<boolean>(false);
@@ -64,7 +64,7 @@ const ApiTesting: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get('http://hapi.fhir.org/baseR4/Bundle/48263415')
+      .get(`${API_CONFIG.FHIR.SERVER_URL}/Bundle/48263415`)
       .then((res) => setCoverageEligibilityExample(res.data))
       .catch((err) => console.error('Error fetching coverage eligibility example:', err));
   }, []);
@@ -78,14 +78,6 @@ const ApiTesting: React.FC = () => {
       setBodyText(selectedResource ? JSON.stringify(selectedResource, null, 2) : '');
     }
   }, [workflow, coverageEligibilityExample, selectedResource]);
-
-  useEffect(() => {
-    setHeaders((hs) => hs.map((h) => h));
-  }, [workflow]);
-
-  useEffect(() => {
-    setBodyText(selectedResource ? JSON.stringify(selectedResource, null, 2) : '');
-  }, [selectedResource]);
 
   useEffect(() => {
     try {
