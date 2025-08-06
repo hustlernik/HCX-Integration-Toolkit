@@ -54,7 +54,7 @@ const defaultFeatures: Feature[] = [
     title: 'Payer Reference App',
     description: 'End-to-end testing reference application for providers',
     icon: Search,
-    href: '/payer-app',
+    href: '/insurance-plans',
     buttonText: 'View Reference App',
   },
   {

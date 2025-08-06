@@ -210,6 +210,9 @@ importers:
       embla-carousel-react:
         specifier: ^8.3.0
         version: 8.6.0(react@18.3.1)
+      fhir:
+        specifier: 4.12.0
+        version: 4.12.0
       input-otp:
         specifier: ^1.2.4
         version: 1.4.2(react-dom@18.3.1)(react@18.3.1)
@@ -262,6 +265,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.16(tailwindcss@3.4.17)
+      '@types/fhir':
+        specifier: ^0.0.41
+        version: 0.0.41
       '@types/node':
         specifier: ^22.5.5
         version: 22.15.32
@@ -2770,6 +2776,10 @@ packages:
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
     dev: true
 
+  /@types/fhir@0.0.41:
+    resolution: {integrity: sha512-MAQAFufNZBZ6V0F94Nhknmmh/E3iMXFK4n/L8RkSNjKtOJnvaAJERivNOj35VVx9VCQBJbE0BHSzikfBahoRhA==}
+    dev: true
+
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
     dev: true
@@ -4893,6 +4903,17 @@ packages:
       picomatch: 4.0.2
     dev: true
 
+  /fhir@4.12.0:
+    resolution: {integrity: sha512-N+eLuUbYjvjX5NlZPhE08OVrsJJhulQKkVWnW1M3HpNvreWC1yVvoF8ptmGzlvtDZRCrNrBArfLklphFO2L0oA==}
+    dependencies:
+      randomatic: 3.1.1
+    dev: false
+    bundledDependencies:
+      - lodash
+      - path
+      - q
+      - xml-js
+
   /figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
@@ -5604,6 +5625,11 @@ packages:
       has-tostringtag: 1.0.2
     dev: true
 
+  /is-number@4.0.0:
+    resolution: {integrity: sha512-rSklcAIlf1OmFdyAqbnWTLVelsQ58uvZ66S/ZyawjWqIviTWCjg2PzVGw8WUA+nNuPTqb4wgA+NszrJ+08LlgQ==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
   /is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
@@ -5828,7 +5854,6 @@ packages:
   /kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -6035,6 +6060,10 @@ packages:
   /math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
+
+  /math-random@1.0.4:
+    resolution: {integrity: sha512-rUxjysqif/BZQH2yhd5Aaq7vXMSx9NdEsQcyA07uEzIvxgI7zIr33gGsh+RU0/XjmQpCW7RsVof1vlkvQVCK5A==}
+    dev: false
 
   /memory-pager@1.5.0:
     resolution: {integrity: sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg==}
@@ -6771,6 +6800,15 @@ packages:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
     engines: {node: '>=8'}
     dev: true
+
+  /randomatic@3.1.1:
+    resolution: {integrity: sha512-TuDE5KxZ0J461RVjrJZCJc+J+zCkTb1MbH9AQUq68sMhOMcy9jLcb3BrZKgp9q9Ncltdg4QVqWrH02W2EFFVYw==}
+    engines: {node: '>= 0.10.0'}
+    dependencies:
+      is-number: 4.0.0
+      kind-of: 6.0.3
+      math-random: 1.0.4
+    dev: false
 
   /react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
     resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
