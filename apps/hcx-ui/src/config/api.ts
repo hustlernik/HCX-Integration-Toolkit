@@ -13,7 +13,13 @@ export const API_CONFIG = {
   },
   PAYER: {
     BASE_URL: import.meta.env.VITE_PAYER_API_BASE_URL || 'http://localhost:3001',
-    ENDPOINTS: {},
+    ENDPOINTS: {
+      INSURANCE_PLAN: 'http://localhost:3001/api/insurance-plans',
+      BENEFICIARY: 'http://localhost:3001/api/beneficiary',
+      POLICIES: 'http://localhost:3001/api/policies',
+      COVERAGE_ELIGIBILITY_REQUEST: 'http://localhost:3001/hcx/v1/coverageeligibility/requests',
+      COVERAGE_ELIGIBILITY_CHECK: 'http://localhost:3001/hcx/v1/coverageeligibility/on_check',
+    },
   },
   FHIR: {
     SERVER_URL: import.meta.env.VITE_FHIR_SERVER_URL || 'http://hapi.fhir.org/baseR4',
