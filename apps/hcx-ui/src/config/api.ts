@@ -14,11 +14,11 @@ export const API_CONFIG = {
   PAYER: {
     BASE_URL: import.meta.env.VITE_PAYER_API_BASE_URL || 'http://localhost:3001',
     ENDPOINTS: {
-      INSURANCE_PLAN: 'http://localhost:3001/api/insurance-plans',
-      BENEFICIARY: 'http://localhost:3001/api/beneficiary',
-      POLICIES: 'http://localhost:3001/api/policies',
-      COVERAGE_ELIGIBILITY_REQUEST: 'http://localhost:3001/hcx/v1/coverageeligibility/requests',
-      COVERAGE_ELIGIBILITY_CHECK: 'http://localhost:3001/hcx/v1/coverageeligibility/on_check',
+      INSURANCE_PLAN: '/api/insurance-plans',
+      BENEFICIARY: '/api/beneficiary',
+      POLICIES: '/api/policies',
+      COVERAGE_ELIGIBILITY_REQUEST: '/hcx/v1/coverageeligibility/requests',
+      COVERAGE_ELIGIBILITY_CHECK: '/hcx/v1/coverageeligibility/on_check',
     },
   },
   FHIR: {
@@ -44,5 +44,11 @@ export const API_ENDPOINTS = {
     INSURANCE_PLAN: getProviderApiUrl('/hcx/v1/insuranceplan/request'),
     COVERAGE_ELIGIBILITY: getProviderApiUrl('/hcx/v1/coverageeligibility/check'),
   },
-  PAYER: {},
+  PAYER: {
+    INSURANCE_PLAN: getPayerApiUrl('/api/insurance-plans'),
+    BENEFICIARY: getPayerApiUrl('/api/beneficiary'),
+    POLICIES: getPayerApiUrl('/api/policies'),
+    COVERAGE_ELIGIBILITY_REQUEST: getPayerApiUrl('/hcx/v1/coverageeligibility/requests'),
+    COVERAGE_ELIGIBILITY_CHECK: getPayerApiUrl('/hcx/v1/coverageeligibility/on_check'),
+  },
 } as const;

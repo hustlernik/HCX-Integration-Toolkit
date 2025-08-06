@@ -8,6 +8,7 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
+import { Input } from '../ui/input';
 import { INSURANCE_PLAN_TYPES } from '../../constants/insurancePlanOptions';
 
 interface SearchAndFiltersProps {
@@ -28,12 +29,13 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   return (
     <div className="flex w-full items-center gap-4 mb-4">
       <div className="flex flex-1 gap-4">
-        <input
+        <Input
           type="text"
           placeholder="Search plans by name or alias..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border rounded px-3 py-2 w-full"
+          aria-label="Search insurance plans"
+          className="w-full"
         />
 
         <Select value={typeFilter} onValueChange={setTypeFilter}>

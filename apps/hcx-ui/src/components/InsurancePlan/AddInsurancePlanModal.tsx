@@ -12,7 +12,15 @@ import {
 } from '@/components/ui/select';
 import { MultiSelect } from '../ui/multiselect';
 
-export const AddInsurancePlanModal = ({ onSubmit, onClose }) => {
+interface AddInsurancePlanModalProps {
+  onSubmit: (data: any) => Promise<void>;
+  onClose: () => void;
+}
+
+export const AddInsurancePlanModal: React.FC<AddInsurancePlanModalProps> = ({
+  onSubmit,
+  onClose,
+}) => {
   const [newPlan, setNewPlan] = useState({
     insurancePlanType: '',
     name: '',
@@ -35,8 +43,31 @@ export const AddInsurancePlanModal = ({ onSubmit, onClose }) => {
     specificCosts: [{ benefitCategory: '', benefitType: '', costAmount: 0, currency: 'INR' }],
   });
 
+  const OWNED_BY_ORGS = {
+    'abc-insurance-ltd': 'ABC Insurance Ltd.',
+    'star-health': 'Star Health',
+    'niva-bupa': 'Niva Bupa',
+  } as const;
+
+  const ADMINISTERED_BY_ORGS = {
+    'xyz-health-tpa': 'XYZ Health TPA',
+    'mediassist-tpa': 'Mediassist TPA',
+    'health-india-tpa': 'Health India TPA',
+  } as const;
+
   const handleSubmit = async () => {
     try {
+      const errors = [];
+      if (!newPlan.insurancePlanType) errors.push('Insurance Plan Type is required');
+      if (!newPlan.name) errors.push('Plan Name is required');
+      if (!newPlan.periodStart) errors.push('Period Start is required');
+      if (!newPlan.ownedByOrgId) errors.push('Owned By Org is required');
+      if (!newPlan.planType) errors.push('Plan Type is required');
+
+      if (errors.length > 0) {
+        throw new Error(errors.join(', '));
+      }
+
       const submitData = {
         ...newPlan,
         periodStart: newPlan.periodStart ? new Date(newPlan.periodStart).toISOString() : undefined,
@@ -177,14 +208,7 @@ export const AddInsurancePlanModal = ({ onSubmit, onClose }) => {
                   <Select
                     value={newPlan.ownedByOrgId}
                     onValueChange={(v) => {
-                      const display =
-                        v === 'abc-insurance-ltd'
-                          ? 'ABC Insurance Ltd.'
-                          : v === 'star-health'
-                            ? 'Star Health'
-                            : v === 'niva-bupa'
-                              ? 'Niva Bupa'
-                              : '';
+                      const display = OWNED_BY_ORGS[v] || '';
                       setNewPlan({ ...newPlan, ownedByOrgId: v, ownedByDisplay: display });
                     }}
                   >
@@ -203,14 +227,7 @@ export const AddInsurancePlanModal = ({ onSubmit, onClose }) => {
                   <Select
                     value={newPlan.administeredByOrgId}
                     onValueChange={(v) => {
-                      const display =
-                        v === 'xyz-health-tpa'
-                          ? 'XYZ Health TPA'
-                          : v === 'mediassist-tpa'
-                            ? 'Mediassist TPA'
-                            : v === 'health-india-tpa'
-                              ? 'Health India TPA'
-                              : '';
+                      const display = ADMINISTERED_BY_ORGS[v] || '';
                       setNewPlan({
                         ...newPlan,
                         administeredByOrgId: v,

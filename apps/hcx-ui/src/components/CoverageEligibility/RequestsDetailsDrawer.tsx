@@ -123,6 +123,7 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
   const [responseSubmitting, setResponseSubmitting] = useState(false);
   const [responseSuccess, setResponseSuccess] = useState(false);
   const [itemOpenStates, setItemOpenStates] = useState<boolean[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedRequest && selectedRequest.items) {
@@ -152,7 +153,6 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
     setResponseSuccess(false);
     try {
       const correlationId = selectedRequest?.correlationId || '';
-      console.log('correlationId:', correlationId);
 
       await axios.post(API_CONFIG.PAYER.ENDPOINTS.COVERAGE_ELIGIBILITY_CHECK, {
         correlationId,
@@ -167,7 +167,7 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
       }, 1500);
     } catch (err) {
       setResponseSubmitting(false);
-      alert('Failed to submit adjudication: ' + (err as Error).message);
+      setError('Failed to submit adjudication: ' + (err as Error).message);
     }
   };
 

@@ -20,8 +20,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Policy } from '../interfaces/policy';
-import AddPolicyModal from '../components/Policies/AddPolicyModel';
-import AddBeneficiaryModal from '../components/Policies/AddBeneficiaryModel';
+import AddPolicyModal from '../components/Policies/AddPolicyModal';
+import AddBeneficiaryModal from '../components/Policies/AddBeneficiaryModal';
 import PolicyDetailsDrawer from '../components/Policies/PolicyDetailsDrawer';
 import Pagination from '@/components/ui/pagination';
 import axios from 'axios';

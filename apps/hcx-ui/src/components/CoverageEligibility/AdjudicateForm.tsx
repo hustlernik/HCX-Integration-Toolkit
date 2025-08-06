@@ -56,7 +56,7 @@ interface AdjudicateFormProps {
   setResponseForm: React.Dispatch<React.SetStateAction<ResponseFormType>>;
   responseSubmitting: boolean;
   handleResponseSubmit: (e: React.FormEvent) => void;
-  setResponseAction: (action: any) => void;
+  setResponseAction: (action: 'approve' | 'reject' | 'query' | 'adjudicate' | null) => void;
   CATEGORY_OPTIONS: { code: string; display: string }[];
   PRODUCT_OR_SERVICE_OPTIONS: { code: string; display: string }[];
 }
@@ -576,12 +576,12 @@ const AdjudicateForm: React.FC<AdjudicateFormProps> = ({
                                     value={ben.allowedMoney.value}
                                     onChange={(e) => {
                                       const arr = [...responseForm.insurance];
-                                      arr[i].items[j].benefits[k].allowedMoney.value = Number(
-                                        e.target.value,
-                                      );
+                                      const value = Math.max(0, Number(e.target.value) || 0);
+                                      arr[i].items[j].benefits[k].allowedMoney.value = value;
                                       setResponseForm((f) => ({ ...f, insurance: arr }));
                                     }}
                                     placeholder="0"
+                                    min="0"
                                   />
                                 </div>
                                 <div>

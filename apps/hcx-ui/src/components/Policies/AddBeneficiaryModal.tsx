@@ -57,6 +57,12 @@ const AddBeneficiaryModal: React.FC<AddBeneficiaryModalProps> = ({
       if (!formData.name.first) newErrors.firstName = 'First name is required';
       if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
       if (!formData.abhaAddress) newErrors.abhaAddress = 'ABHA Address is required';
+      if (formData.phone && !/^[0-9]{10}$/.test(formData.phone)) {
+        newErrors.phone = 'Phone number must be 10 digits';
+      }
+      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        newErrors.email = 'Invalid email format';
+      }
 
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
@@ -64,50 +70,10 @@ const AddBeneficiaryModal: React.FC<AddBeneficiaryModalProps> = ({
         return;
       }
 
-      const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setErrors({});
-
-        try {
-          const newErrors: Record<string, string> = {};
-          if (!formData.abhaId) newErrors.abhaId = 'ABHA ID is required';
-          if (!formData.name.first) newErrors.firstName = 'First name is required';
-          if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
-          if (!formData.abhaAddress) newErrors.abhaAddress = 'ABHA Address is required';
-
-          if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            setLoading(false);
-            return;
-          }
-
-          await axios.post(API_CONFIG.PAYER.ENDPOINTS.BENEFICIARY, {
-            ...formData,
-            dateOfBirth: new Date(formData.dateOfBirth),
-          });
-
-          onSuccess();
-          onClose();
-          setFormData({
-            abhaId: '',
-            name: { first: '', last: '', middle: '' },
-            gender: 'unknown',
-            dateOfBirth: '',
-            phone: '',
-            email: '',
-            address: { line: '', city: '', district: '', state: '', pincode: '' },
-            abhaAddress: '',
-          });
-        } catch (error: unknown) {
-          console.error('Failed to create beneficiary:', error);
-          setErrors({
-            submit: error instanceof Error ? error.message : 'Failed to create beneficiary',
-          });
-        } finally {
-          setLoading(false);
-        }
-      };
+      await axios.post(API_CONFIG.PAYER.ENDPOINTS.BENEFICIARY, {
+        ...formData,
+        dateOfBirth: new Date(formData.dateOfBirth),
+      });
 
       onSuccess();
       onClose();
@@ -234,6 +200,8 @@ const AddBeneficiaryModal: React.FC<AddBeneficiaryModalProps> = ({
                 value={formData.dateOfBirth}
                 onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
                 className={errors.dateOfBirth ? 'border-red-500' : ''}
+                max={new Date().toISOString().split('T')[0]}
+                min={new Date(new Date().getFullYear() - 150, 0, 1).toISOString().split('T')[0]}
               />
               {errors.dateOfBirth && (
                 <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth}</p>
@@ -247,6 +215,8 @@ const AddBeneficiaryModal: React.FC<AddBeneficiaryModalProps> = ({
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="Phone number"
+                pattern="[0-9]{10}"
+                title="Please enter a 10-digit phone number"
               />
             </div>
           </div>
@@ -258,6 +228,7 @@ const AddBeneficiaryModal: React.FC<AddBeneficiaryModalProps> = ({
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="Email address"
+              required={false}
             />
           </div>
 
