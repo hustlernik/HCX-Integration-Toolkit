@@ -46,7 +46,7 @@ export interface Policy {
 }
 
 export interface CreatePolicyData {
-  policyNumber?: string; // Optional since it's auto-generated
+  policyNumber?: string;
   beneficiary: string;
   insurancePlan: string;
   coverageStart: Date;

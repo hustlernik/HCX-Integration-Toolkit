@@ -77,9 +77,7 @@ const PolicyDetailsDrawer: React.FC<PolicyDetailsDrawerProps> = ({
           </button>
         </div>
         <div className="p-8 space-y-8 flex-1">
-          {/* Top: Two-column grid for Policy Info and Insurance Plan */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Policy Information Card */}
             <Card className="bg-gray-50 rounded-lg p-0">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-xl font-bold">
@@ -104,7 +102,6 @@ const PolicyDetailsDrawer: React.FC<PolicyDetailsDrawerProps> = ({
                 </div>
               </CardContent>
             </Card>
-            {/* Insurance Plan Card (minimal) */}
             <Card className="bg-gray-50 rounded-lg p-0">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-xl font-bold">
@@ -142,7 +139,6 @@ const PolicyDetailsDrawer: React.FC<PolicyDetailsDrawerProps> = ({
               </CardContent>
             </Card>
           </div>
-          {/* Full-width Beneficiary Card */}
           <Card className="bg-gray-50 rounded-lg p-0">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-xl font-bold">

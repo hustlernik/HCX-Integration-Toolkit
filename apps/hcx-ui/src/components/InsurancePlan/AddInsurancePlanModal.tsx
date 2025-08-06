@@ -496,7 +496,6 @@ export const AddInsurancePlanModal = ({ onSubmit, onClose }) => {
               </Button>
             </div>
 
-            {/* Specific Costs */}
             <div className="mb-4">
               <h3 className="font-semibold mb-2">Specific Costs</h3>
               <div className="space-y-3">
