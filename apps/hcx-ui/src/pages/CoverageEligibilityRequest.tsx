@@ -5,7 +5,7 @@ import { payerSidebarSections } from '@/constants/sidebarSections';
 import { Search, Filter } from 'lucide-react';
 import { io } from 'socket.io-client';
 import axios from 'axios';
-import { API_CONFIG } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 import RequestsTable from '../components/CoverageEligibility/RequestsTable';
 import RequestsDetailDrawer from '../components/CoverageEligibility/RequestsDetailsDrawer';
 import Pagination from '@/components/ui/pagination';
@@ -50,7 +50,7 @@ interface CoverageEligibilityRequest {
     productOrService: { code: string; display: string };
     quantity?: { value: number; unit?: string };
     unitPrice?: { value?: number; currency?: string };
-    diagnoses?: Array<any>;
+    diagnoses?: Array<{ code: string; display: string; system?: string }>;
   }>;
   createdAt: string;
   updatedAt: string;
@@ -95,8 +95,8 @@ function mapRequestToResponseForm(req: CoverageEligibilityRequest): ResponseForm
     purpose: req.purpose || [],
     disposition: '',
     servicedDate:
-      req.serviced && typeof (req.serviced as any).date === 'string'
-        ? (req.serviced as any).date
+      req.serviced && 'date' in req.serviced && typeof req.serviced.date === 'string'
+        ? req.serviced.date
         : '',
     servicedPeriod:
       req.serviced && req.serviced.period
@@ -139,7 +139,7 @@ const CoverageEligibilityRequest: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get(API_CONFIG.PAYER.ENDPOINTS.COVERAGE_ELIGIBILITY_REQUEST)
+      .get(API_ENDPOINTS.PAYER.COVERAGE_ELIGIBILITY_REQUEST)
       .then((response) => setRequests(response.data))
       .catch((err) => {
         console.error('Failed to fetch coverage eligibility requests:', err);

@@ -25,7 +25,7 @@ import AddBeneficiaryModal from '../components/Policies/AddBeneficiaryModal';
 import PolicyDetailsDrawer from '../components/Policies/PolicyDetailsDrawer';
 import Pagination from '@/components/ui/pagination';
 import axios from 'axios';
-import { API_CONFIG } from '@/config/api';
+import { API_ENDPOINTS } from '@/config/api';
 
 const Policies: React.FC = () => {
   const [policies, setPolicies] = useState<Policy[]>([]);
@@ -45,7 +45,7 @@ const Policies: React.FC = () => {
   const loadPolicies = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_CONFIG.PAYER.ENDPOINTS.POLICIES);
+      const response = await axios.get(API_ENDPOINTS.PAYER.POLICIES);
       setPolicies(response.data);
     } catch (error) {
       console.error('Failed to load policies:', error);
@@ -237,11 +237,7 @@ const Policies: React.FC = () => {
           onSuccess={loadPolicies}
         />
 
-        <PolicyDetailsDrawer
-          policy={selectedPolicy}
-          onClose={() => setSelectedPolicy(null)}
-          onRefresh={loadPolicies}
-        />
+        <PolicyDetailsDrawer policy={selectedPolicy} onClose={() => setSelectedPolicy(null)} />
       </main>
     </>
   );

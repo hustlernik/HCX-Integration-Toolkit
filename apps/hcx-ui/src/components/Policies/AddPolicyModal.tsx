@@ -11,7 +11,7 @@ import {
 import { X } from 'lucide-react';
 import { Beneficiary, InsurancePlan } from '../../interfaces/policy';
 import axios from 'axios';
-import { API_CONFIG } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 
 interface AddPolicyModalProps {
   isOpen: boolean;
@@ -31,6 +31,7 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
   const [insurancePlans, setInsurancePlans] = useState<InsurancePlan[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loadingErrors, setLoadingErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (isOpen) {
@@ -41,16 +42,18 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
 
   const loadBeneficiaries = async () => {
     try {
-      const response = await axios.get(API_CONFIG.PAYER.ENDPOINTS.BENEFICIARY);
+      const response = await axios.get(API_ENDPOINTS.PAYER.BENEFICIARY);
       setBeneficiaries(response.data);
+      setLoadingErrors((prev) => ({ ...prev, beneficiaries: '' }));
     } catch (error) {
       console.error('Failed to load beneficiaries:', error);
+      setLoadingErrors((prev) => ({ ...prev, beneficiaries: 'Failed to load beneficiaries' }));
     }
   };
 
   const loadInsurancePlans = async () => {
     try {
-      const response = await axios.get(API_CONFIG.PAYER.ENDPOINTS.INSURANCE_PLAN);
+      const response = await axios.get(API_ENDPOINTS.PAYER.INSURANCE_PLAN);
       setInsurancePlans(response.data);
     } catch (error) {
       console.error('Failed to load insurance plans:', error);
@@ -79,7 +82,7 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
         return !isNaN(date.getTime());
       };
 
-      await axios.post(API_CONFIG.PAYER.ENDPOINTS.POLICIES, {
+      await axios.post(API_ENDPOINTS.PAYER.POLICIES, {
         beneficiary: formData.beneficiary,
         insurancePlan: formData.insurancePlan,
         coverageStart: isValidDate(formData.coverageStart)
