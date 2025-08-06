@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import { X } from 'lucide-react';
 import axios from 'axios';
-import { API_CONFIG } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 
 interface AddBeneficiaryModalProps {
   isOpen: boolean;
@@ -70,7 +70,7 @@ const AddBeneficiaryModal: React.FC<AddBeneficiaryModalProps> = ({
         return;
       }
 
-      await axios.post(API_CONFIG.PAYER.ENDPOINTS.BENEFICIARY, {
+      await axios.post(API_ENDPOINTS.PAYER.BENEFICIARY, {
         ...formData,
         dateOfBirth: new Date(formData.dateOfBirth),
       });

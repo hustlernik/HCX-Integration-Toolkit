@@ -15,7 +15,7 @@ import {
 import { formatDate, hasDateField } from '@/utils/formatDate';
 import AdjudicateForm from './AdjudicateForm';
 import axios from 'axios';
-import { API_CONFIG } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 import { CATEGORY_OPTIONS, PRODUCT_OR_SERVICE_OPTIONS } from '@/constants/insurancePlanOptions';
 
 interface CoverageEligibilityRequest {
@@ -154,7 +154,7 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
     try {
       const correlationId = selectedRequest?.correlationId || '';
 
-      await axios.post(API_CONFIG.PAYER.ENDPOINTS.COVERAGE_ELIGIBILITY_CHECK, {
+      await axios.post(API_ENDPOINTS.PAYER.COVERAGE_ELIGIBILITY_CHECK, {
         correlationId,
         responseForm,
       });

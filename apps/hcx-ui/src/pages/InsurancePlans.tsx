@@ -4,7 +4,7 @@ import axios from 'axios';
 import Sidebar from '@/components/dashboard/Sidebar';
 import { payerSidebarSections } from '@/constants/sidebarSections';
 import Pagination from '@/components/ui/pagination';
-import { API_CONFIG } from '@/config/api';
+import { API_ENDPOINTS } from '@/config/api';
 import { SearchAndFilters } from '../components/InsurancePlan/SearchAndFilters';
 import { InsurancePlansTable } from '../components/InsurancePlan/InsurancePlansTable';
 import { InsurancePlanDetailsDrawer } from '../components/InsurancePlan/insurancePlanDetailsDrawer';
@@ -68,7 +68,7 @@ const InsurancePlans: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(API_CONFIG.PAYER.ENDPOINTS.INSURANCE_PLAN);
+      const response = await axios.get(API_ENDPOINTS.PAYER.INSURANCE_PLAN);
       const data = response.data;
 
       if (data.entry) {
@@ -116,7 +116,7 @@ const InsurancePlans: React.FC = () => {
       };
 
       try {
-        await axios.post(API_CONFIG.PAYER.ENDPOINTS.INSURANCE_PLAN, submitData);
+        await axios.post(API_ENDPOINTS.PAYER.INSURANCE_PLAN, submitData);
       } catch (err) {
         if (axios.isAxiosError(err) && err.response) {
           console.error('Server error:', err.response.data);

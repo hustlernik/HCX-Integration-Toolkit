@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { X, User, Shield, FileText } from 'lucide-react';
 import { Policy, InsurancePlan } from '../../interfaces/policy';
 import axios from 'axios';
-import { API_CONFIG } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 import { formatDate } from '@/utils/formatDate';
 
 interface PolicyDetailsDrawerProps {
@@ -21,7 +21,7 @@ const PolicyDetailsDrawer: React.FC<PolicyDetailsDrawerProps> = ({ policy, onClo
       setPlan(null);
       setPlanLoading(true);
       axios
-        .get(`${API_CONFIG.PAYER.ENDPOINTS.INSURANCE_PLAN}/${policy.insurancePlan.id}`)
+        .get(`${API_ENDPOINTS.PAYER.INSURANCE_PLAN}/${policy.insurancePlan.id}`)
         .then((response) => setPlan(response.data))
         .catch(() => {
           setPlan(policy.insurancePlan);
