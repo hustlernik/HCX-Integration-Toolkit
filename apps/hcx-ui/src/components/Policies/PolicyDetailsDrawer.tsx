@@ -5,19 +5,14 @@ import { X, User, Shield, FileText } from 'lucide-react';
 import { Policy, InsurancePlan } from '../../interfaces/policy';
 import axios from 'axios';
 import { API_CONFIG } from '@/config/api';
+import { formatDate } from '@/utils/formatDate';
 
 interface PolicyDetailsDrawerProps {
   policy: Policy | null;
   onClose: () => void;
-  onRefresh: () => void;
 }
 
-const PolicyDetailsDrawer: React.FC<PolicyDetailsDrawerProps> = ({
-  policy,
-  onClose,
-  onRefresh,
-}) => {
-  const [loading, setLoading] = useState(false);
+const PolicyDetailsDrawer: React.FC<PolicyDetailsDrawerProps> = ({ policy, onClose }) => {
   const [plan, setPlan] = useState<InsurancePlan | null>(null);
   const [planLoading, setPlanLoading] = useState(false);
 
@@ -36,14 +31,6 @@ const PolicyDetailsDrawer: React.FC<PolicyDetailsDrawerProps> = ({
   }, [policy]);
 
   if (!policy) return null;
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {

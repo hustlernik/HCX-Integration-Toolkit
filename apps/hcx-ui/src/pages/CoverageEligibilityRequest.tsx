@@ -186,9 +186,9 @@ const CoverageEligibilityRequest: React.FC = () => {
   const filtered = requests.filter(
     (req) =>
       (status === 'All' || req.status === status) &&
-      (req.patient.name.toLowerCase().includes(search.toLowerCase()) ||
-        req.organization.name.toLowerCase().includes(search.toLowerCase()) ||
-        req.fhirRefId.toLowerCase().includes(search.toLowerCase())),
+      (req.patient?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        req.organization?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        req.fhirRefId?.toLowerCase().includes(search.toLowerCase())),
   );
 
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);

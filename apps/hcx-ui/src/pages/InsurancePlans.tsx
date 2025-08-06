@@ -9,46 +9,14 @@ import { SearchAndFilters } from '../components/InsurancePlan/SearchAndFilters';
 import { InsurancePlansTable } from '../components/InsurancePlan/InsurancePlansTable';
 import { InsurancePlanDetailsDrawer } from '../components/InsurancePlan/insurancePlanDetailsDrawer';
 import { AddInsurancePlanModal } from '../components/InsurancePlan/AddInsurancePlanModal';
-
-export interface InsurancePlanForm {
-  id?: string;
-  insurancePlanType: string;
-  name: string;
-  aliases: string[];
-  periodStart: string;
-  periodEnd: string;
-  ownedByOrgId: string;
-  ownedByDisplay: string;
-  administeredByOrgId: string;
-  administeredByDisplay: string;
-  coverageAreaIds: string[];
-  contactPhones: string[];
-  contactEmails: string[];
-  networkOrgIds: string[];
-  claimConditions: string[];
-  supportingDocuments: string[];
-  benefitTypes: string[];
-  planType: string;
-  generalCosts: Array<{
-    comment: string;
-    groupSize: number;
-    costAmount: number;
-    currency: string;
-  }>;
-  specificCosts: Array<{
-    benefitCategory: string;
-    benefitType: string;
-    costAmount: number;
-    currency: string;
-  }>;
-}
+import { InsurancePlanForm } from '@/interfaces/insurancePlan';
 
 export interface BundleEntry {
   resource: InsurancePlanForm;
 }
 
 const InsurancePlans: React.FC = () => {
-  const [plans, setPlans] = useState<(InsurancePlanForm | InsurancePlanForm)[]>([]);
+  const [plans, setPlans] = useState<InsurancePlanForm[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -148,7 +116,7 @@ const InsurancePlans: React.FC = () => {
       };
 
       try {
-        const res = await axios.post(API_CONFIG.PAYER.ENDPOINTS.INSURANCE_PLAN, submitData);
+        await axios.post(API_CONFIG.PAYER.ENDPOINTS.INSURANCE_PLAN, submitData);
       } catch (err) {
         if (axios.isAxiosError(err) && err.response) {
           console.error('Server error:', err.response.data);
@@ -184,8 +152,6 @@ const InsurancePlans: React.FC = () => {
         generalCosts: [{ comment: '', groupSize: 1, costAmount: 0, currency: 'INR' }],
         specificCosts: [{ benefitCategory: '', benefitType: '', costAmount: 0, currency: 'INR' }],
       });
-
-      await fetchPlans();
     },
     [fetchPlans],
   );

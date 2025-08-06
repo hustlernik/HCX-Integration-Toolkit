@@ -8,7 +8,6 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { X } from 'lucide-react';
 import { Beneficiary, InsurancePlan } from '../../interfaces/policy';
 import axios from 'axios';
@@ -75,11 +74,21 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
         return;
       }
 
+      const isValidDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return !isNaN(date.getTime());
+      };
+
       await axios.post(API_CONFIG.PAYER.ENDPOINTS.POLICIES, {
         beneficiary: formData.beneficiary,
         insurancePlan: formData.insurancePlan,
-        coverageStart: new Date(formData.coverageStart),
-        coverageEnd: formData.coverageEnd ? new Date(formData.coverageEnd) : undefined,
+        coverageStart: isValidDate(formData.coverageStart)
+          ? new Date(formData.coverageStart)
+          : undefined,
+        coverageEnd:
+          formData.coverageEnd && isValidDate(formData.coverageEnd)
+            ? new Date(formData.coverageEnd)
+            : undefined,
         status: formData.status,
       });
 

@@ -83,7 +83,7 @@ const RequestsTable: React.FC<RequestsTableProps> = ({ requests, onViewRequest }
             <TableCell>{req.fhirRefId}</TableCell>
             <TableCell>{req.patient.name}</TableCell>
             <TableCell>{req.organization.name}</TableCell>
-            <TableCell>{req.insurance[0].coverage.policyNumber}</TableCell>
+            <TableCell>{req.insurance?.[0]?.coverage?.policyNumber || 'N/A'}</TableCell>
             <TableCell>{formatDate(req.createdAt)}</TableCell>
             <TableCell>
               <Badge variant={req.status === 'active' ? 'default' : 'secondary'}>
