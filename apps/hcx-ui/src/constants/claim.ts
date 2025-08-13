@@ -152,8 +152,24 @@ export const NOTE_TYPES = [
 ] as const;
 
 export const ERROR_CODES = [
-  { code: 'a001', display: 'Missing information' },
-  { code: 'a002', display: 'Invalid coding' },
-  { code: 'a003', display: 'Unsupported item' },
-  { code: 'a004', display: 'Duplicate claim' },
+  {
+    code: 'a001',
+    display: 'Missing information',
+    system: 'http://terminology.hl7.org/CodeSystem/adjudication-error',
+  },
+  {
+    code: 'a002',
+    display: 'Invalid coding',
+    system: 'http://terminology.hl7.org/CodeSystem/adjudication-error',
+  },
+  {
+    code: 'a003',
+    display: 'Unsupported item',
+    system: 'http://terminology.hl7.org/CodeSystem/adjudication-error',
+  },
+  {
+    code: 'a004',
+    display: 'Duplicate claim',
+    system: 'http://terminology.hl7.org/CodeSystem/adjudication-error',
+  },
 ] as const;
