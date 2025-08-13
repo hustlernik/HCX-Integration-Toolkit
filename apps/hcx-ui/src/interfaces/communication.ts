@@ -48,6 +48,7 @@ export interface CommunicationOriginalRequest {
   claimId: string;
   patientName: string;
   payerName: string;
+  correlationId: string;
   reasonCode: string;
   message: string;
   requestedDocs: string[];
@@ -55,17 +56,10 @@ export interface CommunicationOriginalRequest {
   providerName?: string;
 }
 
-export interface OriginalRequest {
+export type OriginalRequest = Omit<CommunicationOriginalRequest, 'providerName'> & {
   communicationId: string;
   correlationId: string;
-  claimId: string;
-  patientName: string;
-  payerName: string;
-  reasonCode: string;
-  message: string;
-  requestedDocs: string[];
-  dueDate?: string;
-}
+};
 
 export interface CommunicationResponseFormProps {
   communicationId: string;
@@ -93,6 +87,7 @@ export interface CommunicationPayload {
   contentString?: string;
   contentCodeableConcept?: {
     coding: Array<{
+      system?: string;
       code: string;
       display: string;
     }>;

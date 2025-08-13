@@ -81,7 +81,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
       const headers = {
         'Content-Type': 'application/json',
         'x-hcx-api_call_id': `comm-resp-${Date.now()}`,
-        'x-hcx-correlation_id': communicationId,
+        'x-hcx-correlation_id': originalRequest.correlationId,
         'x-hcx-workflow_id': 'communication',
         'x-hcx-timestamp': new Date().toISOString(),
         'x-hcx-sender_code': 'provider-001',

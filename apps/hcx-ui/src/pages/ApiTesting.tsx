@@ -71,10 +71,15 @@ const ApiTesting: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
     axios
-      .get(`${API_CONFIG.FHIR.SERVER_URL}/Bundle/48611046`)
+      .get(`${API_CONFIG.FHIR.SERVER_URL}/Bundle/48611046`, { signal: controller.signal })
       .then((res) => setClaimExample(res.data))
-      .catch((err) => console.error('Error fetching claim example:', err));
+      .catch((err) => {
+        if (axios.isCancel?.(err) || err?.code === 'ERR_CANCELED') return;
+        console.error('Error fetching claim example:', err);
+      });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {

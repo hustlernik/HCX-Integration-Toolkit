@@ -51,6 +51,7 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
   });
   const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
   const [isSubmittingState, setIsSubmitting] = useState(false);
+  const submitting = isSubmitting || isSubmittingState;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +89,13 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
         })),
       };
 
+      const invalidData = attachments.some((a) => a.mode === 'data' && (!a.data || !a.contentType));
+      if (invalidData) {
+        alert('Please set contentType for all uploaded files.');
+        setIsSubmitting(false);
+        return;
+      }
+
       const res = await axios.post(endpoint, payload, { headers });
       const contentType = res.headers?.['content-type'] || '';
       if (contentType.includes('application/json') || typeof res.data === 'object') {
@@ -95,7 +103,7 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
       } else {
         console.warn('Communication request sent but received non-JSON response');
       }
-      onSubmit(formData);
+      onSubmit({ ...formData, attachments });
       alert('Communication request sent successfully!');
     } catch (error) {
       console.error('Error sending communication request:', error);
@@ -461,15 +469,15 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
         </Card>
 
         <div className="flex justify-end gap-3 pt-6 border-t">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmittingState}>
+          <Button type="button" variant="outline" onClick={onCancel} disabled={submitting}>
             Cancel
           </Button>
           <Button
             type="submit"
-            disabled={isSubmittingState || !formData.reasonCode || !formData.message}
+            disabled={submitting || !formData.reasonCode || !formData.message}
             className="flex items-center"
           >
-            {isSubmittingState ? (
+            {submitting ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 Sending...

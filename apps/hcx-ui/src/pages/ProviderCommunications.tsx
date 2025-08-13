@@ -55,7 +55,11 @@ const ProviderCommunications: React.FC = () => {
         setCommunications(data.data || data || []);
       } catch (err) {
         console.error('Error fetching communications:', err);
-        setError('Failed to load communications. Please try again.');
+        const errorMessage =
+          axios.isAxiosError(err) && err.response?.data?.message
+            ? err.response.data.message
+            : 'Failed to load communications. Please try again.';
+        setError(errorMessage);
         setCommunications([]);
       } finally {
         setLoading(false);
@@ -185,12 +189,6 @@ const ProviderCommunications: React.FC = () => {
       stat: 'destructive',
     };
     return map[key] || 'outline';
-  };
-
-  const getStatusVariant = (
-    _status: string,
-  ): 'default' | 'secondary' | 'destructive' | 'outline' => {
-    return 'default';
   };
 
   const formatDateOnly = (dateString: string) => {
@@ -334,7 +332,7 @@ const ProviderCommunications: React.FC = () => {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Badge variant={getStatusVariant(comm.status)}>
+                            <Badge variant="default">
                               {comm.status.replace('-', ' ').toUpperCase()}
                             </Badge>
                           </TableCell>
@@ -412,6 +410,7 @@ const ProviderCommunications: React.FC = () => {
             <CommunicationResponseForm
               communicationId={selectedComm.id}
               originalRequest={{
+                correlationId: selectedComm.correlationId,
                 claimId: selectedComm.claimId,
                 patientName: selectedComm.patientName,
                 payerName: selectedComm.payerName,

@@ -1,8 +1,12 @@
 export const CLAIM_RESPONSE_STATUS = [
-  { code: 'active', display: 'Active' },
-  { code: 'cancelled', display: 'Cancelled' },
-  { code: 'draft', display: 'Draft' },
-  { code: 'entered-in-error', display: 'Entered in Error' },
+  { code: 'active', display: 'Active', system: 'http://hl7.org/fhir/CodeSystem/fm-status' },
+  { code: 'cancelled', display: 'Cancelled', system: 'http://hl7.org/fhir/CodeSystem/fm-status' },
+  { code: 'draft', display: 'Draft', system: 'http://hl7.org/fhir/CodeSystem/fm-status' },
+  {
+    code: 'entered-in-error',
+    display: 'Entered in Error',
+    system: 'http://hl7.org/fhir/CodeSystem/fm-status',
+  },
 ] as const;
 
 export const CLAIM_TYPES = [
@@ -26,16 +30,24 @@ export const CLAIM_TYPES = [
 ] as const;
 
 export const USE_TYPES = [
-  { code: 'claim', display: 'Claim' },
-  { code: 'preauthorization', display: 'Pre-authorization' },
-  { code: 'predetermination', display: 'Pre-determination' },
+  { code: 'claim', display: 'Claim', system: 'http://hl7.org/fhir/claim-use' },
+  {
+    code: 'preauthorization',
+    display: 'Pre-authorization',
+    system: 'http://hl7.org/fhir/claim-use',
+  },
+  {
+    code: 'predetermination',
+    display: 'Pre-determination',
+    system: 'http://hl7.org/fhir/claim-use',
+  },
 ] as const;
 
 export const OUTCOME_CODES = [
-  { code: 'queued', display: 'Queued' },
-  { code: 'complete', display: 'Processing Complete' },
-  { code: 'error', display: 'Error' },
-  { code: 'partial', display: 'Partial Processing' },
+  { code: 'queued', display: 'Queued', system: 'http://hl7.org/fhir/claim-outcome' },
+  { code: 'complete', display: 'Processing Complete', system: 'http://hl7.org/fhir/claim-outcome' },
+  { code: 'error', display: 'Error', system: 'http://hl7.org/fhir/claim-outcome' },
+  { code: 'partial', display: 'Partial Processing', system: 'http://hl7.org/fhir/claim-outcome' },
 ] as const;
 
 export const ADJUDICATION_CATEGORIES = [
@@ -126,9 +138,17 @@ export const TOTAL_CATEGORIES = [
 ] as const;
 
 export const NOTE_TYPES = [
-  { code: 'display', display: 'Display' },
-  { code: 'print', display: 'Print' },
-  { code: 'printoper', display: 'Print Operator' },
+  {
+    code: 'display',
+    display: 'Display',
+    system: 'http://terminology.hl7.org/CodeSystem/note-type',
+  },
+  { code: 'print', display: 'Print', system: 'http://terminology.hl7.org/CodeSystem/note-type' },
+  {
+    code: 'printoper',
+    display: 'Print Operator',
+    system: 'http://terminology.hl7.org/CodeSystem/note-type',
+  },
 ] as const;
 
 export const ERROR_CODES = [
