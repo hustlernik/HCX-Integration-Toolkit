@@ -25,6 +25,7 @@ import type {
   OriginalRequest,
   CommunicationRequestData,
   CommunicationResponseData,
+  AttachmentItem,
 } from '@/interfaces/communication';
 import Pagination from '@/components/ui/pagination';
 import {
@@ -175,27 +176,23 @@ const Communications: React.FC = () => {
         formData.append('sentAt', (data as any).sentAt);
       }
 
-      data.attachments.forEach((att, index) => {
-        if ((att as any).mode === 'data' && (att as any).file) {
-          const f = (att as any).file as File;
+      data.attachments.forEach((att: AttachmentItem, index) => {
+        if (att.mode === 'data' && att.file) {
+          const f = att.file;
           formData.append(`attachment_${index}`, f, f.name);
           formData.append(`attachment_${index}_name`, f.name);
           formData.append(`attachment_${index}_size`, String(f.size));
           if (f.type) formData.append(`attachment_${index}_type`, f.type);
         }
 
-        if ((att as any).mode === 'url' && (att as any).url) {
-          formData.append(`attachment_${index}_url`, (att as any).url as string);
+        if (att.mode === 'url' && att.url) {
+          formData.append(`attachment_${index}_url`, att.url);
         }
 
-        const title = (att as any).title as string | undefined;
-        const contentType = (att as any).contentType as string | undefined;
-        const language = (att as any).language as string | undefined;
-        const creation = (att as any).creation as string | undefined;
-        if (title) formData.append(`attachment_${index}_title`, title);
-        if (contentType) formData.append(`attachment_${index}_contentType`, contentType);
-        if (language) formData.append(`attachment_${index}_language`, language);
-        if (creation) formData.append(`attachment_${index}_creation`, creation);
+        if (att.title) formData.append(`attachment_${index}_title`, att.title);
+        if (att.contentType) formData.append(`attachment_${index}_contentType`, att.contentType);
+        if (att.language) formData.append(`attachment_${index}_language`, att.language);
+        if (att.creation) formData.append(`attachment_${index}_creation`, att.creation);
       });
 
       const response = await axios.post(API_ENDPOINTS.PAYER.COMMUNICATION_RESPONSE, formData, {
@@ -215,7 +212,7 @@ const Communications: React.FC = () => {
 
   const viewCommunications = async (claim: ClaimSummary) => {
     try {
-      const url = `${API_CONFIG.PAYER.BASE_URL}/hcx/v1/communication/claim/${claim.claimId}`;
+      const url = `${API_CONFIG.PAYER.BASE_URL}/hcx/v1/communication/claim/${encodeURIComponent(claim.claimId)}`;
       const resp = await axios.get(url, { validateStatus: () => true });
       const ct = resp.headers?.['content-type'] || '';
       if (resp.status >= 200 && resp.status < 300 && ct.includes('application/json')) {

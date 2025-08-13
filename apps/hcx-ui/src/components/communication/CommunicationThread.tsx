@@ -75,9 +75,9 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
     );
   }
 
-  const sortedComms = [...communications].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-  );
+  const getTs = (c: (typeof communications)[number]) =>
+    new Date(c.createdAt || (c.sent as any) || (c.received as any) || 0).getTime() || 0;
+  const sortedComms = [...communications].sort((a, b) => getTs(a) - getTs(b));
 
   return (
     <div className="space-y-4">

@@ -49,7 +49,7 @@ export interface PaymentType {
 export interface AddItemType {
   itemSequence?: number[];
   detailSequence?: number[];
-  subdetailSequence?: number[];
+  subDetailSequence?: number[];
   provider?: string[];
   productOrService: string;
   modifier?: string[];
@@ -184,8 +184,8 @@ export interface Organization {
 }
 
 export interface Related {
-  RelatedClaimId: string;
-  relationShip: string;
+  relatedClaimId: string;
+  relationship: string;
 }
 
 export interface MedicationRequest {
@@ -277,7 +277,7 @@ export interface Item {
     currency: string;
   };
   bodySite: string;
-  subSite: string;
+  subSite?: string[];
 }
 
 export interface Claim {
@@ -302,7 +302,7 @@ export interface Claim {
   fundsReserve: 'Patient' | 'Provider' | 'None';
   related: Related[];
   prescription?: Prescription;
-  orginalPrescription?: Prescription;
+  originalPrescription?: Prescription;
   payee: Array<{
     type: string;
   }>;

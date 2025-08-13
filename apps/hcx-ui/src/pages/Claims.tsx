@@ -83,11 +83,11 @@ const Claims: React.FC = () => {
         : undefined;
       const mappedPayeeType =
         Array.isArray(selectedClaim.payee) && selectedClaim.payee.length > 0
-          ? (selectedClaim.payee[0].type?.toLowerCase() as
-              | 'subscriber'
-              | 'provider'
-              | 'other'
-              | undefined)
+          ? ['subscriber', 'provider', 'other'].includes(
+              selectedClaim.payee[0].type?.toLowerCase() || '',
+            )
+            ? (selectedClaim.payee[0].type?.toLowerCase() as 'subscriber' | 'provider' | 'other')
+            : undefined
           : undefined;
 
       setResponseForm({
@@ -270,9 +270,10 @@ const Claims: React.FC = () => {
 
     const mappedHeaderAdjudication = mapAdjWrapperArray((responseForm as any).adjudication);
 
-    const mappedItems = (responseForm as any).item
-      ? (responseForm as any).item.map((it: any) => ({
-          adjudication: mapAdjWrapperArray(it.adjudication),
+    const mappedItems = responseForm.item
+      ? responseForm.item.map((it: any) => ({
+          itemSequence: it.itemSequence,
+          adjudication: it.adjudication || [],
           detail: undefined,
         }))
       : [];
@@ -429,8 +430,14 @@ const Claims: React.FC = () => {
         <Header />
         <Sidebar sections={payerSidebarSections} />
         <main className="ml-64 p-8 min-h-[calc(100vh-4rem)] bg-gray-50">
+          <h1 className="text-2xl font-bold mb-6">Claims</h1>
           <div className="flex items-center justify-center h-64">
-            <div className="text-lg">Loading claims...</div>
+            <div className="text-lg text-gray-600">
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <span>Loading claims data...</span>
+              </div>
+            </div>
           </div>
         </main>
       </>
@@ -745,10 +752,10 @@ const Claims: React.FC = () => {
                       <div key={index}>
                         <div>
                           <span className="font-medium">Related Claim ID:</span>{' '}
-                          {rel.RelatedClaimId}
+                          {rel.relatedClaimId}
                         </div>
                         <div>
-                          <span className="font-medium">Relationship:</span> {rel.relationShip}
+                          <span className="font-medium">Relationship:</span> {rel.relationship}
                         </div>
                       </div>
                     ))}
