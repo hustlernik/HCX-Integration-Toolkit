@@ -13,7 +13,11 @@ import {
   ArrowRight,
   Paperclip,
 } from 'lucide-react';
-import type { Communication, CommunicationThreadProps } from '@/interfaces/communication';
+import type {
+  Communication,
+  CommunicationThreadProps,
+  RequestedDocument,
+} from '@/interfaces/communication';
 
 const CommunicationThread: React.FC<CommunicationThreadProps> = ({
   claimId,
@@ -40,23 +44,10 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
     return new Date(dateString).toLocaleString();
   };
 
-  const getPriorityBadge = (_priority: string) => {
-    return 'bg-primary text-primary-foreground';
-  };
-
-  const getStatusBadge = (_status: string) => {
-    return 'bg-primary text-primary-foreground';
-  };
+  const badgeColorClass = 'bg-primary text-primary-foreground';
 
   const getMainMessage = (payload: Communication['payload']) => {
     return payload.find((p) => p.contentString)?.contentString || 'No message content';
-  };
-
-  const getRequestedDocuments = (payload: Communication['payload']) => {
-    return payload
-      .filter((p) => p.contentCodeableConcept)
-      .map((p) => p.contentCodeableConcept?.coding?.[0]?.code)
-      .filter(Boolean);
   };
 
   const getAttachments = (payload: Communication['payload']) => {
@@ -94,8 +85,8 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
           const isExpanded = expandedComms.has(comm.communicationId);
           const isRequest = comm.communicationType === 'request';
           const mainMessage = getMainMessage(comm.payload);
-          const requestedDocs = getRequestedDocuments(comm.payload);
-          const attachments = getAttachments(comm.payload);
+          const requestedDocs: RequestedDocument[] = comm.requestedDocuments || [];
+          const attachments = comm.responseAttachments || [];
 
           return (
             <div
@@ -117,12 +108,12 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
                         {isRequest ? 'Communication Request' : 'Response'}
                       </span>
                       <Badge
-                        className={`${getPriorityBadge(comm.priority)} rounded-full px-2.5 py-1 text-xs font-medium`}
+                        className={`${badgeColorClass} rounded-full px-2.5 py-1 text-xs font-medium`}
                       >
                         {comm.priority.toUpperCase()}
                       </Badge>
                       <Badge
-                        className={`${getStatusBadge(comm.workflowStatus)} rounded-full px-2.5 py-1 text-xs font-medium`}
+                        className={`${badgeColorClass} rounded-full px-2.5 py-1 text-xs font-medium`}
                       >
                         {comm.workflowStatus.replace('-', ' ').toUpperCase()}
                       </Badge>
@@ -186,9 +177,9 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
                         Requested Documents
                       </h5>
                       <div className="flex flex-wrap gap-2">
-                        {requestedDocs.map((doc, idx) => (
+                        {requestedDocs.map((doc: RequestedDocument, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs">
-                            {doc}
+                            {doc.description || doc.type || 'Document'}
                           </Badge>
                         ))}
                       </div>

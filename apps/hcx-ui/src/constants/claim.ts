@@ -30,16 +30,16 @@ export const CLAIM_TYPES = [
 ] as const;
 
 export const USE_TYPES = [
-  { code: 'claim', display: 'Claim', system: 'http://hl7.org/fhir/claim-use' },
+  { code: 'claim', display: 'Claim', system: 'http://terminology.hl7.org/CodeSystem/claim-use' },
   {
     code: 'preauthorization',
     display: 'Pre-authorization',
-    system: 'http://hl7.org/fhir/claim-use',
+    system: 'http://terminology.hl7.org/CodeSystem/claim-use',
   },
   {
     code: 'predetermination',
     display: 'Pre-determination',
-    system: 'http://hl7.org/fhir/claim-use',
+    system: 'http://terminology.hl7.org/CodeSystem/claim-use',
   },
 ] as const;
 
@@ -123,11 +123,7 @@ export const TOTAL_CATEGORIES = [
     display: 'Benefit',
     system: 'http://terminology.hl7.org/CodeSystem/adjudication',
   },
-  {
-    code: 'adjudicatedamount',
-    display: 'Adjudicated Amount',
-    system: 'http://terminology.hl7.org/CodeSystem/adjudication',
-  },
+
   { code: 'tax', display: 'Tax', system: 'http://terminology.hl7.org/CodeSystem/adjudication' },
   { code: 'copay', display: 'Copay', system: 'http://terminology.hl7.org/CodeSystem/adjudication' },
   {

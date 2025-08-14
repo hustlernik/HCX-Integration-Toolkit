@@ -21,6 +21,7 @@ export type AttachmentItem = {
 export interface CommunicationRequestData {
   reasonCode: string;
   reasonDisplay: string;
+  reasonSystem?: string;
   message: string;
   priority: 'routine' | 'urgent' | 'asap' | 'stat';
   dueDate?: string;
@@ -29,18 +30,20 @@ export interface CommunicationRequestData {
   attachments?: AttachmentItem[];
 }
 
+export type FhirCommunicationStatus =
+  | 'preparation'
+  | 'in-progress'
+  | 'completed'
+  | 'on-hold'
+  | 'stopped'
+  | 'entered-in-error'
+  | 'unknown';
+
 export interface CommunicationResponseData {
   message: string;
   attachments: AttachmentItem[];
   status: 'completed' | 'partial';
-  fhirStatus:
-    | 'preparation'
-    | 'in-progress'
-    | 'completed'
-    | 'on-hold'
-    | 'stopped'
-    | 'entered-in-error'
-    | 'unknown';
+  fhirStatus: FhirCommunicationStatus;
   sentAt?: string;
 }
 
@@ -58,7 +61,6 @@ export interface CommunicationOriginalRequest {
 
 export type OriginalRequest = Omit<CommunicationOriginalRequest, 'providerName'> & {
   communicationId: string;
-  correlationId: string;
 };
 
 export interface CommunicationResponseFormProps {
@@ -147,7 +149,7 @@ export interface ProviderInboxCommunication {
   reasonCode: string;
   reasonDisplay: string;
   message: string;
-  requestedDocs: string[];
+  requestedDocuments?: RequestedDocument[];
   priority: 'routine' | 'urgent' | 'asap' | 'stat';
   dueDate?: string;
   receivedAt: string;

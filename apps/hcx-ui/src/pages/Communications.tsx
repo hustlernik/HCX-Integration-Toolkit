@@ -169,11 +169,12 @@ const Communications: React.FC = () => {
       formData.append('message', data.message);
       formData.append('status', data.status);
 
-      if ('fhirStatus' in data && (data as any).fhirStatus) {
-        formData.append('fhirStatus', (data as any).fhirStatus);
+      if ('fhirStatus' in data && data.fhirStatus) {
+        formData.append('fhirStatus', data.fhirStatus);
       }
-      if ('sentAt' in data && (data as any).sentAt) {
-        formData.append('sentAt', (data as any).sentAt);
+
+      if ('sentAt' in data && data.sentAt) {
+        formData.append('sentAt', data.sentAt);
       }
 
       data.attachments.forEach((att: AttachmentItem, index) => {
