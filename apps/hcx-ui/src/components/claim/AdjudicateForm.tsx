@@ -294,9 +294,9 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                 setResponseForm({
                   ...responseForm,
                   preAuthPeriod: {
-                    ...responseForm.preAuthPeriod,
+                    ...(responseForm.preAuthPeriod ?? {}),
                     start: e.target.value,
-                    end: responseForm.preAuthPeriod?.end || '',
+                    end: responseForm.preAuthPeriod?.end ?? '',
                   },
                 })
               }
@@ -311,8 +311,8 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                 setResponseForm({
                   ...responseForm,
                   preAuthPeriod: {
-                    ...responseForm.preAuthPeriod,
-                    start: responseForm.preAuthPeriod?.start || '',
+                    ...(responseForm.preAuthPeriod ?? {}),
+                    start: responseForm.preAuthPeriod?.start ?? '',
                     end: e.target.value,
                   },
                 })
@@ -437,7 +437,10 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                         ...responseForm,
                         payment: {
                           ...responseForm.payment,
-                          amount: { ...responseForm.payment.amount, value: Number(e.target.value) },
+                          amount: {
+                            ...responseForm.payment.amount,
+                            value: e.target.value === '' ? 0 : Number(e.target.value),
+                          },
                         },
                       });
                     }
@@ -459,7 +462,10 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                         ...responseForm,
                         payment: {
                           ...responseForm.payment,
-                          adjustment: { value: Number(e.target.value), currency: 'INR' },
+                          adjustment: {
+                            value: e.target.value === '' ? 0 : Number(e.target.value),
+                            currency: 'INR',
+                          },
                         },
                       });
                     }
@@ -611,7 +617,10 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                     onChange={(e) => {
                       if (responseForm.adjudication) {
                         const updatedAdj = [...responseForm.adjudication];
-                        updatedAdj[i].amount = { value: Number(e.target.value), currency: 'INR' };
+                        updatedAdj[i].amount = {
+                          value: e.target.value === '' ? 0 : Number(e.target.value),
+                          currency: 'INR',
+                        };
                         setResponseForm({ ...responseForm, adjudication: updatedAdj });
                       }
                     }}
@@ -628,7 +637,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                     onChange={(e) => {
                       if (responseForm.adjudication) {
                         const updatedAdj = [...responseForm.adjudication];
-                        updatedAdj[i].value = Number(e.target.value);
+                        updatedAdj[i].value = e.target.value === '' ? 0 : Number(e.target.value);
                         setResponseForm({ ...responseForm, adjudication: updatedAdj });
                       }
                     }}
@@ -726,7 +735,8 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                     onChange={(e) => {
                       if (responseForm.total) {
                         const updatedTotals = [...responseForm.total];
-                        updatedTotals[i].amount.value = Number(e.target.value);
+                        updatedTotals[i].amount.value =
+                          e.target.value === '' ? 0 : Number(e.target.value);
                         setResponseForm({ ...responseForm, total: updatedTotals });
                       }
                     }}
@@ -752,8 +762,10 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
             variant="outline"
             size="sm"
             onClick={() => {
+              const nextNumber =
+                Math.max(0, ...(responseForm.processNote ?? []).map((n) => n.number ?? 0)) + 1;
               const newNote: ProcessNoteType = {
-                number: (responseForm.processNote?.length || 0) + 1,
+                number: nextNumber,
                 type: 'display',
                 text: '',
               };
@@ -1004,7 +1016,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                           if (responseForm.item) {
                             const updatedItems = [...responseForm.item];
                             updatedItems[i].adjudication[adjIndex].amount = {
-                              value: Number(e.target.value),
+                              value: e.target.value === '' ? 0 : Number(e.target.value),
                               currency: 'INR',
                             };
                             setResponseForm({ ...responseForm, item: updatedItems });
@@ -1131,7 +1143,8 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                       if (responseForm.addItem && addItem.quantity) {
                         const updatedAddItems = [...responseForm.addItem];
                         if (updatedAddItems[i].quantity) {
-                          updatedAddItems[i].quantity.value = Number(e.target.value);
+                          updatedAddItems[i].quantity.value =
+                            e.target.value === '' ? 0 : Number(e.target.value);
                         }
                         setResponseForm({ ...responseForm, addItem: updatedAddItems });
                       }
@@ -1149,7 +1162,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                       if (responseForm.addItem) {
                         const updatedAddItems = [...responseForm.addItem];
                         updatedAddItems[i].unitPrice = {
-                          value: Number(e.target.value),
+                          value: e.target.value === '' ? 0 : Number(e.target.value),
                           currency: 'INR',
                         };
                         setResponseForm({ ...responseForm, addItem: updatedAddItems });
@@ -1167,7 +1180,8 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                     onChange={(e) => {
                       if (responseForm.addItem) {
                         const updatedAddItems = [...responseForm.addItem];
-                        updatedAddItems[i].factor = Number(e.target.value);
+                        updatedAddItems[i].factor =
+                          e.target.value === '' ? 0 : Number(e.target.value);
                         setResponseForm({ ...responseForm, addItem: updatedAddItems });
                       }
                     }}
@@ -1183,7 +1197,10 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                     onChange={(e) => {
                       if (responseForm.addItem) {
                         const updatedAddItems = [...responseForm.addItem];
-                        updatedAddItems[i].net = { value: Number(e.target.value), currency: 'INR' };
+                        updatedAddItems[i].net = {
+                          value: e.target.value === '' ? 0 : Number(e.target.value),
+                          currency: 'INR',
+                        };
                         setResponseForm({ ...responseForm, addItem: updatedAddItems });
                       }
                     }}
@@ -1258,7 +1275,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                           if (responseForm.addItem) {
                             const updatedAddItems = [...responseForm.addItem];
                             updatedAddItems[i].adjudication[adjIndex].amount = {
-                              value: Number(e.target.value),
+                              value: e.target.value === '' ? 0 : Number(e.target.value),
                               currency: 'INR',
                             };
                             setResponseForm({ ...responseForm, addItem: updatedAddItems });
