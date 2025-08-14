@@ -61,6 +61,7 @@ const ApiTesting: React.FC = () => {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const [editedResource, setEditedResource] = useState<unknown>(selectedResource);
   const [coverageEligibilityExample, setCoverageEligibilityExample] = useState<object | null>(null);
+  const [claimExample, setClaimExample] = useState<object | null>(null);
 
   useEffect(() => {
     axios
@@ -70,14 +71,29 @@ const ApiTesting: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+    axios
+      .get(`${API_CONFIG.FHIR.SERVER_URL}/Bundle/48611046`, { signal: controller.signal })
+      .then((res) => setClaimExample(res.data))
+      .catch((err) => {
+        if (axios.isCancel?.(err) || err?.code === 'ERR_CANCELED') return;
+        console.error('Error fetching claim example:', err);
+      });
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
     if (workflow === 'coverage-eligibility' && coverageEligibilityExample) {
       setEditedResource(coverageEligibilityExample);
       setBodyText(JSON.stringify(coverageEligibilityExample, null, 2));
+    } else if (workflow === 'claim' && claimExample) {
+      setEditedResource(claimExample);
+      setBodyText(JSON.stringify(claimExample, null, 2));
     } else {
       setEditedResource(selectedResource);
       setBodyText(selectedResource ? JSON.stringify(selectedResource, null, 2) : '');
     }
-  }, [workflow, coverageEligibilityExample, selectedResource]);
+  }, [workflow, coverageEligibilityExample, selectedResource, claimExample]);
 
   useEffect(() => {
     try {

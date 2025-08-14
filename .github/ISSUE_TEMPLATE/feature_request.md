@@ -8,7 +8,7 @@ assignees: ''
 
 ## Feature Summary
 
-A clear and concise description of what you want to happen.
+A clear and concise description of what you want to happe.
 
 ## Problem Statement
 

@@ -8,6 +8,9 @@ import InsurancePlans from './pages/InsurancePlans';
 import TransactionLog from './pages/TransactionLog';
 import CoverageEligibilityRequest from './pages/CoverageEligibilityRequest';
 import Policies from './pages/Policies';
+import Claims from './pages/Claims';
+import Communications from './pages/Communications';
+import ProviderCommunications from './pages/ProviderCommunications';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +27,9 @@ const App = () => {
             <Route path="/insurance-plans" element={<InsurancePlans />} />
             <Route path="/policies" element={<Policies />} />
             <Route path="/eligibility-requests" element={<CoverageEligibilityRequest />} />
+            <Route path="/claims" element={<Claims />} />
+            <Route path="/communications" element={<Communications />} />
+            <Route path="/provider/communications" element={<ProviderCommunications />} />
           </Routes>
         </TooltipProvider>
       </BrowserRouter>

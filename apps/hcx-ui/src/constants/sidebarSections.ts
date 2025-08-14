@@ -39,6 +39,7 @@ export const apiTestingSidebarSections: SidebarSection[] = [
     items: [
       { label: 'API Testing', icon: FlaskConical, to: '/api-testing' },
       { label: 'Transaction Log', icon: ListOrdered, to: '/transactions' },
+      { label: 'Communications', icon: MessageCircle, to: '/provider/communications' },
     ],
   },
 ];

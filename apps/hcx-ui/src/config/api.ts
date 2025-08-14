@@ -4,11 +4,12 @@ export const API_CONFIG = {
     ENDPOINTS: {
       TRANSACTIONS: '/hcx/v1/transactions',
       PREAUTH: '/api/send-preauth',
-      CLAIM: '/api/send-claim',
+      CLAIM: '/hcx/v1/claim/submit',
       PAYMENT_NOTICE: '/api/send-payment-notice',
       PREDETERMINATION: '/api/send-predetermination',
       INSURANCE_PLAN: '/hcx/v1/insuranceplan/request',
       COVERAGE_ELIGIBILITY: '/hcx/v1/coverageeligibility/check',
+      COMMUNICATION_INBOX: '/hcx/v1/communication/inbox',
     },
   },
   PAYER: {
@@ -19,6 +20,11 @@ export const API_CONFIG = {
       POLICIES: '/api/policies',
       COVERAGE_ELIGIBILITY_REQUEST: '/hcx/v1/coverageeligibility/requests',
       COVERAGE_ELIGIBILITY_CHECK: '/hcx/v1/coverageeligibility/on_check',
+      CLAIMS: '/api/claims',
+      CLAIM_ADJUDICATE: '/hcx/v1/claim/adjudicate',
+      COMMUNICATIONS: '/api/communications',
+      COMMUNICATION_REQUEST: '/hcx/v1/communication/request',
+      COMMUNICATION_RESPONSE: '/hcx/v1/communication/response',
     },
   },
   FHIR: {
@@ -38,11 +44,12 @@ export const API_ENDPOINTS = {
   PROVIDER: {
     TRANSACTIONS: getProviderApiUrl('/hcx/v1/transactions'),
     PREAUTH: getProviderApiUrl('/api/send-preauth'),
-    CLAIM: getProviderApiUrl('/api/send-claim'),
+    CLAIM: getProviderApiUrl('/hcx/v1/claim/submit'),
     PAYMENT_NOTICE: getProviderApiUrl('/api/send-payment-notice'),
     PREDETERMINATION: getProviderApiUrl('/api/send-predetermination'),
     INSURANCE_PLAN: getProviderApiUrl('/hcx/v1/insuranceplan/request'),
     COVERAGE_ELIGIBILITY: getProviderApiUrl('/hcx/v1/coverageeligibility/check'),
+    COMMUNICATION_INBOX: getProviderApiUrl('/hcx/v1/communication/inbox'),
   },
   PAYER: {
     INSURANCE_PLAN: getPayerApiUrl('/api/insurance-plans'),
@@ -50,5 +57,10 @@ export const API_ENDPOINTS = {
     POLICIES: getPayerApiUrl('/api/policies'),
     COVERAGE_ELIGIBILITY_REQUEST: getPayerApiUrl('/hcx/v1/coverageeligibility/requests'),
     COVERAGE_ELIGIBILITY_CHECK: getPayerApiUrl('/hcx/v1/coverageeligibility/on_check'),
+    CLAIMS: getPayerApiUrl('/api/claims'),
+    CLAIM_ADJUDICATE: getPayerApiUrl('/hcx/v1/claim/adjudicate'),
+    COMMUNICATIONS: getPayerApiUrl('/api/communications'),
+    COMMUNICATION_REQUEST: getPayerApiUrl('/hcx/v1/communication/request'),
+    COMMUNICATION_RESPONSE: getPayerApiUrl('/hcx/v1/communication/response'),
   },
 } as const;
