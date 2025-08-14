@@ -117,10 +117,12 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
         console.warn('Communication response sent but received non-JSON response');
       }
       onSubmit({ ...formData, attachments });
-      alert('Communication response sent successfully!');
     } catch (error) {
       console.error('Error sending communication response:', error);
-      alert('Failed to send communication response. Please try again.');
+      const errorMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : 'An unexpected error occurred';
+      alert(`Failed to send communication response: ${errorMessage}`);
     } finally {
       setIsSubmittingState(false);
     }

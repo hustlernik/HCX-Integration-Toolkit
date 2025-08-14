@@ -388,6 +388,7 @@ const Claims: React.FC = () => {
       const resp = await axios.post(API_ENDPOINTS.PAYER.CLAIM_ADJUDICATE, payload, {
         headers: { 'Content-Type': 'application/json' },
         validateStatus: () => true,
+        timeout: 30000,
       });
 
       if (resp.status >= 200 && resp.status < 300) {

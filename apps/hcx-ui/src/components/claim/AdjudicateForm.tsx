@@ -539,7 +539,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
           </Button>
         </div>
 
-        {responseForm.adjudication && responseForm.adjudication.length === 0 && (
+        {(!responseForm.adjudication || responseForm.adjudication.length === 0) && (
           <div className="text-center py-4 text-gray-500 border-2 border-dashed rounded-lg">
             <p className="text-sm">No adjudications added yet.</p>
             <p className="text-xs">Click "Add Adjudication" to get started.</p>
@@ -670,7 +670,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
           </Button>
         </div>
 
-        {responseForm.total && responseForm.total.length === 0 && (
+        {(!responseForm.total || responseForm.total.length === 0) && (
           <div className="text-center py-4 text-gray-500 border-2 border-dashed rounded-lg">
             <p className="text-sm">No totals added yet.</p>
           </div>
@@ -769,7 +769,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
           </Button>
         </div>
 
-        {responseForm.processNote && responseForm.processNote.length === 0 && (
+        {(!responseForm.processNote || responseForm.processNote.length === 0) && (
           <div className="text-center py-4 text-gray-500 border-2 border-dashed rounded-lg">
             <p className="text-sm">No process notes added yet.</p>
           </div>
@@ -1130,7 +1130,9 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
                     onChange={(e) => {
                       if (responseForm.addItem && addItem.quantity) {
                         const updatedAddItems = [...responseForm.addItem];
-                        updatedAddItems[i].quantity!.value = Number(e.target.value);
+                        if (updatedAddItems[i].quantity) {
+                          updatedAddItems[i].quantity.value = Number(e.target.value);
+                        }
                         setResponseForm({ ...responseForm, addItem: updatedAddItems });
                       }
                     }}

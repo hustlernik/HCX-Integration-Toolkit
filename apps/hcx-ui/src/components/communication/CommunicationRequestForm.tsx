@@ -252,21 +252,27 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
                         const reader = new FileReader();
                         reader.onload = () =>
                           resolve((reader.result as string).split(',')[1] || '');
-                        reader.onerror = (err) => reject(err);
+                        reader.onerror = () =>
+                          reject(new Error(`Failed to read file: ${file.name}`));
                         reader.readAsDataURL(file);
                       });
                     const newItems: AttachmentItem[] = [];
                     for (const f of Array.from(fileList)) {
-                      const data = await toBase64(f);
-                      newItems.push({
-                        id: `${Date.now()}-${Math.random()}`,
-                        mode: 'data',
-                        name: f.name,
-                        title: f.name,
-                        contentType: f.type || 'application/octet-stream',
-                        size: f.size,
-                        data,
-                      });
+                      try {
+                        const data = await toBase64(f);
+                        newItems.push({
+                          id: `${Date.now()}-${Math.random()}`,
+                          mode: 'data',
+                          name: f.name,
+                          title: f.name,
+                          contentType: f.type || 'application/octet-stream',
+                          size: f.size,
+                          data,
+                        });
+                      } catch (error) {
+                        console.error('Error reading file:', error);
+                        alert(`Failed to upload ${f.name}. Please try again.`);
+                      }
                     }
                     setAttachments((prev) => [...prev, ...newItems]);
                   };
