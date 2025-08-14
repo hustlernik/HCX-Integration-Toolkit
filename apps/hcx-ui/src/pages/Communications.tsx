@@ -426,7 +426,7 @@ const Communications: React.FC = () => {
                           originalComm.payload.find((p) => p.contentString)?.contentString || '',
                         requestedDocs: originalComm.payload
                           .filter((p) => p.contentCodeableConcept)
-                          .map((p) => p.contentCodeableConcept?.coding[0]?.code || '')
+                          .map((p) => p.contentCodeableConcept?.coding?.[0]?.code || '')
                           .filter(Boolean) as string[],
                         dueDate: originalComm.dueDate,
                       });
