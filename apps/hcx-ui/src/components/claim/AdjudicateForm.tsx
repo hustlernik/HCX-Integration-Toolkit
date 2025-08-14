@@ -860,8 +860,10 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
             variant="outline"
             size="sm"
             onClick={() => {
+              const nextSequence =
+                Math.max(0, ...(responseForm.item ?? []).map((it) => it.itemSequence ?? 0)) + 1;
               const newItem: ItemAdjudicationType = {
-                itemSequence: (responseForm.item?.length || 0) + 1,
+                itemSequence: nextSequence,
                 adjudication: [
                   {
                     category: 'submitted',
@@ -1326,7 +1328,7 @@ const ClaimAdjudicateForm: React.FC<ClaimAdjudicateFormProps> = ({
             onClick={() => {
               const newInsurance: InsuranceType = {
                 sequence: (responseForm.insurance?.length || 0) + 1,
-                focal: responseForm.insurance?.length === 0,
+                focal: (responseForm.insurance?.length ?? 0) === 0,
                 coverage: { reference: '' },
               };
               setResponseForm({
