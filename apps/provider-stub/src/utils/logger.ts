@@ -25,6 +25,7 @@ function color(level: LogLevel): (s: string) => string {
 function safeStringify(obj: any): string {
   const seen = new WeakSet();
   return JSON.stringify(obj, (k, v) => {
+    if (typeof v === 'bigint') return v.toString();
     if (typeof v === 'string') return v.length > MAX_VAL_LEN ? v.slice(0, MAX_VAL_LEN) + '…' : v;
     if (typeof v === 'object' && v !== null) {
       if (seen.has(v)) return '[Circular]';

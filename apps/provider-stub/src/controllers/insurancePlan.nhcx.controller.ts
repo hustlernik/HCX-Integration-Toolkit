@@ -99,7 +99,6 @@ export class InsurancePlanNHCXController {
       }
 
       const decryptedPayload = await decryptFHIR(payload);
-      console.debug('Decrypted insurance plan response:', decryptedPayload);
 
       const protectedHeaders = decryptedPayload?.protected;
 
@@ -107,6 +106,13 @@ export class InsurancePlanNHCXController {
 
       const mainPayload = decryptedPayload?.payload;
       const correlationId = protectedHeaders?.['x-hcx-correlation_id'] || '';
+
+      if (!correlationId) {
+        logger.warn('Missing x-hcx-correlation_id in protected headers; skipping txn update', {
+          endpoint: '/hcx/v1/insuranceplan/on_request',
+        });
+        return;
+      }
 
       try {
         await this.txnRepo.updateByCorrelationId({

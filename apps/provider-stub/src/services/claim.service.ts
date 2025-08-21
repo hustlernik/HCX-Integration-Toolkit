@@ -20,15 +20,7 @@ export class ClaimService {
   ): Promise<AxiosResponse<any>> {
     const correlationId = protectedHeaders['x-hcx-correlation_id'] as string;
 
-    logger.debug('[ClaimService] Pre-encrypt headers', undefined, {
-      protectedHeaders,
-      correlationId,
-    });
     const encryptedPayload = await encryptFHIR(payload, protectedHeaders, {});
-    logger.debug('[ClaimService] Encrypted Claim JWE', undefined, {
-      length: (encryptedPayload as string).length,
-      correlationId,
-    });
 
     const accessToken = await this.nhcx.getAccessToken();
     const url = `${this.nhcx.getBaseUrl()}/claim/submit`;
@@ -42,23 +34,46 @@ export class ClaimService {
       host: hostHeader,
     });
 
-    const response = await axios.post(
-      url,
-      { payload: encryptedPayload },
-      {
-        headers: {
-          bearer_auth: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Host: hostHeader,
+    try {
+      const response = await axios.post(
+        url,
+        { payload: encryptedPayload },
+        {
+          headers: {
+            bearer_auth: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Host: hostHeader,
+          },
+          timeout: 15_000,
         },
-      },
-    );
+      );
 
-    logger.info('[ClaimService] Claim submit sent', undefined, {
-      status: response.status,
-      correlationId,
-    });
-    return response;
+      logger.info('[ClaimService] Claim submit sent successfully', undefined, {
+        status: response.status,
+        correlationId,
+        url,
+        sender: protectedHeaders['x-hcx-sender_code'],
+        recipient: protectedHeaders['x-hcx-recipient_code'],
+      });
+      return response;
+    } catch (error: unknown) {
+      const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorCode = (error as { code?: string })?.code;
+      const responseData = axios.isAxiosError(error) ? error.response?.data : undefined;
+      const responseHeaders = axios.isAxiosError(error) ? error.response?.headers : undefined;
+
+      logger.error('[ClaimService] Failed to submit claim', undefined, {
+        correlationId,
+        url,
+        status,
+        error: errorMessage,
+        code: errorCode,
+        responseData,
+        responseHeaders,
+      });
+      throw error;
+    }
   }
 }

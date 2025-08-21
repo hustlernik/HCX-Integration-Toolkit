@@ -5,7 +5,7 @@ export interface NHCXProtocolHeaders {
   'x-hcx-request_id'?: string;
   'x-hcx-correlation_id': string;
   'x-hcx-workflow_id'?: string;
-  'x-hcx-timestamp': number;
+  'x-hcx-timestamp': string | number;
   'x-hcx-debug_flag'?: 'Error' | 'Info' | 'Debug';
   'x-hcx-ben-abha-id': string;
   'x-hcx-entity-type'?: string;

@@ -91,8 +91,8 @@ const CommunicationSchema = new Schema({
     },
   ],
   payload: [PayloadSchema],
-  sent: { type: Date },
-  received: { type: Date },
+  sentAt: { type: Date },
+  receivedAt: { type: Date },
   communicationType: {
     type: String,
     enum: ['request', 'response'],

@@ -13,7 +13,16 @@ const insurancePlanController = new InsurancePlanNHCXController();
 const coverageEligibilityController = new CoverageEligibilityNHCXController();
 const claimController = new ClaimNHCXController();
 const communicationController = new CommunicationNHCXController();
-const upload = multer();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024, files: 5 },
+  fileFilter: (_req, file, cb) => {
+    const allowed = ['application/pdf', 'image/png', 'image/jpeg'];
+    if (allowed.includes(file.mimetype)) return cb(null, true);
+    cb(new Error(`Unsupported file type: ${file.mimetype}`));
+  },
+});
 
 /**
  * NHCX Insurance Plan request (provider initiates request to NHCX)

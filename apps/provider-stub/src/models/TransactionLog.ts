@@ -13,13 +13,13 @@ const TransactionLogSchema = new mongoose.Schema(
       enum: ['pending', 'complete'],
       default: 'pending',
     },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
     workflow: { type: String, default: 'coverage-eligibility' },
   },
   {
-    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+    timestamps: true,
   },
 );
+
+TransactionLogSchema.index({ createdAt: -1 });
 
 export default mongoose.model('TransactionLog', TransactionLogSchema);

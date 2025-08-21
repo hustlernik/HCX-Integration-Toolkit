@@ -68,10 +68,9 @@ export class CommunicationNHCXController {
         }),
       );
 
-      await this.communicationService.processInboundRequest({
-        decryptedPayload,
-        protectedHeaders,
-      });
+      this.communicationService
+        .processInboundRequest({ decryptedPayload, protectedHeaders })
+        .catch((e) => logger.error('Error in background processing (communication request)', e));
     } catch (error) {
       logger.error('Error processing NHCX communication request', error);
       res.status(500).json({
@@ -130,7 +129,7 @@ export class CommunicationNHCXController {
       const bundle = await prepareCommunicationResponseBundle(
         {
           message: responseForm?.message,
-          responseToRequestId: correlationId,
+          responseToRequestId: communicationRequest.fhirRefId || '',
           status: responseForm?.status,
           attachments: Array.isArray(responseForm?.attachments) ? responseForm.attachments : [],
         },
@@ -188,7 +187,7 @@ export class CommunicationNHCXController {
       res.setHeader('ETag', `${Date.now()}`);
 
       const docs = await Communication.find({ communicationType: 'request' })
-        .sort({ received: -1 })
+        .sort({ receivedAt: -1 })
         .lean();
 
       const communications = (docs || []).map((d: any) => {
@@ -224,8 +223,8 @@ export class CommunicationNHCXController {
           : d.metadata?.dueDate
             ? new Date(d.metadata.dueDate).toISOString()
             : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // Default to 7 days from now
-        const receivedAt = d.received
-          ? new Date(d.received).toISOString()
+        const receivedAt = d.receivedAt
+          ? new Date(d.receivedAt).toISOString()
           : d.createdAt
             ? new Date(d.createdAt).toISOString()
             : new Date().toISOString();
@@ -245,7 +244,7 @@ export class CommunicationNHCXController {
           priority: d.priority || d.metadata?.priority || 'routine',
           dueDate,
           receivedAt,
-          sentAt: d.sent ? new Date(d.sent).toISOString() : undefined,
+          sentAt: d.sentAt ? new Date(d.sentAt).toISOString() : undefined,
           status: d.workflowStatus || d.status || 'pending',
           workflowStatus: d.workflowStatus || 'pending',
           category: d.category || [],
@@ -309,8 +308,8 @@ export class CommunicationNHCXController {
           reasonDisplay: reason.display || 'Information Request',
           message,
           priority: d.priority || 'routine',
-          receivedAt: d.received
-            ? new Date(d.received).toISOString()
+          receivedAt: d.receivedAt
+            ? new Date(d.receivedAt).toISOString()
             : new Date(d.createdAt).toISOString(),
           status: (d.workflowStatus as any) || 'pending',
           workflowStatus: d.workflowStatus || 'pending',

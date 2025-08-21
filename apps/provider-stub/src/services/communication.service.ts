@@ -46,7 +46,7 @@ export class CommunicationService {
           .map((e: any) => e.resource.payload || [])
           .flat(),
         workflowStatus: 'completed',
-        received: new Date(),
+        receivedAt: new Date(),
         protectedHeaders: headers,
         responseAttachments: Array.isArray(attachments) ? attachments : [],
       };
@@ -184,10 +184,10 @@ export class CommunicationService {
         ],
         reasonCode: communicationRequest.reasonCode,
         payload: communicationRequest.payload,
-        sent: communicationRequest.authoredOn
+        sentAt: communicationRequest.authoredOn
           ? new Date(communicationRequest.authoredOn)
           : undefined,
-        received: new Date(),
+        receivedAt: new Date(),
         communicationType: 'request',
         workflowStatus: 'pending',
         dueDate: new Date(dueDate),
@@ -261,30 +261,57 @@ export class CommunicationService {
         recipient: String(protectedHeaders['x-hcx-recipient_code'] || '').trim(),
         correlationId,
         host: hostHeader,
-        auth: `Bearer ${accessToken}`,
       });
 
-      const response = await axios.post(
-        url,
-        { type: 'JWEPayload', payload: encryptedPayload },
-        {
-          headers: {
-            bearer_auth: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Host: hostHeader,
+      let response;
+      try {
+        response = await axios.post(
+          url,
+          { type: 'JWEPayload', payload: encryptedPayload },
+          {
+            headers: {
+              bearer_auth: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              Host: hostHeader,
+            },
+            timeout: 15_000,
           },
-        },
-      );
+        );
 
-      logger.info(
-        '[Provider CommunicationService] Communication on_request sent successfully',
-        undefined,
-        {
-          status: response.status,
-          correlationId,
-        },
-      );
+        logger.info(
+          '[Provider CommunicationService] Communication on_request sent successfully',
+          undefined,
+          {
+            status: response.status,
+            correlationId,
+            url,
+            sender: String(protectedHeaders['x-hcx-sender_code'] || '').trim(),
+            recipient: String(protectedHeaders['x-hcx-recipient_code'] || '').trim(),
+          },
+        );
+      } catch (error: unknown) {
+        const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorCode = (error as { code?: string })?.code;
+        const responseData = axios.isAxiosError(error) ? error.response?.data : undefined;
+        const responseHeaders = axios.isAxiosError(error) ? error.response?.headers : undefined;
+
+        logger.error(
+          '[Provider CommunicationService] Failed to send communication on_request',
+          undefined,
+          {
+            correlationId,
+            url,
+            status,
+            error: errorMessage,
+            code: errorCode,
+            responseData,
+            responseHeaders,
+          },
+        );
+        throw error;
+      }
 
       try {
         await this.txnRepo.updateByCorrelationId({

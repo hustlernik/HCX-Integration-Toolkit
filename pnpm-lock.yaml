@@ -368,9 +368,6 @@ importers:
 
   apps/provider-stub:
     dependencies:
-      axios:
-        specifier: ^1.6.0
-        version: 1.11.0
       cors:
         specifier: ^2.8.5
         version: 2.8.5

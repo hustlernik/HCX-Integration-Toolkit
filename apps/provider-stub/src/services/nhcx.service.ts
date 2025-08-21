@@ -118,27 +118,56 @@ export class NHCXService {
         }
       })();
 
-      const response = await axios.post(
-        config.sessionApiUrl,
-        {
-          clientId,
-          clientSecret,
-          grantType,
-        },
-        {
-          headers: {
-            Accept: '*/*',
-            'Content-Type': 'application/json',
-            'REQUEST-ID': requestId,
-            TIMESTAMP: timestamp,
-            'X-CM-ID': 'sbx',
-            ...(hostHeader ? { Host: hostHeader } : {}),
+      try {
+        const response = await axios.post(
+          config.sessionApiUrl,
+          {
+            clientId,
+            clientSecret,
+            grantType,
           },
-        },
-      );
-      const token = response.data?.accessToken as string;
-      logger.info('[Provider NHCXService] Obtained ABDM access token from Session API.');
-      return token;
+          {
+            headers: {
+              Accept: '*/*',
+              'Content-Type': 'application/json',
+              'REQUEST-ID': requestId,
+              TIMESTAMP: timestamp,
+              'X-CM-ID': 'sbx',
+              ...(hostHeader ? { Host: hostHeader } : {}),
+            },
+            timeout: 15_000,
+          },
+        );
+
+        const token = response.data?.accessToken as string;
+        logger.info(
+          '[Provider NHCXService] Obtained ABDM access token from Session API',
+          undefined,
+          {
+            url: config.sessionApiUrl,
+            requestId,
+            status: response.status,
+          },
+        );
+        return token;
+      } catch (error: unknown) {
+        const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorCode = (error as { code?: string })?.code;
+        const responseData = axios.isAxiosError(error) ? error.response?.data : undefined;
+        const responseHeaders = axios.isAxiosError(error) ? error.response?.headers : undefined;
+
+        logger.error('[Provider NHCXService] Failed to obtain ABDM access token', undefined, {
+          url: config.sessionApiUrl,
+          requestId,
+          status,
+          error: errorMessage,
+          code: errorCode,
+          responseData,
+          responseHeaders,
+        });
+        throw error;
+      }
     } catch (e) {
       logger.error('[Provider NHCXService] Failed to obtain ABDM token from Session API', e);
       if (this.apiKey) {

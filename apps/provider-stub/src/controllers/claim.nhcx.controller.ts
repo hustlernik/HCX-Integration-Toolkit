@@ -89,7 +89,10 @@ export class ClaimNHCXController {
       }
 
       const decryptedPayload = await decryptFHIR(payload);
-      console.debug('Decrypted claim response:', decryptedPayload);
+
+      logger.debug('Decrypted claim response received', undefined, {
+        hasPayload: Boolean((decryptedPayload as any)?.payload),
+      });
 
       const protectedHeaders = (decryptedPayload as any)?.protected;
       res.status(202).json(NHCXService.successResponse(protectedHeaders));

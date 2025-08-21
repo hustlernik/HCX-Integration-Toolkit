@@ -62,14 +62,21 @@ export async function prepareCommunicationResponseBundle(
   };
 
   if (input.attachments && input.attachments.length > 0) {
-    const attachmentPayloads = input.attachments.map((attachment: any) => ({
-      contentAttachment: {
-        contentType: attachment.contentType || 'application/pdf',
-        url: attachment.url,
-        title: attachment.title || 'Supporting Document',
-        size: attachment.size,
-      },
-    }));
+    const attachmentPayloads = input.attachments.map((a: any) => {
+      const contentAttachment: any = {
+        contentType: a.contentType || 'application/pdf',
+        url: a.url,
+        title: a.title || 'Supporting Document',
+        size: a.size,
+        language: a.language,
+        creation: a.creation,
+        data: a.data, // base64-encoded string when present
+      };
+      Object.keys(contentAttachment).forEach(
+        (k) => contentAttachment[k] === undefined && delete contentAttachment[k],
+      );
+      return { contentAttachment };
+    });
     communication.payload.push(...attachmentPayloads);
   }
 

@@ -42,6 +42,12 @@ export class CoverageEligibilityNHCXController {
       const correlationId = protectedHeaders['x-hcx-correlation_id'];
 
       try {
+        if (!correlationId) {
+          logger.warn('Missing x-hcx-correlation_id; skipping txn update', undefined, {
+            path: req.path,
+          });
+          return;
+        }
         await this.txnRepo.create({
           correlationId,
           protectedHeaders,

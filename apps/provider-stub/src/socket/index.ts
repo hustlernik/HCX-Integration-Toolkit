@@ -16,7 +16,7 @@ export function initSocket(server: any) {
 
 export function sendToWebSocket(event: string, data: any) {
   if (io) {
-    console.log('Emitting socket event:', event, data);
+    console.log('Emitting socket event:', event, { keys: Object.keys(data ?? {}) });
     io.emit(event, data);
   }
 }
