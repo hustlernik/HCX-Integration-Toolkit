@@ -14,14 +14,20 @@ export async function prepareCommunicationResponseBundle(
   const fhirBase = 'http://hapi.fhir.org/baseR4';
 
   let claimResource: any = null;
+  let claimFromServer = false;
   try {
-    const res = await axios.get(`${fhirBase}/Claim/${claimFhirId}`);
-    claimResource = res.data;
+    if (claimFhirId) {
+      const res = await axios.get(`${fhirBase}/Claim/${claimFhirId}`);
+      claimResource = res.data;
+      claimFromServer = true;
+    } else {
+      throw new Error('Missing claimFhirId');
+    }
   } catch {
     if (claimDocFallback) {
       claimResource = {
         resourceType: 'Claim',
-        id: claimFhirId,
+        id: uuidv4(),
         status: claimDocFallback.status || 'active',
         use: claimDocFallback.use || 'claim',
         patient: claimDocFallback.patient?.id
@@ -37,7 +43,7 @@ export async function prepareCommunicationResponseBundle(
     } else {
       claimResource = {
         resourceType: 'Claim',
-        id: claimFhirId || uuidv4(),
+        id: uuidv4(),
         status: 'active',
         use: 'claim',
       };
@@ -54,9 +60,7 @@ export async function prepareCommunicationResponseBundle(
     subject: claimResource.patient,
     about: [
       {
-        reference: claimResource.id.startsWith('urn:uuid:')
-          ? claimResource.id
-          : `Claim/${claimResource.id}`,
+        reference: claimFromServer ? `Claim/${claimResource.id}` : `urn:uuid:${claimResource.id}`,
       },
     ],
     payload: [
