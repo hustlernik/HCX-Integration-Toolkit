@@ -48,8 +48,7 @@ const handleInsurancePlanOnRequest = async (req: any, res: any) => {
     });
     await insurancePlanController.handleInsurancePlanOnRequest(req, res);
   } catch (error) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    logger.error('Error handling insuranceplan/on_request', { path: req.path, error: errMsg });
+    logger.error('Error handling insuranceplan/on_request', error as any, { path: req.path });
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -159,8 +158,7 @@ const handleCoverageEligibilityOnCheck = async (req: any, res: any) => {
     });
     await coverageEligibilityController.handleCoverageEligibilityOnCheck(req, res);
   } catch (error) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    logger.error('Error handling coverageeligibility/on_check', { path: req.path, error: errMsg });
+    logger.error('Error handling coverageeligibility/on_check', error as any, { path: req.path });
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };

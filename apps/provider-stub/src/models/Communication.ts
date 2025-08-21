@@ -21,109 +21,109 @@ const PayloadSchema = new Schema({
   },
 });
 
-const CommunicationSchema = new Schema({
-  communicationId: { type: String, required: true, unique: true },
-  correlationId: { type: String, required: true },
-  fhirRefId: { type: String },
-  status: {
-    type: String,
-    enum: [
-      'preparation',
-      'in-progress',
-      'not-done',
-      'on-hold',
-      'stopped',
-      'completed',
-      'entered-in-error',
-      'unknown',
-    ],
-    default: 'in-progress',
-  },
-  category: [
-    {
-      coding: [
-        {
-          system: { type: String },
-          code: { type: String },
-          display: { type: String },
-        },
+const CommunicationSchema = new Schema(
+  {
+    communicationId: { type: String, required: true, unique: true },
+    correlationId: { type: String, required: true },
+    fhirRefId: { type: String },
+    status: {
+      type: String,
+      enum: [
+        'preparation',
+        'in-progress',
+        'not-done',
+        'on-hold',
+        'stopped',
+        'completed',
+        'entered-in-error',
+        'unknown',
       ],
+      default: 'in-progress',
     },
-  ],
-  priority: {
-    type: String,
-    enum: ['routine', 'urgent', 'asap', 'stat'],
-    default: 'routine',
-  },
-  subject: {
-    reference: { type: String },
-    display: { type: String },
-  },
-  about: [
-    {
-      reference: { type: String },
-      display: { type: String },
-    },
-  ],
-  sender: {
-    reference: { type: String },
-    display: { type: String },
-  },
-
-  recipient: [
-    {
-      reference: { type: String },
-      display: { type: String },
-    },
-  ],
-  reasonCode: [
-    {
-      coding: [
-        {
-          system: {
-            type: String,
-            default: 'http://terminology.hl7.org/CodeSystem/communication-category',
+    category: [
+      {
+        coding: [
+          {
+            system: { type: String },
+            code: { type: String },
+            display: { type: String },
           },
-          code: { type: String },
-          display: { type: String },
-        },
-      ],
+        ],
+      },
+    ],
+    priority: {
+      type: String,
+      enum: ['routine', 'urgent', 'asap', 'stat'],
+      default: 'routine',
     },
-  ],
-  payload: [PayloadSchema],
-  sentAt: { type: Date },
-  receivedAt: { type: Date },
-  communicationType: {
-    type: String,
-    enum: ['request', 'response'],
-    required: true,
-  },
-
-  parentCommunicationId: { type: String },
-
-  workflowStatus: {
-    type: String,
-    enum: ['pending', 'acknowledged', 'in-review', 'responded', 'completed'],
-    default: 'pending',
-  },
-
-  dueDate: { type: Date },
-
-  requestedDocuments: [
-    {
-      type: { type: String },
-      description: { type: String },
-      required: { type: Boolean, default: false },
+    subject: {
+      reference: { type: String },
+      display: { type: String },
     },
-  ],
+    about: [
+      {
+        reference: { type: String },
+        display: { type: String },
+      },
+    ],
+    sender: {
+      reference: { type: String },
+      display: { type: String },
+    },
 
-  responseAttachments: [AttachmentSchema],
+    recipient: [
+      {
+        reference: { type: String },
+        display: { type: String },
+      },
+    ],
+    reasonCode: [
+      {
+        coding: [
+          {
+            system: {
+              type: String,
+              default: 'http://terminology.hl7.org/CodeSystem/communication-category',
+            },
+            code: { type: String },
+            display: { type: String },
+          },
+        ],
+      },
+    ],
+    payload: [PayloadSchema],
+    sentAt: { type: Date },
+    receivedAt: { type: Date },
+    communicationType: {
+      type: String,
+      enum: ['request', 'response'],
+      required: true,
+    },
 
-  internalNotes: { type: String },
+    parentCommunicationId: { type: String },
 
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+    workflowStatus: {
+      type: String,
+      enum: ['pending', 'acknowledged', 'in-review', 'responded', 'completed'],
+      default: 'pending',
+    },
+
+    dueDate: { type: Date },
+
+    requestedDocuments: [
+      {
+        type: { type: String },
+        description: { type: String },
+        required: { type: Boolean, default: false },
+      },
+    ],
+
+    responseAttachments: [AttachmentSchema],
+
+    internalNotes: { type: String },
+  },
+  { timestamps: true },
+);
 
 export type ICommunication = InferSchemaType<typeof CommunicationSchema>;
 export default mongoose.model<ICommunication>('Communication', CommunicationSchema);

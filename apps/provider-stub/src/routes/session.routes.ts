@@ -11,10 +11,10 @@ const router = Router();
 
 router.post('/hcx/v1/session', async (req: Request, res: Response) => {
   try {
-    const clientId = (req.body?.clientId as string) || process.env.ABDM_CLIENT_ID || '';
-    const clientSecret = (req.body?.clientSecret as string) || process.env.ABDM_CLIENT_SECRET || '';
+    const clientId = process.env.ABDM_CLIENT_ID || '';
+    const clientSecret = process.env.ABDM_CLIENT_SECRET || '';
     const tokenUrl = config.sessionApiUrl || process.env.ABDM_TOKEN_URL || '';
-    const grantType = (req.body?.grantType as string) || 'client_credentials';
+    const grantType = 'client_credentials';
 
     if (!clientId || !clientSecret || !tokenUrl) {
       logger.warn('Missing required ABDM session params');

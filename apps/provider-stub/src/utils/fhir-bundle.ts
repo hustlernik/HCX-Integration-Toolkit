@@ -49,13 +49,20 @@ export async function prepareCommunicationResponseBundle(
     meta: {
       profile: ['https://nrces.in/ndhm/fhir/r4/StructureDefinition/Communication'],
     },
+    id: uuidv4(),
     status: input.status || 'completed',
     subject: claimResource.patient,
-    about: [{ reference: `Claim/${claimResource.id}` }],
+    about: [
+      {
+        reference: claimResource.id.startsWith('urn:uuid:')
+          ? claimResource.id
+          : `Claim/${claimResource.id}`,
+      },
+    ],
     payload: [
       { contentString: input.message || 'Response from provider with requested information.' },
     ],
-    sent: new Date().toISOString(),
+    sent: (input as any).sentAt || new Date().toISOString(),
     inResponseTo: input.responseToRequestId
       ? [{ reference: `CommunicationRequest/${input.responseToRequestId}` }]
       : undefined,
@@ -70,7 +77,7 @@ export async function prepareCommunicationResponseBundle(
         size: a.size,
         language: a.language,
         creation: a.creation,
-        data: a.data, // base64-encoded string when present
+        data: a.data,
       };
       Object.keys(contentAttachment).forEach(
         (k) => contentAttachment[k] === undefined && delete contentAttachment[k],
