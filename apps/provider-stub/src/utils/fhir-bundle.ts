@@ -11,7 +11,7 @@ export async function prepareCommunicationResponseBundle(
   claimFhirId: string,
   claimDocFallback?: any,
 ) {
-  const fhirBase = 'http://hapi.fhir.org/baseR4';
+  const fhirBase = process.env.FHIR_BASE_URL || 'https://hapi.fhir.org/baseR4';
 
   let claimResource: any = null;
   let claimFromServer = false;
@@ -102,7 +102,10 @@ export async function prepareCommunicationResponseBundle(
     try {
       const res = await axios.get(`${fhirBase}/${ref}`);
       refEntries.push({ fullUrl: `urn:uuid:${res.data.id}`, resource: res.data });
-    } catch {}
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.debug(`Failed to fetch resource ${ref}:`, errorMessage);
+    }
   }
 
   const bundle = {

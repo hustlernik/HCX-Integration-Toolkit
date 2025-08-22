@@ -125,5 +125,47 @@ const CommunicationSchema = new Schema(
   { timestamps: true },
 );
 
+CommunicationSchema.virtual('sent')
+  .get(function () {
+    return this.sentAt;
+  })
+  .set(function (v) {
+    this.sentAt = v;
+  });
+
+CommunicationSchema.virtual('received')
+  .get(function () {
+    return this.receivedAt;
+  })
+  .set(function (v) {
+    this.receivedAt = v;
+  });
+
+CommunicationSchema.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret: Record<string, any>) {
+    if ('_id' in ret) {
+      delete ret._id;
+    }
+    if ('__v' in ret) {
+      delete ret.__v;
+    }
+    return ret;
+  },
+});
+
+CommunicationSchema.set('toObject', {
+  virtuals: true,
+  transform: function (doc, ret: Record<string, any>) {
+    if ('_id' in ret) {
+      delete ret._id;
+    }
+    if ('__v' in ret) {
+      delete ret.__v;
+    }
+    return ret;
+  },
+});
+
 export type ICommunication = InferSchemaType<typeof CommunicationSchema>;
 export default mongoose.model<ICommunication>('Communication', CommunicationSchema);

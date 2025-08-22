@@ -43,11 +43,13 @@ export class CoverageEligibilityNHCXController {
 
       try {
         if (!correlationId) {
-          logger.warn('Missing x-hcx-correlation_id; skipping txn update', undefined, {
+          logger.error('Missing x-hcx-correlation_id; aborting request', undefined, {
             path: req.path,
           });
+          res.status(500).json({ error: 'Failed to generate correlation id' });
           return;
         }
+
         await this.txnRepo.create({
           correlationId,
           protectedHeaders,
@@ -107,12 +109,19 @@ export class CoverageEligibilityNHCXController {
       res.status(202).json(
         NHCXService.successResponse(protectedHeaders, {
           entity_type: 'coverageeligibility',
-          protocol_status: 'request.complete',
+          protocol_status: 'response.complete',
         }),
       );
 
       try {
         const correlationId = protectedHeaders['x-hcx-correlation_id'];
+
+        if (!correlationId) {
+          logger.warn('Missing x-hcx-correlation_id in protected headers; skipping txn update', {
+            path: req.path,
+          });
+          return;
+        }
 
         await this.txnRepo.updateByCorrelationId({
           correlationId,

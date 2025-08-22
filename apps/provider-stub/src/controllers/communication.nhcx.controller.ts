@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
 import { NHCXService } from '../services/nhcx.service';
 import { NHCXProtocolHeaders } from '../types/nhcx';
-import type { OnRequestBody } from '../types/dtos';
 import { decryptFHIR } from '../utils/crypto';
 import { prepareCommunicationResponseBundle } from '../utils/fhir-bundle';
-import { v4 as uuidv4 } from 'uuid';
 import Communication from '../models/Communication';
 import { logger } from '../utils/logger';
 import { CommunicationService } from '../services/communication.service';
@@ -96,7 +94,9 @@ export class CommunicationNHCXController {
         return;
       }
 
-      const communicationRequest = await Communication.findOne({ correlationId });
+      const communicationRequest = await Communication.findOne({ correlationId }).lean({
+        virtuals: true,
+      });
       if (!communicationRequest) {
         res.status(404).json({ error: 'Communication request not found' });
         return;
@@ -107,13 +107,16 @@ export class CommunicationNHCXController {
       try {
         const txn = await this.txnRepo.getByCorrelationId(correlationId);
         if (txn?.protectedHeaders) requestProtectedHeaders = txn.protectedHeaders;
-      } catch {}
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.debug('Failed to fetch transaction by correlation ID:', errorMessage);
+      }
       if (!requestProtectedHeaders || Object.keys(requestProtectedHeaders).length === 0) {
-        requestProtectedHeaders =
-          (requestProtectedHeaders as any) || (requestProtectedHeaders as any) || {};
+        requestProtectedHeaders = {};
       }
       const protectedHeaders: NHCXProtocolHeaders = { ...(requestProtectedHeaders as any) } as any;
-      protectedHeaders['x-hcx-correlation_id'] = requestProtectedHeaders['x-hcx-correlation_id'];
+      protectedHeaders['x-hcx-correlation_id'] =
+        requestProtectedHeaders['x-hcx-correlation_id'] || correlationId;
       protectedHeaders['x-hcx-api_call_id'] = requestProtectedHeaders['x-hcx-api_call_id'];
       protectedHeaders['x-hcx-request_id'] = requestProtectedHeaders['x-hcx-request_id'];
       protectedHeaders['x-hcx-status'] = 'response.complete';
@@ -123,8 +126,6 @@ export class CommunicationNHCXController {
       protectedHeaders['x-hcx-ben-abha-id'] = requestProtectedHeaders['x-hcx-ben-abha-id'] || '';
       protectedHeaders['x-hcx-workflow_id'] = this.nhcxService.config.hcxWorkflowId;
       protectedHeaders['x-hcx-entity-type'] = 'communication';
-
-      logger.info('[Provider] Communication response headers', protectedHeaders, { correlationId });
 
       const bundle = await prepareCommunicationResponseBundle(
         {
@@ -188,7 +189,7 @@ export class CommunicationNHCXController {
 
       const docs = await Communication.find({ communicationType: 'request' })
         .sort({ receivedAt: -1 })
-        .lean();
+        .lean({ virtuals: true });
 
       const communications = (docs || []).map((d: any) => {
         const reason = d?.reasonCode?.[0]?.coding?.[0] || {};
@@ -273,6 +274,7 @@ export class CommunicationNHCXController {
       if (priority) filter.priority = priority;
 
       const docs = await Communication.find(filter)
+        .lean({ virtuals: true })
         .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(offset))
@@ -340,7 +342,7 @@ export class CommunicationNHCXController {
     try {
       const { id } = req.params;
 
-      const communication = await Communication.findById(id);
+      const communication = await Communication.findById(id).lean({ virtuals: true });
 
       if (!communication) {
         res.status(404).json({ error: 'Communication not found' });

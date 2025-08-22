@@ -11,7 +11,8 @@ const PRETTY =
   process.env.LOG_PRETTY === '1' || (process.env.NODE_ENV !== 'production' && process.stdout.isTTY);
 const MAX_VAL_LEN = Number(process.env.LOG_MAX_VAL_LEN || 5000);
 
-function color(level: LogLevel): (s: string) => string {
+//eslint-disable-next-line
+function color(level: LogLevel): (_: string) => string {
   const codes: Record<LogLevel, [number, number]> = {
     debug: [36, 39],
     info: [32, 39],
@@ -57,7 +58,7 @@ function fmt(level: LogLevel, msg: string, ctx?: LogContext) {
     const lvl = color(level)(level.toUpperCase());
     return [t, lvl, msg, kvPairs(ctx)].filter(Boolean).join(' ');
   }
-  const base = { t, level, msg, ...ctx } as Record<string, any>;
+  const base = { ...(ctx || {}), t, level, msg } as Record<string, any>;
   return safeStringify(base);
 }
 

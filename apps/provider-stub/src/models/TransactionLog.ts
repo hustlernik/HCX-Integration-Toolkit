@@ -5,8 +5,8 @@ const TransactionLogSchema = new mongoose.Schema(
     correlationId: { type: String, required: true, unique: true },
     protectedHeaders: Object,
     rawRequestJWE: String,
-    requestFHIR: Object,
-    responseFHIR: Object,
+    requestFHIR: { type: mongoose.Schema.Types.Mixed, select: false },
+    responseFHIR: { type: mongoose.Schema.Types.Mixed, select: false },
     responseJWE: String,
     status: {
       type: String,

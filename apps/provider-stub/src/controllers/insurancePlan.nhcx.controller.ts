@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { NHCXService } from '../services/nhcx.service';
-import { NHCXInsurancePlanRequest } from '../types/nhcx';
 import { InsurancePlanService } from '../services/insurancePlan.service';
 import { logger } from '../utils/logger';
 import type { OnRequestBody } from '../types/dtos';
@@ -39,7 +38,13 @@ export class InsurancePlanNHCXController {
       });
 
       const correlationId = protectedHeaders['x-hcx-correlation_id'];
-
+      if (!correlationId) {
+        logger.error('Missing x-hcx-correlation_id; aborting request', {
+          endpoint: '/hcx/v1/insuranceplan/request',
+        });
+        res.status(500).json({ error: 'Failed to generate correlation id' });
+        return;
+      }
       try {
         await this.txnRepo.create({
           correlationId,

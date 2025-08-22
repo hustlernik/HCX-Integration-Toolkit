@@ -66,6 +66,7 @@ export class ClaimNHCXController {
     } catch (error: any) {
       logger.error('Error processing claim submit', error);
       res.status(500).json({ error: error?.message || 'Failed to process claim request' });
+
       return;
     }
   }

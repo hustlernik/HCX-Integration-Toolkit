@@ -1,6 +1,5 @@
-import { decryptFHIR, encryptFHIR } from '../utils/crypto';
+import { encryptFHIR } from '../utils/crypto';
 import { TransactionLogRepository } from '../repositories/transactionLog.repository';
-import { sendToWebSocket } from '../socket';
 import { NHCXService } from './nhcx.service';
 import { logger } from '../utils/logger';
 import axios, { AxiosResponse } from 'axios';
@@ -29,7 +28,13 @@ export class InsurancePlanService {
     const accessToken = await this.nhcx.getAccessToken();
 
     const url = `${this.nhcx.getBaseUrl()}/insuranceplan/request`;
-    const hostHeader = new URL(url).host;
+    const hostHeader = (() => {
+      try {
+        return new URL(url).host;
+      } catch {
+        return undefined as any;
+      }
+    })();
 
     logger.info('[InsurancePlanService] POST /insuranceplan/request', undefined, {
       url,
@@ -48,7 +53,7 @@ export class InsurancePlanService {
             bearer_auth: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            Host: hostHeader,
+            ...(hostHeader ? { Host: hostHeader } : {}),
           },
           timeout: 15_000,
         },

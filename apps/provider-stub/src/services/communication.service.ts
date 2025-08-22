@@ -5,7 +5,6 @@ import { TransactionLogRepository } from '../repositories/transactionLog.reposit
 import { encryptFHIR } from '../utils/crypto';
 import { NHCXService } from './nhcx.service';
 import axios from 'axios';
-import { formatHcxTimestamp } from '../utils/time';
 import Communication from '../models/Communication';
 
 export class CommunicationService {
@@ -67,7 +66,7 @@ export class CommunicationService {
         await this.txnRepo.updateByCorrelationId({
           correlationId,
           protectedHeaders: headers,
-          requestFHIR: bundle,
+          responseFHIR: bundle,
           status: 'pending',
           workflow: 'Communication',
         });
@@ -228,7 +227,10 @@ export class CommunicationService {
           status: 'pending',
           workflow: 'Communication',
         });
-      } catch {}
+      } catch (updateError: unknown) {
+        const errorMessage = updateError instanceof Error ? updateError.message : 'Unknown error';
+        console.debug('Failed to update transaction status:', errorMessage);
+      }
       return null;
     }
   }

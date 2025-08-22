@@ -1,6 +1,5 @@
 import { logger } from './logger';
 import {
-  importSPKI,
   importPKCS8,
   CompactEncrypt,
   FlattenedDecryptResult,
@@ -67,7 +66,11 @@ export async function decryptFHIR(
 
   const privateKey = await importPKCS8(privateKeyPem, 'RSA-OAEP-256');
 
-  const [protectedB64, encrypted_key, iv, ciphertext, tag] = jweCompact.split('.');
+  const parts = jweCompact.split('.');
+  if (parts.length !== 5) {
+    throw new Error('Invalid JWE compact serialization: expected 5 parts');
+  }
+  const [protectedB64, encrypted_key, iv, ciphertext, tag] = parts;
   const protectedHeader = JSON.parse(Buffer.from(protectedB64, 'base64url').toString('utf8'));
 
   const { plaintext }: FlattenedDecryptResult = await flattenedDecrypt(

@@ -44,7 +44,7 @@ interface HcxTransaction {
 const ApiTesting: React.FC = () => {
   const [workflow, setWorkflow] = useState(workflows[0].key);
   const [selectedMock, setSelectedMock] = useState(0);
-  const selectedMocks = mockFhirResources[workflow] || [];
+  const selectedMocks = mockFhirResources[workflow as keyof typeof mockFhirResources] || [];
   const selectedResource = selectedMocks[selectedMock]?.resource;
   const [headers, setHeaders] = useState<RequestHeader[]>(() => {
     const filled = generateDefaultHeaders().map((h) => h);
@@ -109,6 +109,11 @@ const ApiTesting: React.FC = () => {
     setEditedResource(selectedResource);
   }, [selectedResource]);
 
+  // Get the last header and its properties for the dependency array
+  const lastHeader = headers[headers.length - 1];
+  const lastHeaderKey = lastHeader?.key;
+  const lastHeaderValue = lastHeader?.value;
+
   useEffect(() => {
     setHeaders((hs) => {
       if (hs.length === 0 || hs[hs.length - 1].key || hs[hs.length - 1].value) {
@@ -127,7 +132,7 @@ const ApiTesting: React.FC = () => {
       }
       return trimmed;
     });
-  }, [headers.length, headers[headers.length - 1]?.key, headers[headers.length - 1]?.value]);
+  }, [headers.length, lastHeaderKey, lastHeaderValue]);
 
   function removeHeader(idx: number) {
     setHeaders((hs) => {
