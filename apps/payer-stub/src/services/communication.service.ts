@@ -23,11 +23,6 @@ export class CommunicationService {
   ): Promise<void> {
     const correlationId = protectedHeaders['x-hcx-correlation_id'] as string;
 
-    logger.debug('[Payer CommunicationService] Pre-encrypt headers', undefined, {
-      protectedHeaders,
-      correlationId,
-    });
-
     const encryptedPayload = await encryptFHIR(payload, protectedHeaders, {});
     logger.debug('[Payer CommunicationService] Encrypted Communication JWE', undefined, {
       length: (encryptedPayload as string).length,

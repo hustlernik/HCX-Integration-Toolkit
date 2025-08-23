@@ -40,9 +40,11 @@ router.post('/hcx/v1/session', async (req: Request, res: Response) => {
     const accessToken = await getAccessToken(clientId, clientSecret, tokenUrl, grantType);
     return res.json({ accessToken, cached: false, expiresIn: 0 });
   } catch (err: any) {
-    const message = err?.message || 'Failed to create session';
+    const rawMsg = String(err?.message || '');
+    const isDisallowedHost = rawMsg.startsWith('tokenUrl host not allowed');
+    const status = isDisallowedHost ? 400 : 500;
     logger.error('ABDM session error', err);
-    return res.status(500).json({ error: message });
+    return res.status(status).json({ error: 'Failed to create session' });
   }
 });
 

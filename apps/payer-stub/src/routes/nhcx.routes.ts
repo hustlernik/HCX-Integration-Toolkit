@@ -487,7 +487,7 @@ router.post('/v1/error/response', (req, res) => {
     'x-hcx-api_call_id':
       headers['x-hcx-api_call_id'] || body?.['x-hcx-api_call_id'] || `api_${Date.now()}`,
     'x-hcx-correlation_id': correlationId,
-    'x-hcx-timestamp': Math.floor(Date.now() / 1000),
+    'x-hcx-timestamp': Math.floor(Date.now() / 1000).toString(),
     'x-hcx-entity-type': 'protocol-response',
   };
 

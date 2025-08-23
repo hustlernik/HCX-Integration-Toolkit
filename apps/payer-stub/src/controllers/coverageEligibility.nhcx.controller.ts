@@ -51,7 +51,8 @@ export class CoverageEligibilityNHCXController {
       const nhcxHeaders: NHCXProtocolHeaders = {
         'x-hcx-api_call_id': protectedHeaders['x-hcx-api_call_id'] || '',
         'x-hcx-correlation_id': protectedHeaders['x-hcx-correlation_id'] || '',
-        'x-hcx-timestamp': protectedHeaders['x-hcx-timestamp'] || Math.floor(Date.now() / 1000),
+        'x-hcx-timestamp':
+          protectedHeaders['x-hcx-timestamp'] || Math.floor(Date.now() / 1000).toString(),
         'x-hcx-sender_code': protectedHeaders['x-hcx-sender_code'] || config.payerCode,
         'x-hcx-recipient_code': protectedHeaders['x-hcx-recipient_code'] || config.providerCode,
         'x-hcx-ben-abha-id': protectedHeaders['x-hcx-ben-abha-id'] || config.benAbhaId,

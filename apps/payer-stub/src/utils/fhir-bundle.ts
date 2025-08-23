@@ -218,7 +218,7 @@ export async function prepareCoverageEligibilityResponseBundle(
   updateRefs(requestResource);
   updateRefs(adjudicationData);
 
-  adjudicationData.request = requestFullUrl;
+  adjudicationData.request = { reference: requestFullUrl };
 
   const bundle = {
     resourceType: 'Bundle',
