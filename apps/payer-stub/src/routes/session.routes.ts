@@ -31,6 +31,13 @@ router.post('/hcx/v1/session', async (req: Request, res: Response) => {
       logger.warn('Invalid tokenUrl', { tokenUrl });
       return res.status(400).json({ error: 'Invalid tokenUrl' });
     }
+    if (parsedUrl.protocol !== 'https:' && process.env.ALLOW_INSECURE_SESSION_URLS !== 'true') {
+      logger.warn('Insecure tokenUrl protocol', {
+        protocol: parsedUrl.protocol,
+        host: parsedUrl.host,
+      });
+      return res.status(400).json({ error: 'tokenUrl must use https' });
+    }
     const allowedHosts = new Set(
       (process.env.SESSION_ALLOWED_HOSTS ?? '')
         .split(',')
