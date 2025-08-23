@@ -66,12 +66,32 @@ export class CoverageEligibilityNHCXController {
         return;
       }
 
-      await this.coverageEligibilityService.sendRequest(
-        payload,
-        protectedHeaders as Record<string, string>,
-      );
+      try {
+        await this.coverageEligibilityService.sendRequest(
+          payload,
+          protectedHeaders as Record<string, string>,
+        );
+      } catch (sendErr) {
+        logger.error('Failed to send coverage eligibility request to NHCX', sendErr as any, {
+          correlationId,
+        });
+        try {
+          await this.txnRepo.updateByCorrelationId({
+            correlationId,
+            status: 'error',
+            workflow: 'Coverage Eligibility',
+          });
+        } catch (updateErr) {
+          logger.error('Also failed to mark txn as error', updateErr as any, { correlationId });
+        }
+        res.status(502).json({ error: 'Failed to send coverage eligibility request' });
+        return;
+      }
 
-      res.status(200).json({ status: 'Coverage eligibility requested from payer', correlationId });
+      res.status(200).json({
+        status: 'Coverage eligibility requested from payer',
+        correlationId,
+      });
       return;
     } catch (error: any) {
       logger.error('Error processing coverage eligibility request', error, {

@@ -8,6 +8,8 @@ import reactPlugin from 'eslint-plugin-react';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 import nodePlugin from 'eslint-plugin-n';
 import nodeImportsPlugin from 'eslint-plugin-import';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export default [
   js.configs.recommended,
@@ -43,7 +45,7 @@ export default [
       parserOptions: {
         ecmaFeatures: { jsx: true },
         project: './tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: path.dirname(fileURLToPath(import.meta.url)),
         sourceType: 'module',
       },
     },
