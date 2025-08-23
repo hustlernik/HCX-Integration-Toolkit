@@ -24,15 +24,25 @@ router.post('/hcx/v1/session', async (req: Request, res: Response) => {
       });
     }
 
-    const host = (() => {
-      try {
-        return new URL(tokenUrl).host;
-      } catch {
-        return undefined;
-      }
-    })();
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(tokenUrl);
+    } catch {
+      logger.warn('Invalid tokenUrl', { tokenUrl });
+      return res.status(400).json({ error: 'Invalid tokenUrl' });
+    }
+    const allowedHosts = new Set(
+      (process.env.SESSION_ALLOWED_HOSTS ?? '')
+        .split(',')
+        .map((h) => h.trim())
+        .filter(Boolean),
+    );
+    if (allowedHosts.size && !allowedHosts.has(parsedUrl.host)) {
+      logger.warn('tokenUrl host not allowed', { host: parsedUrl.host });
+      return res.status(400).json({ error: 'tokenUrl host not allowed' });
+    }
     logger.info('Requesting ABDM token', {
-      host,
+      host: parsedUrl.host,
       grantType,
       clientIdMasked: clientId.slice(0, 4) + '***',
     });
