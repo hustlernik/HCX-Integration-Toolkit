@@ -59,7 +59,10 @@ export default [
     rules: {
       ...reactHooksPlugin.configs.recommended.rules,
       'react-refresh/only-export-components': 'off',
-      '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'off',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       'no-unused-vars': 'off',
       'no-console': ['off', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
@@ -108,7 +111,13 @@ export default [
     ignores: ['dist', '**/*.config.js'],
   },
   {
-    files: ['**/postcss.config.js', '**/eslint.config.js', '**/.eslintrc.js', '**/*.config.cjs', '**/*.config.js'],
+    files: [
+      '**/postcss.config.js',
+      '**/eslint.config.js',
+      '**/.eslintrc.js',
+      '**/*.config.cjs',
+      '**/*.config.js',
+    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: {

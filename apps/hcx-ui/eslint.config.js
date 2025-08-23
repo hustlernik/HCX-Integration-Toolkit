@@ -18,11 +18,7 @@ export default tseslint.config(
   { ignores: ['dist', '**/*.config.js', '**/*.d.ts'] },
   ...compat.extends('plugin:import/errors', 'plugin:import/warnings', 'plugin:import/typescript'),
   {
-    extends: [
-      js.configs.recommended, 
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.strict,
-    ],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended, ...tseslint.configs.strict],
     files: ['**/*.{ts,tsx}'],
     settings: {
       'import/resolver': {
