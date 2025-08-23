@@ -11,7 +11,7 @@ import {
 import { X } from 'lucide-react';
 import { Beneficiary, InsurancePlan } from '../../interfaces/policy';
 import axios from 'axios';
-import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface AddPolicyModalProps {
   isOpen: boolean;
@@ -31,12 +31,16 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
   const [insurancePlans, setInsurancePlans] = useState<InsurancePlan[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loadingErrors, setLoadingErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (isOpen) {
-      loadBeneficiaries();
-      loadInsurancePlans();
+      void (async () => {
+        try {
+          await Promise.all([loadBeneficiaries(), loadInsurancePlans()]);
+        } catch (error) {
+          console.error('Error loading data:', error);
+        }
+      })();
     }
   }, [isOpen]);
 
@@ -44,10 +48,11 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
     try {
       const response = await axios.get(API_ENDPOINTS.PAYER.BENEFICIARY);
       setBeneficiaries(response.data);
-      setLoadingErrors((prev) => ({ ...prev, beneficiaries: '' }));
+      return true;
     } catch (error) {
       console.error('Failed to load beneficiaries:', error);
-      setLoadingErrors((prev) => ({ ...prev, beneficiaries: 'Failed to load beneficiaries' }));
+      setErrors((prev) => ({ ...prev, beneficiaries: 'Failed to load beneficiaries' }));
+      return false;
     }
   };
 
@@ -55,9 +60,51 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
     try {
       const response = await axios.get(API_ENDPOINTS.PAYER.INSURANCE_PLAN);
       setInsurancePlans(response.data);
+      return true;
     } catch (error) {
       console.error('Failed to load insurance plans:', error);
+      setErrors((prev) => ({ ...prev, insurancePlans: 'Failed to load insurance plans' }));
+      return false;
     }
+  };
+
+  const validateForm = (): Record<string, string> => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.beneficiary) {
+      newErrors.beneficiary = 'Beneficiary is required';
+    }
+
+    if (!formData.insurancePlan) {
+      newErrors.insurancePlan = 'Insurance plan is required';
+    }
+
+    if (!formData.coverageStart) {
+      newErrors.coverageStart = 'Coverage start date is required';
+    } else if (!isValidDate(formData.coverageStart)) {
+      newErrors.coverageStart = 'Invalid start date format';
+    }
+
+    if (formData.coverageEnd && !isValidDate(formData.coverageEnd)) {
+      newErrors.coverageEnd = 'Invalid end date format';
+    }
+
+    // Validate coverage dates
+    if (formData.coverageStart && formData.coverageEnd) {
+      const startDate = new Date(formData.coverageStart);
+      const endDate = new Date(formData.coverageEnd);
+
+      if (endDate <= startDate) {
+        newErrors.coverageEnd = 'End date must be after start date';
+      }
+    }
+
+    return newErrors;
+  };
+
+  const isValidDate = (dateString: string): boolean => {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,47 +113,50 @@ const AddPolicyModal: React.FC<AddPolicyModalProps> = ({ isOpen, onClose, onSucc
     setErrors({});
 
     try {
-      const newErrors: Record<string, string> = {};
-      if (!formData.beneficiary) newErrors.beneficiary = 'Beneficiary is required';
-      if (!formData.insurancePlan) newErrors.insurancePlan = 'Insurance plan is required';
-      if (!formData.coverageStart) newErrors.coverageStart = 'Coverage start date is required';
-
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
+      const formErrors = validateForm();
+      if (Object.keys(formErrors).length > 0) {
+        setErrors(formErrors);
         setLoading(false);
         return;
       }
 
-      const isValidDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return !isNaN(date.getTime());
-      };
-
-      await axios.post(API_ENDPOINTS.PAYER.POLICIES, {
+      const requestData = {
         beneficiary: formData.beneficiary,
         insurancePlan: formData.insurancePlan,
-        coverageStart: isValidDate(formData.coverageStart)
-          ? new Date(formData.coverageStart)
+        coverageStart: new Date(formData.coverageStart).toISOString(),
+        coverageEnd: formData.coverageEnd
+          ? new Date(formData.coverageEnd).toISOString()
           : undefined,
-        coverageEnd:
-          formData.coverageEnd && isValidDate(formData.coverageEnd)
-            ? new Date(formData.coverageEnd)
-            : undefined,
         status: formData.status,
+      };
+
+      const response = await axios.post(API_ENDPOINTS.PAYER.POLICIES, requestData, {
+        validateStatus: (status) => status < 500,
       });
 
-      onSuccess();
-      onClose();
-      setFormData({
-        beneficiary: '',
-        insurancePlan: '',
-        coverageStart: '',
-        coverageEnd: '',
-        status: 'active',
-      });
+      if (response.status >= 200 && response.status < 300) {
+        onSuccess();
+        onClose();
+        setFormData({
+          beneficiary: '',
+          insurancePlan: '',
+          coverageStart: '',
+          coverageEnd: '',
+          status: 'active',
+        });
+      } else {
+        if (response.data?.errors) {
+          setErrors(response.data.errors);
+        } else {
+          setErrors({
+            submit: response.data?.message || 'Failed to create policy. Please try again.',
+          });
+        }
+      }
     } catch (error: unknown) {
       console.error('Failed to create policy:', error);
-      setErrors({ submit: error instanceof Error ? error.message : 'Failed to create policy' });
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      setErrors({ submit: errorMessage });
     } finally {
       setLoading(false);
     }

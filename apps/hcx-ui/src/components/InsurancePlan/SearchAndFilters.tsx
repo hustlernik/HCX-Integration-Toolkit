@@ -12,10 +12,12 @@ import { Input } from '../ui/input';
 import { INSURANCE_PLAN_TYPES } from '../../constants/insurancePlanOptions';
 
 interface SearchAndFiltersProps {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  typeFilter: string;
-  setTypeFilter: (type: string) => void;
+  searchTerm?: string;
+
+  setSearchTerm: (searchTerm: string) => void;
+  typeFilter?: string;
+
+  setTypeFilter: (filterValue: string) => void;
   onAddPlan: () => void;
 }
 
@@ -32,13 +34,13 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         <Input
           type="text"
           placeholder="Search plans by name or alias..."
-          value={searchTerm}
+          value={searchTerm || ''}
           onChange={(e) => setSearchTerm(e.target.value)}
           aria-label="Search insurance plans"
           className="w-full"
         />
 
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
+        <Select value={typeFilter || ''} onValueChange={setTypeFilter}>
           <SelectTrigger className="w-44 flex items-center gap-2 bg-white">
             <Filter className="w-4 h-4 text-gray-400 mr-1" />
             <SelectValue placeholder="All Types" />

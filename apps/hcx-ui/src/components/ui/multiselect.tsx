@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Check, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from './popover';
 import { Button } from './button';
 

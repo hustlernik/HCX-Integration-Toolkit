@@ -13,7 +13,7 @@ import {
 import { MultiSelect } from '../ui/multiselect';
 
 interface AddInsurancePlanModalProps {
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (formData: any) => Promise<void>;
   onClose: () => void;
 }
 
@@ -21,7 +21,37 @@ export const AddInsurancePlanModal: React.FC<AddInsurancePlanModalProps> = ({
   onSubmit,
   onClose,
 }) => {
-  const [newPlan, setNewPlan] = useState({
+  const [newPlan, setNewPlan] = useState<{
+    insurancePlanType: string;
+    name: string;
+    aliases: string[];
+    periodStart: string;
+    periodEnd: string;
+    ownedByOrgId: string;
+    ownedByDisplay: string;
+    administeredByOrgId: string;
+    administeredByDisplay: string;
+    coverageAreaIds: string[];
+    contactPhones: string[];
+    contactEmails: string[];
+    networkOrgIds: string[];
+    claimConditions: string[];
+    supportingDocuments: string[];
+    benefitTypes: string[];
+    planType: string;
+    generalCosts: Array<{
+      comment: string;
+      groupSize: number;
+      costAmount: number;
+      currency: string;
+    }>;
+    specificCosts: Array<{
+      benefitCategory: string;
+      benefitType: string;
+      costAmount: number;
+      currency: string;
+    }>;
+  }>({
     insurancePlanType: '',
     name: '',
     aliases: [],
@@ -43,17 +73,17 @@ export const AddInsurancePlanModal: React.FC<AddInsurancePlanModalProps> = ({
     specificCosts: [{ benefitCategory: '', benefitType: '', costAmount: 0, currency: 'INR' }],
   });
 
-  const OWNED_BY_ORGS = {
+  const OWNED_BY_ORGS: Record<string, string> = {
     'abc-insurance-ltd': 'ABC Insurance Ltd.',
     'star-health': 'Star Health',
     'niva-bupa': 'Niva Bupa',
-  } as const;
+  };
 
-  const ADMINISTERED_BY_ORGS = {
+  const ADMINISTERED_BY_ORGS: Record<string, string> = {
     'xyz-health-tpa': 'XYZ Health TPA',
     'mediassist-tpa': 'Mediassist TPA',
     'health-india-tpa': 'Health India TPA',
-  } as const;
+  };
 
   const handleSubmit = async () => {
     try {

@@ -15,7 +15,7 @@ import {
 import { formatDate, hasDateField } from '@/utils/formatDate';
 import AdjudicateForm from './AdjudicateForm';
 import axios from 'axios';
-import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
+import { API_ENDPOINTS } from '@/config/api';
 import { CATEGORY_OPTIONS, PRODUCT_OR_SERVICE_OPTIONS } from '@/constants/insurancePlanOptions';
 
 interface CoverageEligibilityRequest {
@@ -58,7 +58,18 @@ interface CoverageEligibilityRequest {
     productOrService: { code: string; display: string };
     quantity?: { value: number; unit?: string };
     unitPrice?: { value?: number; currency?: string };
-    diagnoses?: Array<any>;
+    diagnoses?: Array<{
+      code?: string;
+      clinicalStatus?: string;
+      severity?: string;
+      description?: string;
+      verificationStatus?: string;
+      category?: string;
+      onsetDate?: string;
+      abatementDate?: string;
+      bodySite?: string;
+      notes?: string;
+    }>;
   }>;
   createdAt: string;
   updatedAt: string;
@@ -101,6 +112,7 @@ interface ResponseFormType {
 interface DetailDrawerProps {
   selectedRequest: CoverageEligibilityRequest | null;
   onClose: () => void;
+
   mapRequestToResponseForm: (req: CoverageEligibilityRequest) => ResponseFormType;
 }
 
@@ -121,9 +133,7 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
     insurance: [],
   });
   const [responseSubmitting, setResponseSubmitting] = useState(false);
-  const [responseSuccess, setResponseSuccess] = useState(false);
   const [itemOpenStates, setItemOpenStates] = useState<boolean[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedRequest && selectedRequest.items) {
@@ -144,13 +154,11 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
         insurance: [],
       });
     }
-    setResponseSuccess(false);
   };
 
   const handleResponseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setResponseSubmitting(true);
-    setResponseSuccess(false);
     try {
       const correlationId = selectedRequest?.correlationId || '';
 
@@ -160,14 +168,11 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
       });
 
       setResponseSubmitting(false);
-      setResponseSuccess(true);
       setTimeout(() => {
         setResponseAction(null);
-        setResponseSuccess(false);
       }, 1500);
-    } catch (err) {
+    } catch {
       setResponseSubmitting(false);
-      setError('Failed to submit adjudication: ' + (err as Error).message);
     }
   };
 
@@ -371,17 +376,16 @@ const DetailDrawer: React.FC<DetailDrawerProps> = ({
           <div className="space-y-2 text-sm">
             <div>
               <span className="font-medium">Date:</span>
-              {hasDateField(selectedRequest.serviced)
+              {selectedRequest.serviced && hasDateField(selectedRequest.serviced)
                 ? formatDate(selectedRequest.serviced.date)
                 : 'N/A'}
             </div>
             <div>
               <span className="font-medium">Period:</span>{' '}
-              {selectedRequest.serviced?.period &&
-              typeof selectedRequest.serviced.period.start === 'string' &&
-              typeof selectedRequest.serviced.period.end === 'string'
-                ? `${formatDate(selectedRequest.serviced.period.start)} - ${formatDate(selectedRequest.serviced.period.end)}`
-                : 'N/A'}
+              {selectedRequest.serviced?.period?.start || 'N/A'}
+              {selectedRequest.serviced?.period?.end
+                ? ` - ${selectedRequest.serviced.period.end}`
+                : ''}
             </div>
           </div>
         </div>
