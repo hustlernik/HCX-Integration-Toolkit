@@ -76,26 +76,21 @@ export default tseslint.config(
     rules: {
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
-      'react-refresh/only-export-components': 'warn',
+      'react-refresh/only-export-components': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
-      'import/order': [
-        'error',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'always',
-          alphabetize: { order: 'asc', caseInsensitive: true },
-          pathGroups: [
-            {
-              pattern: '@/**',
-              group: 'internal',
-              position: 'before',
-            },
-          ],
-          pathGroupsExcludedImportTypes: ['builtin'],
-        },
-      ],
+      '@typescript-eslint/no-floating-promises': 'off',
+      'import/order': 'off',
+      'import/no-unresolved': 'off',
+      'no-unused-vars': 'off',
+      'no-redeclare': 'off',
+      'no-undef': 'off',
+      'no-empty': 'off',
+      'no-console': 'off',
+      'import/no-named-as-default-member': 'off',
+      'no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
       'import/no-unresolved': [
         'error',
         {

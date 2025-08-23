@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import { X } from 'lucide-react';
 import axios from 'axios';
-import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface AddBeneficiaryModalProps {
   isOpen: boolean;
