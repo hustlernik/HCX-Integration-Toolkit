@@ -239,13 +239,11 @@ export class CoverageEligibilityNHCXController {
       });
       const encrypted = await encryptFHIR(bundle, responseHeaders);
 
-      res
-        .status(202)
-        .json({
-          status: 'success',
-          message: 'Adjudication queued for send via NHCX',
-          bundleId: bundle.id,
-        });
+      res.status(202).json({
+        status: 'success',
+        message: 'Adjudication queued for send via NHCX',
+        bundleId: bundle.id,
+      });
 
       setImmediate(async () => {
         try {

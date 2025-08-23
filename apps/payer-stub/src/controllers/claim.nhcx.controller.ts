@@ -208,13 +208,11 @@ export class ClaimNHCXController {
         }
       })();
 
-      res
-        .status(202)
-        .json({
-          status: 'success',
-          message: 'ClaimResponse accepted for processing',
-          bundleId: (bundle as any)?.id,
-        });
+      res.status(202).json({
+        status: 'success',
+        message: 'ClaimResponse accepted for processing',
+        bundleId: (bundle as any)?.id,
+      });
     } catch (err) {
       logger.error('Error in claim adjudication submit', err as any);
       res.status(500).json({ error: 'Internal server error' });

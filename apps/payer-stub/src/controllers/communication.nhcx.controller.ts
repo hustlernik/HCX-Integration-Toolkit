@@ -178,12 +178,10 @@ export class CommunicationNHCXController {
       );
     } catch (error) {
       console.error('Error processing communication response:', error);
-      res
-        .status(500)
-        .json({
-          error: 'Internal server error',
-          message: 'Failed to process communication response',
-        });
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Failed to process communication response',
+      });
     }
   }
 
