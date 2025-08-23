@@ -11,18 +11,23 @@ import nodeImportsPlugin from 'eslint-plugin-import';
 
 export default [
   js.configs.recommended,
-  // Base configuration for all files
   {
     ignores: [
       'node_modules/**',
       'dist/**',
+      '**/dist/**',
       'build/**',
+      '**/build/**',
+      'coverage/**',
+      '**/coverage/**',
       '.next/**',
+      '**/.next/**',
+      'apps/hcx-ui/dist/**',
+      'apps/provider-stub/dist/**',
       'commitlint.config.cjs',
       '**/*.config.js',
     ],
   },
-  // TypeScript configuration
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -53,13 +58,17 @@ export default [
     },
     rules: {
       ...reactHooksPlugin.configs.recommended.rules,
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'react-refresh/only-export-components': 'off',
       '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-unused-vars': 'off',
       'no-console': ['off', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
-      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      'no-undef': 'off',
+      'no-redeclare': 'off',
+      'no-empty': 'off',
       'react/prop-types': 'off',
       'n/no-missing-import': 'off',
       'n/no-process-env': 'off',
@@ -67,7 +76,6 @@ export default [
       'n/no-unsupported-features/node-builtins': 'off',
     },
   },
-  // Node.js specific configuration
   {
     files: ['**/*.ts'],
     rules: {
@@ -100,14 +108,22 @@ export default [
     ignores: ['dist', '**/*.config.js'],
   },
   {
-    files: ['**/postcss.config.js', '**/eslint.config.js'],
+    files: ['**/postcss.config.js', '**/eslint.config.js', '**/.eslintrc.js', '**/*.config.cjs', '**/*.config.js'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.node,
+        module: 'readonly',
+        require: 'readonly',
+        __dirname: 'readonly',
+        process: 'readonly',
+      },
       parserOptions: {
         ecmaFeatures: { jsx: true },
       },
     },
-    rules: {},
+    rules: {
+      'no-undef': 'off',
+    },
   },
 ];

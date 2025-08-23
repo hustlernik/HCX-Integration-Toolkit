@@ -112,7 +112,7 @@ interface ResponseFormType {
 interface DetailDrawerProps {
   selectedRequest: CoverageEligibilityRequest | null;
   onClose: () => void;
-  //eslint-disable-next-line
+
   mapRequestToResponseForm: (req: CoverageEligibilityRequest) => ResponseFormType;
 }
 

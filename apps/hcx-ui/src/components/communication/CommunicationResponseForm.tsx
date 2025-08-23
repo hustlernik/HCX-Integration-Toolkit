@@ -10,18 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
-import {
-  X,
-  Send,
-  Upload,
-  FileText,
-  Trash2,
-  MessageSquare,
-  Paperclip,
-  AlertCircle,
-  Link as LinkIcon,
-  Plus,
-} from 'lucide-react';
+import { X, Send, MessageSquare, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import { API_ENDPOINTS } from '@/config/api';
 import { commonMimeTypes, commonLanguages } from '@/constants/communication';
@@ -34,7 +23,6 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
   originalRequest,
   onSubmit,
   onCancel,
-  isSubmitting = false,
 }) => {
   const [formData, setFormData] = useState<{
     message: string;

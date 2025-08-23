@@ -13,10 +13,10 @@ import { INSURANCE_PLAN_TYPES } from '../../constants/insurancePlanOptions';
 
 interface SearchAndFiltersProps {
   searchTerm?: string;
-  // eslint-disable-next-line
+
   setSearchTerm: (searchTerm: string) => void;
   typeFilter?: string;
-  // eslint-disable-next-line
+
   setTypeFilter: (filterValue: string) => void;
   onAddPlan: () => void;
 }

@@ -55,7 +55,7 @@ interface AdjudicateFormProps {
   responseForm: ResponseFormType;
   setResponseForm: React.Dispatch<React.SetStateAction<ResponseFormType>>;
   responseSubmitting: boolean;
-  /* eslint-disable */
+
   handleResponseSubmit: (e: React.FormEvent) => void;
   setResponseAction: (action: 'approve' | 'reject' | 'query' | 'adjudicate' | null) => void;
   CATEGORY_OPTIONS: { code: string; display: string }[];

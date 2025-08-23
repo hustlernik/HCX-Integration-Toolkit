@@ -13,7 +13,6 @@ import {
 import { MultiSelect } from '../ui/multiselect';
 
 interface AddInsurancePlanModalProps {
-  // eslint-disable-next-line
   onSubmit: (formData: any) => Promise<void>;
   onClose: () => void;
 }

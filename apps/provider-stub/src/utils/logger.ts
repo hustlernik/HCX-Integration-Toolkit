@@ -11,7 +11,6 @@ const PRETTY =
   process.env.LOG_PRETTY === '1' || (process.env.NODE_ENV !== 'production' && process.stdout.isTTY);
 const MAX_VAL_LEN = Number(process.env.LOG_MAX_VAL_LEN || 5000);
 
-//eslint-disable-next-line
 function color(level: LogLevel): (_: string) => string {
   const codes: Record<LogLevel, [number, number]> = {
     debug: [36, 39],

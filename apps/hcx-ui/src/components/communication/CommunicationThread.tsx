@@ -50,13 +50,6 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
     return payload.find((p) => p.contentString)?.contentString || 'No message content';
   };
 
-  const getAttachments = (payload: Communication['payload']) => {
-    return payload
-      .filter((p) => p.contentAttachment)
-      .map((p) => p.contentAttachment)
-      .filter(Boolean);
-  };
-
   if (communications.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -81,7 +74,7 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
       </div>
 
       <div className="space-y-4">
-        {sortedComms.map((comm, index) => {
+        {sortedComms.map((comm) => {
           const isExpanded = expandedComms.has(comm.communicationId);
           const isRequest = comm.communicationType === 'request';
           const mainMessage = getMainMessage(comm.payload);
