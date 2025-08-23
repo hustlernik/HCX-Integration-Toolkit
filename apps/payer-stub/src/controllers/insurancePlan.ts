@@ -27,7 +27,6 @@ const generateShortPlanId = () => 'PLN-' + Math.random().toString(36).substr(2, 
 export const createInsurancePlan = async (req: Request, res: Response) => {
   try {
     const planData = req.body;
-    console.log('Received plan data:', JSON.stringify(planData, null, 2));
 
     if (!planData.id) {
       planData.id = generateShortPlanId();
@@ -35,6 +34,11 @@ export const createInsurancePlan = async (req: Request, res: Response) => {
 
     if (!planData.resourceType) {
       planData.resourceType = 'InsurancePlan';
+    } else if (planData.resourceType !== 'InsurancePlan') {
+      return res.status(400).json({
+        error: 'Invalid resourceType',
+        message: 'Expected resourceType "InsurancePlan".',
+      });
     }
 
     if (!planData.status) {
@@ -60,7 +64,7 @@ export const createInsurancePlan = async (req: Request, res: Response) => {
     }
 
     if (error.code === 11000) {
-      return res.status(400).json({
+      return res.status(409).json({
         error: 'Duplicate key error',
         message: 'An insurance plan with this ID already exists',
         details: error.keyValue,

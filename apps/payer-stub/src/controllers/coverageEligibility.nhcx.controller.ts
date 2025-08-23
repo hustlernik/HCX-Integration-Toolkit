@@ -172,7 +172,7 @@ export class CoverageEligibilityNHCXController {
       responseToSave.created = now;
       responseToSave.insurance = responseForm.insurance || [];
 
-      console.debug('[CoverageEligibilityOnCheck] Final response object', {
+      logger.debug('[CoverageEligibilityOnCheck] Final response object', undefined, {
         requestId: responseToSave.requestId,
         purpose: responseToSave.purpose,
         outcome: responseToSave.outcome,
@@ -188,10 +188,7 @@ export class CoverageEligibilityNHCXController {
       const currentCorrelationId = (reqDoc as any).correlationId || correlationId;
       const saved = await CoverageEligibilityResponse.create(responseToSave);
 
-      try {
-        const { logger } = await import('../utils/logger');
-        logger.info('Adjudication stored', undefined, { correlationId: currentCorrelationId });
-      } catch {}
+      logger.info('Adjudication stored', undefined, { correlationId: currentCorrelationId });
 
       const storedCorrelationId = (reqDoc as any).correlationId || correlationId;
       if (storedCorrelationId !== correlationId) {
@@ -231,7 +228,7 @@ export class CoverageEligibilityNHCXController {
       };
       if (!responseHeaders['x-hcx-request_id']) delete responseHeaders['x-hcx-request_id'];
 
-      console.debug('[CoverageEligibilityOnCheck] Using response protected headers', {
+      logger.debug('[CoverageEligibilityOnCheck] Using response protected headers', undefined, {
         sender: responseHeaders['x-hcx-sender_code'],
         recipient: responseHeaders['x-hcx-recipient_code'],
         correlationId: responseHeaders['x-hcx-correlation_id'],

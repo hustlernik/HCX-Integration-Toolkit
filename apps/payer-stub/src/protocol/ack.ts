@@ -50,7 +50,7 @@ export function buildAccepted202(
   const entityType = overrides.entityType || 'protocol-response';
   const protocolStatus = overrides.protocolStatus || 'response.complete';
   return {
-    timestamp: new Date().toISOString(),
+    timestamp: Math.floor(Date.now() / 1000).toString(),
     api_call_id: headers['x-hcx-api_call_id'] || '',
     correlation_id: headers['x-hcx-correlation_id'] || '',
     result: {

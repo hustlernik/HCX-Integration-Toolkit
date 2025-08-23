@@ -25,6 +25,7 @@ function color(level: LogLevel): (s: string) => string {
 function safeStringify(obj: any): string {
   const seen = new WeakSet();
   return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'bigint') return value.toString();
     if (typeof value === 'string') {
       return value.length > MAX_VAL_LEN ? value.slice(0, MAX_VAL_LEN) + '…' : value;
     }

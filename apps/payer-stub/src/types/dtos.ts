@@ -13,9 +13,19 @@ export interface ProtocolSuccessResponse {
     sender_code: string;
     recipient_code: string;
     entity_type: string;
-    protocol_status: 'request.queued';
+    protocol_status:
+      | 'request.initiated'
+      | 'request.queued'
+      | 'request.dispatched'
+      | 'request.stopped'
+      | 'request.complete'
+      | 'response.complete'
+      | 'response.partial'
+      | 'response.error'
+      | 'response.fail'
+      | 'acknowledged';
   };
-  error: {
+  error?: {
     code: string;
     message: string;
   };

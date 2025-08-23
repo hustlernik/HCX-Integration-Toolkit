@@ -16,7 +16,7 @@ router.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
     service: 'payer-stub',
-    timestamp: new Date().toISOString(),
+    timestamp: Math.floor(Date.now() / 1000).toString(),
     environment: process.env.NODE_ENV || 'development',
   });
 });
@@ -214,7 +214,7 @@ router.post(
     const isRawString = typeof body === 'string';
     if (!isJWEPayloadWrapper && !isRawString) {
       return res.status(400).json({
-        timestamp: new Date().toISOString(),
+        timestamp: Math.floor(Date.now() / 1000).toString(),
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
@@ -256,7 +256,7 @@ router.post(
     const isRawString = typeof body === 'string';
     if (!isJWEPayloadWrapper && !isRawString) {
       return res.status(400).json({
-        timestamp: new Date().toISOString(),
+        timestamp: Math.floor(Date.now() / 1000).toString(),
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
@@ -370,12 +370,6 @@ router.get('/v1/coverageeligibility/requests', async (req, res) => {
 
 router.post('/v1/error', async (req, res) => {
   try {
-    logger.info('Received NHCX error notification', {
-      timestamp: new Date().toISOString(),
-      headers: req.headers,
-      body: req.body,
-    });
-
     const timestamp = new Date();
     const formattedTimestamp = `${timestamp.getDate().toString().padStart(2, '0')}/${(timestamp.getMonth() + 1).toString().padStart(2, '0')}/${timestamp.getFullYear()} ${timestamp.getHours().toString().padStart(2, '0')}:${timestamp.getMinutes().toString().padStart(2, '0')}:${timestamp.getSeconds().toString().padStart(2, '0')}:${timestamp.getMilliseconds().toString().padStart(3, '0')}`;
 
@@ -416,7 +410,7 @@ router.post(
   (req, res, next) => {
     if (!req.body || typeof req.body !== 'object') {
       return res.status(400).json({
-        timestamp: new Date().toISOString(),
+        timestamp: Math.floor(Date.now() / 1000).toString(),
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
@@ -434,7 +428,7 @@ router.post(
 
     if (!req.body.payload || typeof req.body.payload !== 'string') {
       return res.status(400).json({
-        timestamp: new Date().toISOString(),
+        timestamp: Math.floor(Date.now() / 1000).toString(),
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
@@ -493,17 +487,19 @@ router.post('/v1/error/response', (req, res) => {
     'x-hcx-api_call_id':
       headers['x-hcx-api_call_id'] || body?.['x-hcx-api_call_id'] || `api_${Date.now()}`,
     'x-hcx-correlation_id': correlationId,
-    'x-hcx-timestamp': Math.floor(Date.now() / 1000).toString(),
-    'x-hcx-status': 'success',
+    'x-hcx-timestamp': Math.floor(Date.now() / 1000),
     'x-hcx-entity-type': 'protocol-response',
   };
 
-  res.status(202).set(responseHeaders).json({
-    type: 'ProtocolResponse',
-    timestamp: new Date().toISOString(),
-    status: 'ACKNOWLEDGED',
-    correlation_id: correlationId,
-  });
+  res
+    .status(202)
+    .set(responseHeaders)
+    .json({
+      type: 'ProtocolResponse',
+      timestamp: Math.floor(Date.now() / 1000).toString(),
+      status: 'ACKNOWLEDGED',
+      correlation_id: correlationId,
+    });
 });
 
 /**
@@ -515,7 +511,7 @@ router.get('/hcx/v1/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
     service: 'payer-stub',
-    timestamp: new Date().toISOString(),
+    timestamp: Math.floor(Date.now() / 1000).toString(),
     environment: process.env.NODE_ENV || 'development',
     nhcx: {
       role: 'responder',

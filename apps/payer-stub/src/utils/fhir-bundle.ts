@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { logger } from './logger';
 
 /**
  * Prepare a FHIR CoverageEligibilityResponse Bundle
@@ -229,12 +230,15 @@ export async function prepareCoverageEligibilityResponseBundle(
     ],
   };
 
-  const bundleRes = await axios.post(`${fhirBase}/Bundle`, bundle, {
-    headers: { 'Content-Type': 'application/fhir+json' },
-  });
-  const createdBundle = bundleRes.data;
-
-  return createdBundle;
+  try {
+    const bundleRes = await axios.post(`${fhirBase}/Bundle`, bundle, {
+      headers: { 'Content-Type': 'application/fhir+json' },
+    });
+    return bundleRes.data;
+  } catch (err) {
+    logger.debug?.('Failed to post bundle to FHIR server, returning local bundle:', err);
+    return bundle;
+  }
 }
 
 export async function prepareClaimResponseBundle(
@@ -242,7 +246,7 @@ export async function prepareClaimResponseBundle(
   requestFhirId: string,
   requestDocFallback?: any,
 ) {
-  const fhirBase = 'http://hapi.fhir.org/baseR4';
+  const fhirBase = process.env.FHIR_BASE_URL || 'https://hapi.fhir.org/baseR4';
 
   let requestResource: any = null;
   try {
@@ -620,7 +624,9 @@ export async function prepareCommunicationRequestBundle(
     try {
       const res = await axios.get(`${fhirBase}/${ref}`);
       refEntries.push({ fullUrl: `urn:uuid:${res.data.id}`, resource: res.data });
-    } catch {}
+    } catch (err) {
+      logger.debug?.(`Failed to fetch resource ${ref}:`, err);
+    }
   }
 
   const bundle = {
@@ -721,7 +727,9 @@ export async function prepareCommunicationResponseBundle(
     try {
       const res = await axios.get(`${fhirBase}/${ref}`);
       refEntries.push({ fullUrl: `urn:uuid:${res.data.id}`, resource: res.data });
-    } catch {}
+    } catch (err) {
+      logger.debug?.(`Failed to fetch resource ${ref}:`, err);
+    }
   }
 
   const bundle = {

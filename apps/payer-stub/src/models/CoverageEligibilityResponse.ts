@@ -88,7 +88,7 @@ const ItemSchema = new mongoose.Schema({
     enum: ['individual', 'family'],
   },
   term: { type: String },
-  benefit: [BenefitSchema],
+  benefits: [BenefitSchema],
   authorizationRequired: { type: Boolean },
   authorizationSupporting: [{ code: String, display: String }],
   authorizationUrl: { type: String },

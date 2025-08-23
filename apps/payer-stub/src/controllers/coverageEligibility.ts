@@ -49,9 +49,11 @@ export async function handleGetTransactionById(req: Request, res: Response) {
       return res.status(404).json({ error: 'CoverageEligibilityRequest not found' });
     }
 
-    const responses = await CoverageEligibilityResponse.find({ requestId: request.fhirRefId }).sort(
-      { createdAt: -1 },
-    );
+    const responses = request.fhirRefId
+      ? await CoverageEligibilityResponse.find({ requestId: request.fhirRefId }).sort({
+          createdAt: -1,
+        })
+      : [];
 
     return res.status(200).json({ correlationId, request, responses });
   } catch (err) {

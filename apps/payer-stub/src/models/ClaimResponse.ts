@@ -47,11 +47,13 @@ const totalSchema = new Schema({
   },
 });
 
-const processNoteSchema = new Schema({
-  type: { type: String },
-  enum: ['display', 'print', 'printoper'],
-  text: { type: String },
-});
+const processNoteSchema = new Schema(
+  {
+    type: { type: String, enum: ['display', 'print', 'printoper'] },
+    text: { type: String },
+  },
+  { _id: false },
+);
 
 const CoverageSchema = new Schema({
   id: String,

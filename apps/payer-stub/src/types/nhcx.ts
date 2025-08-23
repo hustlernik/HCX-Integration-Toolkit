@@ -5,7 +5,7 @@ export interface NHCXProtocolHeaders {
   'x-hcx-request_id'?: string;
   'x-hcx-correlation_id': string;
   'x-hcx-workflow_id'?: string;
-  'x-hcx-timestamp': number;
+  'x-hcx-timestamp': string;
   'x-hcx-debug_flag'?: 'Error' | 'Info' | 'Debug';
   'x-hcx-ben-abha-id'?: string;
   'x-hcx-entity-type'?: string;
@@ -14,25 +14,19 @@ export interface NHCXProtocolHeaders {
     | 'request.queued'
     | 'request.dispatched'
     | 'request.stopped'
-    | 'request.complete'
     | 'response.complete'
     | 'response.partial'
-    | 'response.error'
-    | 'response.fail';
-  'x-hcx-error_details'?:
-    | string
-    | {
-        code: string;
-        message: string;
-        trace: string;
-      };
-  'x-hcx-debug_details'?:
-    | string
-    | {
-        code: string;
-        message: string;
-        trace: string;
-      };
+    | 'response.error';
+  'x-hcx-error_details'?: {
+    code: string;
+    message: string;
+    trace: string;
+  };
+  'x-hcx-debug_details'?: {
+    code: string;
+    message: string;
+    trace: string;
+  };
 }
 
 export interface NHCXDomainHeaders {

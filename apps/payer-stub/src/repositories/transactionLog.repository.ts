@@ -42,6 +42,16 @@ export class TransactionLogRepository {
   }
 
   async create(doc: any) {
-    return TransactionLog.create(doc);
+    try {
+      return await TransactionLog.create(doc);
+    } catch (error: any) {
+      if (error?.code === 11000 && doc?.correlationId) {
+        return this.updateByCorrelationId({
+          correlationId: doc.correlationId,
+          ...doc,
+        });
+      }
+      throw error;
+    }
   }
 }

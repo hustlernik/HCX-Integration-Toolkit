@@ -23,7 +23,7 @@ const InsurancePlanSchema = new mongoose.Schema(
       ],
     },
     name: { type: String, required: true, default: 'ABC Health Secure Plan' },
-    aliases: [{ type: String, default: 'ABC Secure' }],
+    aliases: { type: [String], default: ['ABC Secure'] },
     periodStart: { type: Date, required: true, default: new Date('2024-01-01') },
     periodEnd: { type: Date, default: new Date('2025-01-01') },
     ownedByOrgId: {
@@ -41,23 +41,23 @@ const InsurancePlanSchema = new mongoose.Schema(
     administeredByDisplay: { type: String, default: 'XYZ Health TPA' },
     coverageAreaIds: [
       {
-        type: String,
+        type: [String],
         enum: ['delhi-ncr', 'mumbai', 'bangalore'],
         default: ['delhi-ncr'],
       },
     ],
-    contactPhones: [{ type: String, default: '+91-9999999999' }],
-    contactEmails: [{ type: String, default: 'support@abcinsurance.com' }],
+    contactPhones: [{ type: [String], default: '+91-9999999999' }],
+    contactEmails: [{ type: [String], default: 'support@abcinsurance.com' }],
     networkOrgIds: [
       {
-        type: String,
+        type: [String],
         enum: ['max-hospital', 'apollo-hospital', 'fortis-hospital'],
         default: ['max-hospital', 'apollo-hospital'],
       },
     ],
     claimConditions: [
       {
-        type: String,
+        type: [String],
         enum: [
           'Minimum 24 hours hospitalisation required',
           'Prior authorization required',
@@ -70,7 +70,7 @@ const InsurancePlanSchema = new mongoose.Schema(
     ],
     supportingDocuments: [
       {
-        type: String,
+        type: [String],
         enum: [
           'Proof of identity',
           'Proof of address',
@@ -94,7 +94,7 @@ const InsurancePlanSchema = new mongoose.Schema(
     ],
     benefitTypes: [
       {
-        type: String,
+        type: [String],
         enum: [
           'Consultation',
           'Hospitalization',

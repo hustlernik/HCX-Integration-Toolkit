@@ -1,7 +1,7 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
 
-let io: SocketIOServer;
+let io: SocketIOServer | null = null;
 
 /**
  * Initialize the Socket.IO server.

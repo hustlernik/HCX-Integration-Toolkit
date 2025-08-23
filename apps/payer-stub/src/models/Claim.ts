@@ -104,7 +104,7 @@ const VisionPrescriptionSchema = new Schema({
       prism: [
         {
           amount: { type: Number },
-          base: { type: String, enum: ['up', ' down', 'in', 'out'] },
+          base: { type: String, enum: ['up', 'down', 'in', 'out'] },
         },
       ],
       add: { type: Number },
@@ -167,7 +167,7 @@ const ItemSchema = new Schema({
     currency: { type: String },
   },
   bodySite: { type: String },
-  subSite: { type: String },
+  subSite: [{ type: String }],
 });
 
 const ClaimSchema = new Schema({
@@ -211,7 +211,7 @@ const ClaimSchema = new Schema({
 
   related: [RelatedSchema],
   prescription: PrescriptionSchema,
-  orginalPrescription: PrescriptionSchema,
+  originalPrescription: PrescriptionSchema,
   payee: [
     {
       type: { type: String },

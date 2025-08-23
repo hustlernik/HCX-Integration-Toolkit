@@ -11,9 +11,9 @@ const PolicySchema = new Schema(
         const year = String(date.getFullYear()).slice(-2);
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
-        const random = Math.floor(Math.random() * 1000)
+        const random = Math.floor(Math.random() * 1_000_000)
           .toString()
-          .padStart(3, '0');
+          .padStart(6, '0');
         return `POL-${year}${month}${day}-${random}`;
       },
     },
@@ -33,6 +33,12 @@ const PolicySchema = new Schema(
     },
     coverageEnd: {
       type: Date,
+      validate: {
+        validator: function (this: any, v: Date | undefined) {
+          return !v || v >= this.coverageStart;
+        },
+        message: 'coverageEnd must be on/after coverageStart',
+      },
     },
     status: {
       type: String,

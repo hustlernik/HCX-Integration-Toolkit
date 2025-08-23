@@ -27,9 +27,6 @@ export class CommunicationService {
       protectedHeaders,
       correlationId,
     });
-    logger.debug('[Payer CommunicationService] Outgoing FHIR Bundle for Encryption', undefined, {
-      bundle: payload,
-    });
 
     const encryptedPayload = await encryptFHIR(payload, protectedHeaders, {});
     logger.debug('[Payer CommunicationService] Encrypted Communication JWE', undefined, {
@@ -47,7 +44,6 @@ export class CommunicationService {
       recipient: protectedHeaders['x-hcx-recipient_code'],
       correlationId,
       host: hostHeader,
-      auth: `Bearer ${accessToken}`,
     });
 
     const response = await axios.post(

@@ -246,16 +246,6 @@ export class InsurancePlanNHCXController {
         recipientCode: responseHeaders['x-hcx-recipient_code'],
       });
 
-      logger.debug(
-        '[InsurancePlan] Outgoing on_request (protected-headers) pre-encrypt',
-        undefined,
-        {
-          protectedHeaders: responseHeaders,
-          endpoint: '/insuranceplan/on_request',
-          correlationId: responseHeaders['x-hcx-correlation_id'],
-        },
-      );
-
       const encryptedResponse = await encryptFHIR(
         insurancePlanBundle,
         responseHeaders,
@@ -270,7 +260,7 @@ export class InsurancePlanNHCXController {
 
       await this.nhcxService.sendInsurancePlanResponse(
         encryptedResponse,
-        'https://apisbx.abdm.gov.in/hcx/v1/insuranceplan/on_request',
+        `${config.nhcxBaseUrl}/insuranceplan/on_request`,
       );
 
       logger.info('Successfully sent InsurancePlanBundle response via NHCX gateway');
@@ -334,7 +324,7 @@ export class InsurancePlanNHCXController {
 
       await this.nhcxService.sendInsurancePlanResponse(
         encryptedResponse,
-        'https://apisbx.abdm.gov.in/hcx/v1/insuranceplan/on_request',
+        `${config.nhcxBaseUrl}/insuranceplan/on_request`,
       );
       logger.info('Sent error OperationOutcome via NHCX', { errorCode });
     } catch (error) {

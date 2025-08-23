@@ -13,8 +13,6 @@ const TransactionLogSchema = new mongoose.Schema(
       enum: ['pending', 'approved', 'rejected', 'queried', 'complete', 'sent', 'received', 'error'],
       default: 'pending',
     },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
     workflow: { type: String, default: 'communication' },
   },
   {

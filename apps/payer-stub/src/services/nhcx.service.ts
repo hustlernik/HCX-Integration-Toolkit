@@ -642,9 +642,7 @@ export class NHCXService {
         grantType,
       });
 
-      const requestId =
-        (globalThis as any)?.crypto?.randomUUID?.() ||
-        `req_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const requestId = uuidv4();
       const timestamp = new Date().toISOString();
       const hostHeader = (() => {
         try {

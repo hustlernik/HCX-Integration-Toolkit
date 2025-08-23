@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import app from './app';
 import { initSocket } from './socket/index';
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config();
 
 const server = http.createServer(app);
 

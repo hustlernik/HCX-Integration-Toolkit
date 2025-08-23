@@ -1,5 +1,5 @@
 import { AnyObject } from 'mongoose';
-
+import { logger } from './logger';
 /**
  * Map a FHIR CoverageEligibilityRequest Bundle
  * @param bundle FHIR Bundle object
@@ -87,7 +87,7 @@ export function mapCoverageEligibilityRequestBundleToModel(bundle: AnyObject): A
       })
     : [];
 
-  const practitionerResource = resolveRef(cer.enterer || cer.practitioner);
+  const practitionerResource = resolveRef(cer.enterer);
   const practitioner = practitionerResource
     ? {
         id: practitionerResource.id || '',
@@ -211,8 +211,7 @@ export function mapCoverageEligibilityRequestBundleToModel(bundle: AnyObject): A
 }
 
 export function mapClaimBundleToModel(bundle: AnyObject): AnyObject {
-  console.log('while mapping', bundle);
-  console.log('bundleType', typeof bundle);
+  logger.debug?.('Mapping claim bundle', undefined, { bundleType: typeof bundle });
 
   if (!bundle) {
     throw new Error('Bundle is null or undefined');

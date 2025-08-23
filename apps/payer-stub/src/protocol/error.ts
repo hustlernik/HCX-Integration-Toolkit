@@ -3,6 +3,7 @@ import { config } from '../config';
 
 export interface ProtocolErrorResponseBody {
   type: 'ProtocolResponse';
+  timestamp: string;
   'x-hcx-sender_code': string;
   'x-hcx-recipient_code': string;
   'x-hcx-api_call_id': string;
@@ -32,6 +33,7 @@ export function buildProtocolErrorResponse(
 ): ProtocolErrorResponseBody {
   return {
     type: 'ProtocolResponse',
+    timestamp: Math.floor(Date.now() / 1000).toString(),
     'x-hcx-sender_code': headers['x-hcx-recipient_code'] || config.payerCode || '',
     'x-hcx-recipient_code': headers['x-hcx-sender_code'] || config.providerCode || '',
     'x-hcx-api_call_id': headers['x-hcx-api_call_id'] || '',

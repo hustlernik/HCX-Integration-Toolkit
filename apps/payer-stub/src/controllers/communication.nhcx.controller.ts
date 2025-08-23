@@ -118,6 +118,9 @@ export class CommunicationNHCXController {
       });
     } catch (error) {
       logger.error('[Payer Communication] Internal error while handling request', error as Error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Internal server error' });
+      }
     }
   }
 
