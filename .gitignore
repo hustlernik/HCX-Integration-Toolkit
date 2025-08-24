@@ -158,3 +158,9 @@ node_modules/
 
 # turborepo cache
 .turbo/
+
+# Payer keys 
+apps/payer-stub/src/keys/
+
+# Provider keys 
+apps/provider-stub/src/keys/
