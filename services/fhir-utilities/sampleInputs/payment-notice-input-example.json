@@ -1,0 +1,39 @@
+{
+  "resourceType": "PaymentNotice",
+  "status": "active",
+  "request": {
+    "reference": "Claim/claim-01"
+  },
+  "response": {
+    "reference": "ClaimResponse/claim-response-01"
+  },
+  "provider": {
+    "reference": "Organization/provider-01",
+    "display": "City Hospital"
+  },
+  "payment": {
+    "reference": "PaymentReconciliation/payment-01"
+  },
+  "paymentDate": "2024-01-20",
+  "payee": {
+    "reference": "Organization/provider-01",
+    "display": "City Hospital"
+  },
+  "recipient": {
+    "reference": "Organization/insurer-01",
+    "display": "ABC Insurance Company"
+  },
+  "amount": {
+    "value": 5000.0,
+    "currency": "INR"
+  },
+  "paymentStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/paymentstatus",
+        "code": "paid",
+        "display": "Paid"
+      }
+    ]
+  }
+}

@@ -1,0 +1,522 @@
+{
+  "resourceType": "ClaimResponse",
+  "language": "en-IN",
+  "identifier": [
+    {
+      "use": "official",
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "FILL",
+            "display": "Filler Identifier"
+          }
+        ]
+      },
+      "system": "https://www.tmh.in/",
+      "value": "CR-123456"
+    }
+  ],
+  "status": "active",
+  "type": {
+    "coding": [
+      {
+        "system": "https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-claim-type",
+        "code": "institutional",
+        "display": "Institutional"
+      }
+    ]
+  },
+  "subType": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/ex-claimsubtype",
+        "code": "emergency",
+        "display": "Emergency Claim"
+      }
+    ]
+  },
+  "use": "claim",
+  "patient": {
+    "reference": "Patient/patient-01",
+    "display": "John Doe"
+  },
+  "insurer": {
+    "reference": "Organization/insurer-01",
+    "display": "ABC Insurance Company"
+  },
+  "requestor": {
+    "reference": "Organization/provider-01",
+    "display": "City Hospital"
+  },
+  "request": {
+    "reference": "Claim/claim-01"
+  },
+  "outcome": "complete",
+  "disposition": "Claim processed successfully",
+  "preAuthRef": "PA-789012",
+  "preAuthPeriod": {
+    "start": "2024-01-01",
+    "end": "2024-12-31"
+  },
+  "payeeType": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+        "code": "provider",
+        "display": "Provider"
+      }
+    ]
+  },
+  "item": [
+    {
+      "itemSequence": 1,
+      "noteNumber": [1],
+      "adjudication": [
+        {
+          "category": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+                "code": "submitted",
+                "display": "Submitted Amount"
+              }
+            ]
+          },
+          "reason": {
+            "coding": [
+              {
+                "system": "https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-adjudication-reason",
+                "code": "Approved",
+                "display": "Product or Service requested is approved by the policy"
+              }
+            ]
+          },
+          "amount": {
+            "value": 5000.0,
+            "currency": "INR"
+          }
+        },
+        {
+          "category": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+                "code": "copay",
+                "display": "CoPay"
+              }
+            ]
+          },
+          "amount": {
+            "value": 500.0,
+            "currency": "INR"
+          }
+        }
+      ],
+      "detail": [
+        {
+          "detailSequence": 1,
+          "adjudication": [
+            {
+              "category": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+                    "code": "eligible",
+                    "display": "Eligible Amount"
+                  }
+                ]
+              },
+              "amount": {
+                "value": 4500.0,
+                "currency": "INR"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "addItem": [
+    {
+      "itemSequence": [2],
+      "provider": [
+        {
+          "reference": "Practitioner/doctor-01",
+          "display": "Dr. Smith"
+        }
+      ],
+      "productOrService": {
+        "coding": [
+          {
+            "system": "https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-productorservice",
+            "code": "consultation",
+            "display": "Medical Consultation"
+          }
+        ]
+      },
+      "modifier": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/modifiers",
+              "code": "c",
+              "display": "TMJ treatment"
+            }
+          ]
+        }
+      ],
+      "programCode": [
+        {
+          "coding": [
+            {
+              "system": "https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-program-code",
+              "code": "ESIC",
+              "display": "ESIC"
+            }
+          ]
+        }
+      ],
+      "servicedDate": "2024-01-15",
+      "locationCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/ex-serviceplace",
+            "code": "01",
+            "display": "Pharmacy"
+          }
+        ]
+      },
+      "quantity": {
+        "value": 1
+      },
+      "unitPrice": {
+        "value": 1000.0,
+        "currency": "INR"
+      },
+      "factor": 1.0,
+      "net": {
+        "value": 1000.0,
+        "currency": "INR"
+      },
+      "bodySite": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "87878005",
+            "display": "Left ventricle"
+          }
+        ]
+      },
+      "subSite": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/FDI-surface",
+              "code": "M",
+              "display": "Mesial"
+            }
+          ]
+        }
+      ],
+      "noteNumber": [2],
+      "adjudication": [
+        {
+          "category": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+                "code": "benefit",
+                "display": "Benefit Amount"
+              }
+            ]
+          },
+          "amount": {
+            "value": 800.0,
+            "currency": "INR"
+          }
+        }
+      ],
+      "detail": [
+        {
+          "productOrService": {
+            "coding": [
+              {
+                "system": "https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-productorservice",
+                "code": "laboratory",
+                "display": "Laboratory Test"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/modifiers",
+                  "code": "b",
+                  "display": "Temporary service or installation"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 2
+          },
+          "unitPrice": {
+            "value": 200.0,
+            "currency": "INR"
+          },
+          "factor": 1.0,
+          "net": {
+            "value": 400.0,
+            "currency": "INR"
+          },
+          "adjudication": [
+            {
+              "category": {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+                    "code": "eligible",
+                    "display": "Eligible Amount"
+                  }
+                ]
+              },
+              "amount": {
+                "value": 360.0,
+                "currency": "INR"
+              }
+            }
+          ],
+          "subDetail": [
+            {
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-productorservice",
+                    "code": "blood-test",
+                    "display": "Blood Test"
+                  }
+                ]
+              },
+              "modifier": [
+                {
+                  "coding": [
+                    {
+                      "system": "http://terminology.hl7.org/CodeSystem/modifiers",
+                      "code": "a",
+                      "display": "Repair of prior service or installation"
+                    }
+                  ]
+                }
+              ],
+              "quantity": {
+                "value": 1
+              },
+              "unitPrice": {
+                "value": 100.0,
+                "currency": "INR"
+              },
+              "factor": 1.0,
+              "net": {
+                "value": 100.0,
+                "currency": "INR"
+              },
+              "adjudication": [
+                {
+                  "category": {
+                    "coding": [
+                      {
+                        "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+                        "code": "eligible",
+                        "display": "Eligible Amount"
+                      }
+                    ]
+                  },
+                  "amount": {
+                    "value": 90.0,
+                    "currency": "INR"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "adjudication": [
+    {
+      "category": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+            "code": "submitted",
+            "display": "Submitted Amount"
+          }
+        ]
+      },
+      "amount": {
+        "value": 6000.0,
+        "currency": "INR"
+      }
+    }
+  ],
+  "total": [
+    {
+      "category": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+            "code": "submitted",
+            "display": "Submitted Amount"
+          }
+        ]
+      },
+      "amount": {
+        "value": 6000.0,
+        "currency": "INR"
+      }
+    },
+    {
+      "category": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/adjudication",
+            "code": "benefit",
+            "display": "Benefit Amount"
+          }
+        ]
+      },
+      "amount": {
+        "value": 5400.0,
+        "currency": "INR"
+      }
+    }
+  ],
+  "payment": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/ex-paymenttype",
+          "code": "complete",
+          "display": "Complete"
+        }
+      ]
+    },
+    "adjustment": {
+      "value": 100.0,
+      "currency": "INR"
+    },
+    "adjustmentReason": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payment-adjustment-reason",
+          "code": "a001",
+          "display": "Prior Payment Reversal"
+        }
+      ]
+    },
+    "date": "2024-01-20",
+    "amount": {
+      "value": 5300.0,
+      "currency": "INR"
+    },
+    "identifier": {
+      "system": "https://www.tmh.in/payment",
+      "value": "PAY-789012"
+    }
+  },
+  "fundsReserve": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/fundsreserve",
+        "code": "provider",
+        "display": "Provider"
+      }
+    ]
+  },
+  "formCode": {
+    "coding": [
+      {
+        "system": "https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-form-code",
+        "code": "preauthapproval",
+        "display": "Approval letter for Pre-authorisation"
+      }
+    ]
+  },
+  "form": {
+    "contentType": "application/pdf",
+    "language": "en-IN",
+    "data": "JVBERi0xLjQKJcOkw7zDtsO4DQoxIDAgb2JqCjw8Ci9UeXBlIC9DYXRhbG9nCi9QYWdlcyAyIDAgUgo+PgplbmRvYmoKMiAwIG9iago8PAovVHlwZSAvUGFnZXMKL0tpZHMgWzMgMCBSXQovQ291bnQgMQo+PgplbmRvYmoKMyAwIG9iago8PAovVHlwZSAvUGFnZQovUGFyZW50IDIgMCBSCi9NZWRpYUJveCBbMCAwIDYxMiA3OTJdCj4+CmVuZG9iagp4cmVmCjAgNAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA1OCAwMDAwMCBuIAowMDAwMDAwMTE1IDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgNAovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMTc0CiUlRU9G",
+    "url": "https://example.com/claim-form.pdf",
+    "size": 339,
+    "hash": "9xJqjmrSQCvJ8+18kiX5nxtQtqk=",
+    "title": "Claim Response Form",
+    "creation": "2024-01-15T10:30:00+05:30"
+  },
+  "processNote": [
+    {
+      "number": 1,
+      "type": "display",
+      "text": "Claim processed successfully. Payment to be made within 7 business days.",
+      "language": {
+        "coding": [
+          {
+            "system": "urn:ietf:bcp:47",
+            "code": "en-IN",
+            "display": "English (India)"
+          }
+        ]
+      }
+    },
+    {
+      "number": 2,
+      "type": "print",
+      "text": "Additional documentation required for future claims of this type.",
+      "language": {
+        "coding": [
+          {
+            "system": "urn:ietf:bcp:47",
+            "code": "en-IN",
+            "display": "English (India)"
+          }
+        ]
+      }
+    }
+  ],
+  "communicationRequest": [
+    {
+      "reference": "CommunicationRequest/comm-req-01",
+      "display": "Additional information request"
+    }
+  ],
+  "insurance": [
+    {
+      "sequence": 1,
+      "focal": true,
+      "coverage": {
+        "reference": "Coverage/coverage-01",
+        "display": "Primary Insurance Coverage"
+      },
+      "businessArrangement": "Direct Billing",
+      "claimResponse": {
+        "reference": "ClaimResponse/prev-response-01"
+      }
+    }
+  ],
+  "error": [
+    {
+      "itemSequence": 3,
+      "code": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/adjudication-error",
+            "code": "a001",
+            "display": "Missing Identifier"
+          }
+        ]
+      }
+    }
+  ]
+}
