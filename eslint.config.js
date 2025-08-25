@@ -113,6 +113,29 @@ export default [
     ignores: ['dist', '**/*.config.js'],
   },
   {
+    files: ['services/fhir-utilities/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.node,
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+      },
+      parserOptions: {
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      'no-console': 'off',
+      'no-undef': 'off',
+      'no-useless-escape': 'off',
+    },
+  },
+  {
     files: [
       '**/postcss.config.js',
       '**/eslint.config.js',

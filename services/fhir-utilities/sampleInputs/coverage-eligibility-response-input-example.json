@@ -1,0 +1,26 @@
+{
+  "resourceType": "CoverageEligibilityResponse",
+  "status": "active",
+  "purpose": ["benefits"],
+  "patient": {
+    "reference": "Patient/patient-01",
+    "display": "John Doe"
+  },
+  "insurer": {
+    "reference": "Organization/insurer-01",
+    "display": "ABC Insurance Company"
+  },
+  "request": {
+    "reference": "CoverageEligibilityRequest/request-01"
+  },
+  "outcome": "complete",
+  "disposition": "Coverage verified successfully",
+  "insurance": [
+    {
+      "coverage": {
+        "reference": "Coverage/coverage-01"
+      },
+      "inforce": true
+    }
+  ]
+}

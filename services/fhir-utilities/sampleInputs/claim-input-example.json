@@ -1,0 +1,595 @@
+{
+  "resourceType": "Claim",
+  "identifier": [
+    {
+      "system": "http://example.org/fhir/claims",
+      "value": "CLM-2024-001234",
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "PLAC",
+            "display": "Placer Identifier"
+          }
+        ],
+        "text": "Placer Identifier"
+      }
+    }
+  ],
+  "status": "active",
+  "type": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "737481003",
+        "display": "Inpatient care management (procedure)"
+      }
+    ],
+    "text": "Inpatient care management"
+  },
+  "subType": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/ex-claimsubtype",
+        "code": "emergency",
+        "display": "Emergency Claim"
+      }
+    ],
+    "text": "Emergency"
+  },
+  "use": "claim",
+  "patient": {
+    "reference": "Patient/patient-123",
+    "display": "John Doe"
+  },
+  "billablePeriod": {
+    "start": "2024-01-15",
+    "end": "2024-01-20"
+  },
+  "enterer": {
+    "reference": "Practitioner/practitioner-456",
+    "display": "Dr. Smith"
+  },
+  "insurer": {
+    "reference": "Organization/insurer-789",
+    "display": "ABC Insurance Company"
+  },
+  "provider": {
+    "reference": "Organization/provider-101",
+    "display": "City General Hospital"
+  },
+  "priority": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+        "code": "normal",
+        "display": "Normal"
+      }
+    ],
+    "text": "Normal"
+  },
+  "fundsReserve": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/fundsreserve",
+        "code": "provider",
+        "display": "Provider"
+      }
+    ],
+    "text": "Provider"
+  },
+  "related": [
+    {
+      "claim": {
+        "reference": "Claim/claim-prior-001"
+      },
+      "relationship": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/ex-relatedclaimrelationship",
+            "code": "prior",
+            "display": "Prior Claim"
+          }
+        ],
+        "text": "Prior"
+      },
+      "reference": {
+        "value": "CLM-2024-001233",
+        "type": "CLN"
+      }
+    }
+  ],
+  "prescription": {
+    "reference": "MedicationRequest/prescription-001"
+  },
+  "originalPrescription": {
+    "reference": "MedicationRequest/prescription-original-001"
+  },
+  "payee": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+          "code": "provider",
+          "display": "Provider"
+        }
+      ],
+      "text": "Provider"
+    },
+    "party": {
+      "reference": "Organization/provider-101",
+      "display": "City General Hospital"
+    }
+  },
+  "referral": {
+    "reference": "ServiceRequest/service-request-001"
+  },
+  "facility": {
+    "reference": "Location/facility-001",
+    "display": "City General Hospital - Main Building"
+  },
+  "careTeam": [
+    {
+      "sequence": 1,
+      "provider": {
+        "reference": "Practitioner/practitioner-456",
+        "display": "Dr. Smith"
+      },
+      "responsible": true,
+      "role": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "405623001",
+            "display": "Assigned practitioner (occupation)"
+          }
+        ]
+      },
+      "qualification": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "394658006",
+            "display": "Clinical specialty (qualifier value)"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 2,
+      "provider": {
+        "reference": "Practitioner/practitioner-789",
+        "display": "Dr. Johnson"
+      },
+      "responsible": false,
+      "role": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "768839008",
+            "display": "Consultant (occupation)"
+          }
+        ]
+      }
+    }
+  ],
+  "supportingInfo": [
+    {
+      "sequence": 1,
+      "category": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-supportinginfo-category",
+            "code": "CER",
+            "display": "Claim Event Related"
+          }
+        ]
+      },
+      "code": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-supportinginfo-code",
+            "code": "MDC",
+            "display": "Medical Documents"
+          }
+        ]
+      },
+      "timingDate": "2024-01-15",
+      "valueBoolean": true
+    },
+    {
+      "sequence": 2,
+      "category": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-supportinginfo-category",
+            "code": "DIA",
+            "display": "Diagnostics"
+          }
+        ]
+      },
+      "code": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-supportinginfo-code",
+            "code": "LIR",
+            "display": "Lab Investigation Report"
+          }
+        ]
+      },
+      "timingDate": "2024-01-16",
+      "valueAttachment": {
+        "contentType": "application/pdf",
+        "url": "https://example.com/lab-report.pdf",
+        "title": "Blood Test Report"
+      }
+    },
+    {
+      "sequence": 3,
+      "category": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-supportinginfo-category",
+            "code": "HDS",
+            "display": "Hospital Documents Summary"
+          }
+        ]
+      },
+      "code": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-supportinginfo-code",
+            "code": "DCR",
+            "display": "Discharge Summary"
+          }
+        ]
+      },
+      "timingDate": "2024-01-20",
+      "valueAttachment": {
+        "contentType": "application/pdf",
+        "url": "https://example.com/discharge-summary.pdf",
+        "title": "Discharge Summary"
+      }
+    }
+  ],
+  "diagnosis": [
+    {
+      "sequence": 1,
+      "diagnosisCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/sid/icd-10",
+            "code": "E11.9",
+            "display": "Type 2 diabetes mellitus : Without complications"
+          }
+        ]
+      },
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "89100005",
+              "display": "Final diagnosis (discharge) (contextual qualifier)"
+            }
+          ]
+        }
+      ],
+      "onAdmission": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/ex-diagnosis-on-admission",
+            "code": "y",
+            "display": "Yes"
+          }
+        ]
+      },
+      "packageCode": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/ex-diagnosisrelatedgroup",
+            "code": "100"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 2,
+      "diagnosisCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/sid/icd-10",
+            "code": "I46.9",
+            "display": "Cardiac arrest, unspecified"
+          }
+        ]
+      },
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "47965005",
+              "display": "Differential diagnosis (contextual qualifier)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "procedure": [
+    {
+      "sequence": 1,
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/ex-procedure-type",
+              "code": "primary",
+              "display": "Primary procedure"
+            }
+          ]
+        }
+      ],
+      "date": "2024-01-16",
+      "procedureCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "108241001",
+            "display": "Dialysis procedure (procedure)"
+          }
+        ]
+      }
+    }
+  ],
+  "insurance": [
+    {
+      "sequence": 1,
+      "focal": true,
+      "identifier": {
+        "value": "POL-2024-001",
+        "type": "PIPC"
+      },
+      "coverage": {
+        "reference": "Coverage/coverage-001",
+        "display": "ABC Insurance Policy"
+      },
+      "businessArrangement": "Standard arrangement",
+      "preAuthRef": ["PRE-AUTH-001", "PRE-AUTH-002"]
+    }
+  ],
+  "accident": {
+    "date": "2024-01-14",
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "MVA",
+          "display": "Motor vehicle accident"
+        }
+      ]
+    },
+    "locationAddress": {
+      "use": "work",
+      "type": "physical",
+      "text": "123 Main Street, City, State 12345",
+      "line": ["123 Main Street"],
+      "city": "City",
+      "state": "State",
+      "postalCode": "12345",
+      "country": "IN"
+    }
+  },
+  "item": [
+    {
+      "sequence": 1,
+      "careTeamSequence": [1, 2],
+      "diagnosisSequence": [1],
+      "procedureSequence": [1],
+      "informationSequence": [1, 2, 3],
+      "revenue": {
+        "coding": [
+          {
+            "system": "https://www.nubc.org/CodeSystem/RevenueCodes",
+            "code": "0370",
+            "display": "Anaesthesia"
+          }
+        ]
+      },
+      "category": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-benefitcategory",
+            "code": "medical",
+            "display": "Medical"
+          }
+        ]
+      },
+      "productOrService": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "108241001",
+            "display": "Dialysis procedure (procedure)"
+          }
+        ]
+      },
+      "programCode": [
+        {
+          "coding": [
+            {
+              "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-program-code",
+              "code": "AB-PMJAY",
+              "display": "AB-PMJAY"
+            }
+          ]
+        }
+      ],
+      "servicedDate": "2024-01-16",
+      "locationCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/ex-serviceplace",
+            "code": "11",
+            "display": "Office"
+          }
+        ]
+      },
+      "quantity": {
+        "value": 1,
+        "unit": "session"
+      },
+      "unitPrice": {
+        "value": 5000.0,
+        "currency": "INR"
+      },
+      "factor": 1.0,
+      "net": {
+        "value": 5000.0,
+        "currency": "INR"
+      },
+      "bodySite": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/ex-tooth",
+            "code": "0",
+            "display": "Oral cavity"
+          }
+        ]
+      },
+      "subSite": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/FDI-surface",
+              "code": "M",
+              "display": "Mesial"
+            }
+          ]
+        }
+      ],
+      "encounter": [
+        {
+          "reference": "Encounter/encounter-001",
+          "display": "Emergency Room Visit"
+        }
+      ],
+      "detail": [
+        {
+          "sequence": 1,
+          "revenue": {
+            "coding": [
+              {
+                "system": "https://www.nubc.org/CodeSystem/RevenueCodes",
+                "code": "0420",
+                "display": "Physical Therapy"
+              }
+            ]
+          },
+          "category": {
+            "coding": [
+              {
+                "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-benefitcategory",
+                "code": "therapy",
+                "display": "Therapy"
+              }
+            ]
+          },
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "410083007",
+                "display": "Rehabilitation therapy management (procedure)"
+              }
+            ]
+          },
+          "quantity": {
+            "value": 2,
+            "unit": "session"
+          },
+          "unitPrice": {
+            "value": 1000.0,
+            "currency": "INR"
+          },
+          "factor": 1.0,
+          "net": {
+            "value": 2000.0,
+            "currency": "INR"
+          },
+          "subDetail": [
+            {
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "763158003",
+                    "display": "Medicinal product (product)"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 10,
+                "unit": "tablet"
+              },
+              "unitPrice": {
+                "value": 50.0,
+                "currency": "INR"
+              },
+              "factor": 1.0,
+              "net": {
+                "value": 500.0,
+                "currency": "INR"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sequence": 2,
+      "careTeamSequence": [1],
+      "diagnosisSequence": [1, 2],
+      "informationSequence": [1],
+      "category": {
+        "coding": [
+          {
+            "system": "https://www.nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-benefitcategory",
+            "code": "diagnostic",
+            "display": "Diagnostic"
+          }
+        ]
+      },
+      "productOrService": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "15220000",
+            "display": "Laboratory test (procedure)"
+          }
+        ]
+      },
+      "servicedDate": "2024-01-17",
+      "quantity": {
+        "value": 1,
+        "unit": "test"
+      },
+      "unitPrice": {
+        "value": 800.0,
+        "currency": "INR"
+      },
+      "factor": 1.0,
+      "net": {
+        "value": 800.0,
+        "currency": "INR"
+      }
+    }
+  ],
+  "total": {
+    "value": 7800.0,
+    "currency": "INR"
+  },
+  "language": "en-IN"
+}
