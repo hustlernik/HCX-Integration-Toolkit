@@ -123,8 +123,8 @@ export interface Communication {
   }>;
   payload: CommunicationPayload[];
   workflowStatus: CommunicationWorkflowStatus;
-  sent?: string;
-  received?: string;
+  sentAt?: string;
+  receivedAt?: string;
   dueDate?: string;
   requestedDocuments?: RequestedDocument[];
   responseAttachments?: AttachmentItem[];

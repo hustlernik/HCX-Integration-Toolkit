@@ -26,7 +26,7 @@ interface CommunicationRequestFormProps {
   correlationId: string;
   patientName: string;
   providerName: string;
-  onSubmit: (data: CommunicationRequestData) => void;
+  // onSubmit: (data: CommunicationRequestData) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
 }
@@ -36,7 +36,7 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
   correlationId,
   patientName,
   providerName,
-  onSubmit,
+  // onSubmit,
   onCancel,
   isSubmitting = false,
 }) => {
@@ -61,33 +61,7 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
       const endpoint = API_ENDPOINTS.PAYER.COMMUNICATION_REQUEST;
       const headers = {
         'Content-Type': 'application/json',
-        'x-hcx-api_call_id': `comm-req-${Date.now()}`,
-        'x-hcx-correlation_id': correlationId,
-        'x-hcx-workflow_id': 'communication',
-        'x-hcx-timestamp': new Date().toISOString(),
-        'x-hcx-sender_code': 'payer-001',
-        'x-hcx-recipient_code': 'provider-001',
       } as const;
-
-      const payload = {
-        correlationId,
-        claimId,
-        reasonCode: formData.reasonCode,
-        reasonDisplay: formData.reasonDisplay,
-        message: formData.message,
-        priority: formData.priority,
-        dueDate: formData.dueDate,
-        category: formData.category,
-        medium: formData.medium,
-        attachments: attachments.map((a) => ({
-          title: a.title,
-          contentType: a.contentType,
-          language: a.language,
-          creation: a.creation,
-          data: a.mode === 'data' ? a.data : undefined,
-          url: a.mode === 'url' ? a.url : undefined,
-        })),
-      };
 
       const invalidData = attachments.some((a) => a.mode === 'data' && (!a.data || !a.contentType));
       if (invalidData) {
@@ -96,6 +70,27 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
         return;
       }
 
+      const payload = {
+        claimId,
+        claimCorrelationId: correlationId,
+        responseForm: {
+          message: formData.message,
+          status: 'requested',
+          priority: formData.priority,
+          dueDate: formData.dueDate,
+          reasonCode: formData.reasonCode,
+          reasonDisplay: formData.reasonDisplay,
+          attachments: attachments
+            .map((a) => ({
+              title: a.title,
+              type: a.contentType,
+              url: a.mode === 'url' ? a.url : undefined,
+              data: a.mode === 'data' ? a.data : undefined,
+            }))
+            .filter((a) => a.url || a.data),
+        },
+      };
+
       const res = await axios.post(endpoint, payload, { headers });
       const contentType = res.headers?.['content-type'] || '';
       if (contentType.includes('application/json') || typeof res.data === 'object') {
@@ -103,7 +98,7 @@ const CommunicationRequestForm: React.FC<CommunicationRequestFormProps> = ({
       } else {
         console.warn('Communication request sent but received non-JSON response');
       }
-      onSubmit({ ...formData, attachments });
+      // onSubmit({ ...formData, attachments });
       alert('Communication request sent successfully!');
     } catch (error) {
       console.error('Error sending communication request:', error);

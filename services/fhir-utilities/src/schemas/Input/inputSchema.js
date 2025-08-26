@@ -1,10 +1,21 @@
 import Joi from 'joi';
 
+export const annotationInputSchema = Joi.object({
+  authorReference: Joi.object({
+    type: Joi.string(),
+    reference: Joi.string().required(),
+    identifier: Joi.string(),
+    display: Joi.string(),
+  }),
+  authorString: Joi.string(),
+  time: Joi.date().iso(),
+  text: Joi.string().required(),
+});
+
 /**
  * Input Schema
  */
-
-const extensionInputSchema = Joi.object({
+export const extensionInputSchema = Joi.object({
   url: Joi.string().uri().required(),
   valueBase64Binary: Joi.string(),
   valueBoolean: Joi.boolean(),
@@ -46,17 +57,7 @@ const extensionInputSchema = Joi.object({
     system: Joi.string().uri(),
     code: Joi.string(),
   }),
-  valueAnnotation: Joi.object({
-    authorReference: Joi.object({
-      type: Joi.string(),
-      reference: Joi.string().required(),
-      identifier: Joi.string(),
-      display: Joi.string(),
-    }),
-    authorString: Joi.string(),
-    time: Joi.date().iso(),
-    text: Joi.string().required(),
-  }),
+  valueAnnotation: annotationInputSchema,
   valueAttachment: Joi.object({
     contentType: Joi.string(),
     language: Joi.string(),
@@ -889,7 +890,7 @@ const extensionInputSchema = Joi.object({
   }),
 });
 
-const codeableConceptInputSchema = Joi.alternatives().try(
+export const codeableConceptInputSchema = Joi.alternatives().try(
   Joi.string(),
   Joi.object({
     system: Joi.string().uri(),
@@ -916,19 +917,19 @@ const codeableConceptInputSchema = Joi.alternatives().try(
   }),
 );
 
-const referenceInputSchema = Joi.object({
+export const referenceInputSchema = Joi.object({
   type: Joi.string(),
   reference: Joi.string().required(),
   identifier: Joi.string(),
   display: Joi.string(),
 });
 
-const periodInputSchema = Joi.object({
+export const periodInputSchema = Joi.object({
   start: Joi.date().iso(),
   end: Joi.date().iso(),
 });
 
-const identifierInputSchema = Joi.object({
+export const identifierInputSchema = Joi.object({
   id: Joi.string(),
   use: Joi.string().valid('usual', 'official', 'temp', 'secondary', 'old').default('official'),
   type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
@@ -941,7 +942,7 @@ const identifierInputSchema = Joi.object({
   extension: Joi.array().items(extensionInputSchema),
 });
 
-const nameInputSchema = Joi.object({
+export const nameInputSchema = Joi.object({
   id: Joi.string(),
   use: Joi.string()
     .valid('usual', 'official', 'temp', 'nickname', 'anonymous', 'old', 'maiden')
@@ -977,7 +978,7 @@ const nameInputSchema = Joi.object({
   return value;
 }, 'name-constraint');
 
-const contactPointInputSchema = Joi.object({
+export const contactPointInputSchema = Joi.object({
   id: Joi.string(),
   system: Joi.string().valid('phone', 'fax', 'email', 'pager', 'url', 'sms', 'other').required(),
   value: Joi.string().required(),
@@ -990,7 +991,7 @@ const contactPointInputSchema = Joi.object({
   extension: Joi.array().items(extensionInputSchema),
 });
 
-const addressInputSchema = Joi.object({
+export const addressInputSchema = Joi.object({
   id: Joi.string(),
   use: Joi.string().valid('home', 'work', 'temp', 'old', 'billing').default('home'),
   type: Joi.string().valid('postal', 'physical', 'both').default('physical'),
@@ -1005,7 +1006,7 @@ const addressInputSchema = Joi.object({
   extension: Joi.array().items(extensionInputSchema),
 });
 
-const contactInputSchema = Joi.object({
+export const contactInputSchema = Joi.object({
   id: Joi.string(),
   relationship: Joi.alternatives().try(
     Joi.string(),
@@ -1035,7 +1036,7 @@ const contactInputSchema = Joi.object({
   return value;
 }, 'contact-constraint');
 
-const communicationInputSchema = Joi.object({
+export const communicationInputSchema = Joi.object({
   id: Joi.string(), // 0..1 string for inter-element referencing
   language: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   preferred: Joi.boolean().default(false),
@@ -1043,7 +1044,7 @@ const communicationInputSchema = Joi.object({
   modifierExtension: Joi.array().items(extensionInputSchema),
 });
 
-const linkInputSchema = Joi.object({
+export const linkInputSchema = Joi.object({
   id: Joi.string(),
   other: referenceInputSchema.required(),
   type: Joi.string().valid('replaced-by', 'replaces', 'refer', 'seealso').required(),
@@ -1051,7 +1052,7 @@ const linkInputSchema = Joi.object({
   modifierExtension: Joi.array().items(extensionInputSchema),
 });
 
-const attachmentInputSchema = Joi.object({
+export const attachmentInputSchema = Joi.object({
   contentType: Joi.string(),
   language: Joi.string(),
   data: Joi.string().base64().messages({
@@ -1064,14 +1065,14 @@ const attachmentInputSchema = Joi.object({
   creation: Joi.date().iso(),
 });
 
-const quantityInputSchema = Joi.object({
+export const quantityInputSchema = Joi.object({
   value: Joi.number().required(),
   unit: Joi.string(),
   system: Joi.string().uri(),
   code: Joi.string(),
 });
 
-const metaInputSchema = Joi.object({
+export const metaInputSchema = Joi.object({
   versionId: Joi.string(),
   lastUpdated: Joi.date().iso(),
   source: Joi.string().uri(),
@@ -1094,43 +1095,7 @@ const metaInputSchema = Joi.object({
   ),
 });
 
-const moneyInputSchema = Joi.object({
+export const moneyInputSchema = Joi.object({
   value: Joi.number().required(),
   currency: Joi.string(),
 });
-
-export {
-  extensionInputSchema,
-  codeableConceptInputSchema,
-  referenceInputSchema,
-  periodInputSchema,
-  identifierInputSchema,
-  nameInputSchema,
-  contactPointInputSchema,
-  addressInputSchema,
-  contactInputSchema,
-  communicationInputSchema,
-  linkInputSchema,
-  attachmentInputSchema,
-  quantityInputSchema,
-  metaInputSchema,
-  moneyInputSchema,
-};
-
-export default {
-  extensionInputSchema,
-  codeableConceptInputSchema,
-  referenceInputSchema,
-  periodInputSchema,
-  identifierInputSchema,
-  nameInputSchema,
-  contactPointInputSchema,
-  addressInputSchema,
-  contactInputSchema,
-  communicationInputSchema,
-  linkInputSchema,
-  attachmentInputSchema,
-  quantityInputSchema,
-  metaInputSchema,
-  moneyInputSchema,
-};

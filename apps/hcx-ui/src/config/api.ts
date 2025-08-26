@@ -10,6 +10,7 @@ export const API_CONFIG = {
       INSURANCE_PLAN: '/hcx/v1/insuranceplan/request',
       COVERAGE_ELIGIBILITY: '/hcx/v1/coverageeligibility/check',
       COMMUNICATION_INBOX: '/hcx/v1/communication/inbox',
+      COMMUNICATION_RESPOND: '/hcx/v1/communication/respond',
     },
   },
   PAYER: {
@@ -50,6 +51,7 @@ export const API_ENDPOINTS = {
     INSURANCE_PLAN: getProviderApiUrl('/hcx/v1/insuranceplan/request'),
     COVERAGE_ELIGIBILITY: getProviderApiUrl('/hcx/v1/coverageeligibility/check'),
     COMMUNICATION_INBOX: getProviderApiUrl('/hcx/v1/communication/inbox'),
+    COMMUNICATION_RESPOND: getProviderApiUrl('/hcx/v1/communication/respond'),
   },
   PAYER: {
     INSURANCE_PLAN: getPayerApiUrl('/api/insurance-plans'),

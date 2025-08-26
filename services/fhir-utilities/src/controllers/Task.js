@@ -1,5 +1,5 @@
-import taskInputSchema, { validate } from '../schemas/Input/taskInputSchema.js';
-import FHIRDataTypeUtils from '../utils/fhir-datatype-utils';
+import taskInputSchema from '../schemas/Input/taskInputSchema.js';
+import FHIRDataTypeUtils from '../utils/fhir-datatype-utils.js';
 
 class Task {
   constructor() {
@@ -13,7 +13,7 @@ class Task {
    */
   createTask(input) {
     try {
-      const { error, value } = validate(input);
+      const { error, value } = taskInputSchema.validate(input);
       if (error) {
         return {
           success: false,

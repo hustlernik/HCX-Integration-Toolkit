@@ -1,6 +1,5 @@
 import Joi from 'joi';
-import inputSchemas from './inputSchema.js';
-const {
+import {
   extensionInputSchema,
   codeableConceptInputSchema,
   referenceInputSchema,
@@ -9,7 +8,7 @@ const {
   moneyInputSchema,
   quantityInputSchema,
   addressInputSchema,
-} = inputSchemas;
+} from './inputSchema.js';
 
 /**
  * Claim Input Schema

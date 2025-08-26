@@ -1,4 +1,4 @@
-import { object, alternatives, string, number, array, boolean, date } from 'joi';
+import Joi from 'joi';
 import {
   extensionInputSchema,
   codeableConceptInputSchema,
@@ -6,69 +6,74 @@ import {
   identifierInputSchema,
   periodInputSchema,
   moneyInputSchema,
-} from './inputSchema';
+} from './inputSchema.js';
 
 /**
  * CoverageEligibilityResponse Input Schema
  */
 
 // Benefit Schema
-const benefitInputSchema = object({
-  type: alternatives().try(string(), codeableConceptInputSchema).required().messages({
+const benefitInputSchema = Joi.object({
+  type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required().messages({
     'any.required': 'Benefit type is required',
   }),
-  allowedUnsignedInt: number().integer().min(0),
-  allowedString: string(),
+  allowedUnsignedInt: Joi.number().integer().min(0),
+  allowedString: Joi.string(),
   allowedMoney: moneyInputSchema,
-  usedUnsignedInt: number().integer().min(0),
-  usedString: string(),
+  usedUnsignedInt: Joi.number().integer().min(0),
+  usedString: Joi.string(),
   usedMoney: moneyInputSchema,
 });
 
 // Item Schema
-const itemInputSchema = object({
-  category: alternatives().try(string(), codeableConceptInputSchema),
-  productOrService: alternatives().try(string(), codeableConceptInputSchema).required().messages({
-    'any.required': 'Product or service is required for item',
-  }),
-  modifier: array().items(alternatives().try(string(), codeableConceptInputSchema)),
+const itemInputSchema = Joi.object({
+  category: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  productOrService: Joi.alternatives()
+    .try(Joi.string(), codeableConceptInputSchema)
+    .required()
+    .messages({
+      'any.required': 'Product or service is required for item',
+    }),
+  modifier: Joi.array().items(Joi.alternatives().try(Joi.string(), codeableConceptInputSchema)),
   provider: referenceInputSchema,
-  excluded: boolean(),
-  name: string(),
-  description: string(),
-  network: alternatives().try(string(), codeableConceptInputSchema),
-  unit: alternatives().try(string(), codeableConceptInputSchema),
-  term: alternatives().try(string(), codeableConceptInputSchema),
-  benefit: array().items(benefitInputSchema),
-  authorizationRequired: boolean(),
-  authorizationSupporting: array().items(alternatives().try(string(), codeableConceptInputSchema)),
-  authorizationUrl: string().uri(),
+  excluded: Joi.boolean(),
+  name: Joi.string(),
+  description: Joi.string(),
+  network: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  unit: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  term: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  benefit: Joi.array().items(benefitInputSchema),
+  authorizationRequired: Joi.boolean(),
+  authorizationSupporting: Joi.array().items(
+    Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  ),
+  authorizationUrl: Joi.string().uri(),
 });
 
 // Insurance Schema
-const insuranceInputSchema = object({
+const insuranceInputSchema = Joi.object({
   coverage: referenceInputSchema.required().messages({
     'any.required': 'Insurance coverage reference is required',
   }),
-  inforce: boolean(),
+  inforce: Joi.boolean(),
   benefitPeriod: periodInputSchema,
-  item: array().items(itemInputSchema),
+  item: Joi.array().items(itemInputSchema),
 });
 
 // Error Schema
-const errorInputSchema = object({
-  code: alternatives().try(string(), codeableConceptInputSchema).required().messages({
+const errorInputSchema = Joi.object({
+  code: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required().messages({
     'any.required': 'Error code is required',
   }),
 });
 
 // Main CoverageEligibilityResponse Schema
-const coverageEligibilityResponseInputSchema = object({
-  resourceType: string().valid('CoverageEligibilityResponse').required().messages({
+const coverageEligibilityResponseInputSchema = Joi.object({
+  resourceType: Joi.string().valid('CoverageEligibilityResponse').required().messages({
     'any.required': 'Resource type is required and must be "CoverageEligibilityResponse"',
     'any.only': 'Resource type must be "CoverageEligibilityResponse"',
   }),
-  language: string()
+  language: Joi.string()
     .valid(
       'ar',
       'bn',
@@ -131,13 +136,16 @@ const coverageEligibilityResponseInputSchema = object({
     .messages({
       'any.only': 'Language must be a valid language code from CommonLanguages value set',
     }),
-  identifier: array().items(identifierInputSchema),
-  status: string().valid('active', 'cancelled', 'draft', 'entered-in-error').required().messages({
-    'any.required': 'Status is required',
-    'any.only': 'Status must be one of: active, cancelled, draft, entered-in-error',
-  }),
-  purpose: array()
-    .items(string().valid('auth-requirements', 'benefits', 'discovery', 'validation'))
+  identifier: Joi.array().items(identifierInputSchema),
+  status: Joi.string()
+    .valid('active', 'cancelled', 'draft', 'entered-in-error')
+    .required()
+    .messages({
+      'any.required': 'Status is required',
+      'any.only': 'Status must be one of: active, cancelled, draft, entered-in-error',
+    }),
+  purpose: Joi.array()
+    .items(Joi.string().valid('auth-requirements', 'benefits', 'discovery', 'validation'))
     .min(1)
     .required()
     .messages({
@@ -148,9 +156,9 @@ const coverageEligibilityResponseInputSchema = object({
   patient: referenceInputSchema.required().messages({
     'any.required': 'Patient reference is required',
   }),
-  servicedDate: date().iso(),
+  servicedDate: Joi.date().iso(),
   servicedPeriod: periodInputSchema,
-  created: date().iso().messages({
+  created: Joi.date().iso().messages({
     'date.format': 'Created date must be in ISO format',
   }),
   requestor: referenceInputSchema.required().messages({
@@ -159,20 +167,20 @@ const coverageEligibilityResponseInputSchema = object({
   request: referenceInputSchema.required().messages({
     'any.required': 'Request reference is required',
   }),
-  outcome: string().valid('queued', 'complete', 'error', 'partial').required().messages({
+  outcome: Joi.string().valid('queued', 'complete', 'error', 'partial').required().messages({
     'any.required': 'Outcome is required',
     'any.only': 'Outcome must be one of: queued, complete, error, partial',
   }),
-  disposition: string(),
+  disposition: Joi.string(),
   insurer: referenceInputSchema.required().messages({
     'any.required': 'Insurer reference is required',
   }),
-  insurance: array().items(insuranceInputSchema),
-  preAuthRef: string(),
-  form: alternatives().try(string(), codeableConceptInputSchema),
-  error: array().items(errorInputSchema),
-  extension: array().items(extensionInputSchema),
-  modifierExtension: array().items(extensionInputSchema),
+  insurance: Joi.array().items(insuranceInputSchema),
+  preAuthRef: Joi.string(),
+  form: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  error: Joi.array().items(errorInputSchema),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
 });
 
 export default coverageEligibilityResponseInputSchema;

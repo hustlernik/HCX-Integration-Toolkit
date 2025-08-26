@@ -1,4 +1,4 @@
-import coverageInputSchema, { validate } from '../schemas/Input/coverageInputSchema.js';
+import coverageInputSchema from '../schemas/Input/coverageInputSchema.js';
 import FHIRDataTypeUtils from '../utils/fhir-datatype-utils.js';
 
 class Coverage {
@@ -13,7 +13,7 @@ class Coverage {
    */
   createCoverage(input) {
     try {
-      const { error, value } = validate(input);
+      const { error, value } = coverageInputSchema.validate(input);
       if (error) {
         return {
           success: false,

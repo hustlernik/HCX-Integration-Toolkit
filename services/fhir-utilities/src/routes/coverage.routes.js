@@ -1,8 +1,3 @@
-/**
- * Coverage Routes
- * Defines API endpoints for Coverage resource operations
- */
-
 import express from 'express';
 import Coverage from '../controllers/Coverage.js';
 

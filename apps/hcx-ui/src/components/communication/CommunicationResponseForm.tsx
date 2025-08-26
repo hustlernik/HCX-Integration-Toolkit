@@ -21,7 +21,7 @@ type ResponseAttachmentItem = AttachmentItem & { file?: File };
 const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
   communicationId,
   originalRequest,
-  onSubmit,
+  // onSubmit,
   onCancel,
 }) => {
   const [formData, setFormData] = useState<{
@@ -46,6 +46,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
   const [attachments, setAttachments] = useState<ResponseAttachmentItem[]>([]);
   const [isSubmittingState, setIsSubmittingState] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const submitting = isSubmittingState;
 
   const readFileAsBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -62,10 +63,12 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return; // Prevent submission if already submitting
     setIsSubmittingState(true);
 
     try {
-      const endpoint = API_ENDPOINTS.PAYER.COMMUNICATION_RESPONSE;
+      // Send response via provider service; payer endpoint '/hcx/v1/communication/response' does not exist
+      const endpoint = API_ENDPOINTS.PROVIDER.COMMUNICATION_RESPOND;
       const headers = {
         'Content-Type': 'application/json',
         'x-hcx-api_call_id': `comm-resp-${Date.now()}`,
@@ -78,23 +81,34 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
 
       const preparedAttachments = await Promise.all(
         attachments.map(async (a) => ({
+          id: a.id,
           title: a.title,
           contentType: a.contentType,
           language: a.language,
           creation: a.creation,
           data: a.mode === 'data' && a.file ? await readFileAsBase64(a.file) : undefined,
           url: a.mode === 'url' ? a.url : undefined,
+          file: a.file, // Include file for FormData submission
+          mode: a.mode,
         })),
       );
 
       const payload = {
         communicationId,
         claimId: originalRequest.claimId,
-        message: formData.message,
-        status: formData.status,
-        fhirStatus: formData.fhirStatus,
-        sentAt: formData.sentAt,
-        attachments: preparedAttachments,
+        correlationId: originalRequest?.correlationId,
+        responseForm: {
+          message: formData.message,
+          status: formData.status,
+          fhirStatus: formData.fhirStatus,
+          sentAt: formData.sentAt || new Date().toISOString(),
+          attachments: preparedAttachments.map((a) => ({
+            title: a.title,
+            type: a.contentType,
+            url: a.url,
+            data: a.data,
+          })),
+        },
       };
 
       const res = await axios.post(endpoint, payload, { headers });
@@ -104,7 +118,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
       } else {
         console.warn('Communication response sent but received non-JSON response');
       }
-      onSubmit({ ...formData, attachments });
+      // onSubmit({ ...formData, attachments });
     } catch (error) {
       console.error('Error sending communication response:', error);
       const errorMessage = axios.isAxiosError(error)
@@ -530,20 +544,15 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
             </Card>
 
             <div className="flex justify-end gap-3 pt-6 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                disabled={isSubmittingState}
-              >
+              <Button type="button" variant="outline" onClick={onCancel} disabled={submitting}>
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="flex items-center"
-                disabled={isSubmittingState || !formData.message.trim()}
+                disabled={submitting || !formData.message.trim()}
               >
-                {isSubmittingState ? (
+                {submitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     Sending...

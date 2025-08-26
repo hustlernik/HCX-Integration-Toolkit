@@ -1,4 +1,5 @@
-import { object, string, array, alternatives, number } from 'joi';
+import Joi from 'joi';
+
 import {
   extensionInputSchema,
   codeableConceptInputSchema,
@@ -7,40 +8,40 @@ import {
   identifierInputSchema,
   quantityInputSchema,
   contactInputSchema,
-} from './inputSchema';
+} from './inputSchema.js';
 
 /**
  * Insurance Plan Input Schema
  */
 
-const claimExclusionExtensionSchema = object({
-  url: string()
+const claimExclusionExtensionSchema = Joi.object({
+  url: Joi.string()
     .valid('https://nrces.in/ndhm/fhir/r4/StructureDefinition/Claim-Exclusion')
     .required(),
   valueCodeableConcept: codeableConceptInputSchema,
 });
 
-const claimSupportingInfoRequirementExtensionSchema = object({
-  url: string()
+const claimSupportingInfoRequirementExtensionSchema = Joi.object({
+  url: Joi.string()
     .valid('https://nrces.in/ndhm/fhir/r4/StructureDefinition/Claim-SupportingInfoRequirement')
     .required(),
   valueCodeableConcept: codeableConceptInputSchema,
 });
 
-const claimConditionExtensionSchema = object({
-  url: string()
+const claimConditionExtensionSchema = Joi.object({
+  url: Joi.string()
     .valid('https://nrces.in/ndhm/fhir/r4/StructureDefinition/Claim-Condition')
     .required(),
   valueCodeableConcept: codeableConceptInputSchema,
 });
 
-const insurancePlanInputSchema = object({
-  resourceType: string().valid('InsurancePlan').required().messages({
+const insurancePlanInputSchema = Joi.object({
+  resourceType: Joi.string().valid('InsurancePlan').required().messages({
     'any.only': 'Resource type must be InsurancePlan',
   }),
 
-  implicitRules: string().uri(),
-  language: string()
+  implicitRules: Joi.string().uri(),
+  language: Joi.string()
     .valid(
       'ar',
       'bn',
@@ -104,34 +105,34 @@ const insurancePlanInputSchema = object({
       'any.only': 'Language must be a valid language code from CommonLanguages value set',
     }),
 
-  extension: array().items(
-    alternatives().try(
+  extension: Joi.array().items(
+    Joi.alternatives().try(
       extensionInputSchema,
       claimExclusionExtensionSchema,
       claimSupportingInfoRequirementExtensionSchema,
     ),
   ),
-  modifierExtension: array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
 
-  identifier: array().items(identifierInputSchema).min(1).max(1).required().messages({
+  identifier: Joi.array().items(identifierInputSchema).min(1).max(1).required().messages({
     'any.required': 'Exactly one identifier is required (NDHM mandatory element)',
     'array.min': 'Exactly one identifier is required (NDHM mandatory element)',
     'array.max': 'Only one identifier is allowed according to NDHM profile',
   }),
 
-  status: string().valid('draft', 'active', 'retired', 'unknown').required().messages({
+  status: Joi.string().valid('draft', 'active', 'retired', 'unknown').required().messages({
     'any.required': 'Status is required according to NDHM profile',
   }),
 
-  type: alternatives().try(string(), codeableConceptInputSchema).required().messages({
+  type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required().messages({
     'any.required': 'Type is required according to NDHM profile',
   }),
 
-  name: string().required().messages({
+  name: Joi.string().required().messages({
     'any.required': 'Name is required according to NDHM profile',
   }),
 
-  alias: array().items(string()),
+  alias: Joi.array().items(Joi.string()),
 
   period: periodInputSchema.required().messages({
     'any.required': 'Period is required according to NDHM profile',
@@ -143,42 +144,42 @@ const insurancePlanInputSchema = object({
 
   administeredBy: referenceInputSchema,
 
-  coverageArea: array().items(referenceInputSchema),
+  coverageArea: Joi.array().items(referenceInputSchema),
 
-  contact: array().items(contactInputSchema),
+  contact: Joi.array().items(contactInputSchema),
 
-  network: array().items(referenceInputSchema),
+  network: Joi.array().items(referenceInputSchema),
 
-  endpoint: array().items(referenceInputSchema),
+  endpoint: Joi.array().items(referenceInputSchema),
 
-  coverage: array()
+  coverage: Joi.array()
     .items(
-      object({
-        extension: array().items(
-          alternatives().try(
+      Joi.object({
+        extension: Joi.array().items(
+          Joi.alternatives().try(
             extensionInputSchema,
             claimConditionExtensionSchema,
             claimSupportingInfoRequirementExtensionSchema,
           ),
         ),
-        modifierExtension: array().items(extensionInputSchema),
+        modifierExtension: Joi.array().items(extensionInputSchema),
 
-        type: alternatives().try(string(), codeableConceptInputSchema).required(),
-        network: array().items(referenceInputSchema),
+        type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+        network: Joi.array().items(referenceInputSchema),
 
-        benefit: array()
+        benefit: Joi.array()
           .items(
-            object({
-              extension: array().items(
-                alternatives().try(
+            Joi.object({
+              extension: Joi.array().items(
+                Joi.alternatives().try(
                   extensionInputSchema,
                   claimConditionExtensionSchema,
                   claimSupportingInfoRequirementExtensionSchema,
                 ),
               ),
-              modifierExtension: array().items(extensionInputSchema),
+              modifierExtension: Joi.array().items(extensionInputSchema),
 
-              type: alternatives().try(string(), codeableConceptInputSchema).required(),
+              type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
             }),
           )
           .min(1)
@@ -195,46 +196,46 @@ const insurancePlanInputSchema = object({
       'array.min': 'At least one coverage is required according to NDHM profile',
     }),
 
-  plan: array().items(
-    object({
-      extension: array().items(
-        alternatives().try(
+  plan: Joi.array().items(
+    Joi.object({
+      extension: Joi.array().items(
+        Joi.alternatives().try(
           extensionInputSchema,
           claimExclusionExtensionSchema,
           claimConditionExtensionSchema,
           claimSupportingInfoRequirementExtensionSchema,
         ),
       ),
-      modifierExtension: array().items(extensionInputSchema),
+      modifierExtension: Joi.array().items(extensionInputSchema),
 
-      identifier: array().items(identifierInputSchema),
-      type: alternatives().try(string(), codeableConceptInputSchema).required(),
-      coverageArea: array().items(referenceInputSchema),
-      network: array().items(referenceInputSchema),
+      identifier: Joi.array().items(identifierInputSchema),
+      type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+      coverageArea: Joi.array().items(referenceInputSchema),
+      network: Joi.array().items(referenceInputSchema),
 
-      generalCost: array().items(
-        object({
-          modifierExtension: array().items(extensionInputSchema),
-          type: alternatives().try(string(), codeableConceptInputSchema),
-          groupSize: number().integer().min(1),
+      generalCost: Joi.array().items(
+        Joi.object({
+          modifierExtension: Joi.array().items(extensionInputSchema),
+          type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+          groupSize: Joi.number().integer().min(1),
           cost: quantityInputSchema,
-          comment: string(),
+          comment: Joi.string(),
         }),
       ),
 
-      specificCost: array().items(
-        object({
-          modifierExtension: array().items(extensionInputSchema),
-          category: alternatives().try(string(), codeableConceptInputSchema).required(),
-          benefit: array().items(
-            object({
-              modifierExtension: array().items(extensionInputSchema),
-              type: alternatives().try(string(), codeableConceptInputSchema).required(),
-              cost: array().items(
-                object({
-                  type: alternatives().try(string(), codeableConceptInputSchema).required(),
-                  applicability: alternatives().try(string(), codeableConceptInputSchema),
-                  qualifiers: array().items(codeableConceptInputSchema),
+      specificCost: Joi.array().items(
+        Joi.object({
+          modifierExtension: Joi.array().items(extensionInputSchema),
+          category: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+          benefit: Joi.array().items(
+            Joi.object({
+              modifierExtension: Joi.array().items(extensionInputSchema),
+              type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+              cost: Joi.array().items(
+                Joi.object({
+                  type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+                  applicability: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+                  qualifiers: Joi.array().items(codeableConceptInputSchema),
                   value: quantityInputSchema,
                 }),
               ),

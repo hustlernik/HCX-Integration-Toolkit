@@ -60,7 +60,7 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
   }
 
   const getTs = (c: (typeof communications)[number]) =>
-    new Date(c.createdAt || (c.sent as any) || (c.received as any) || 0).getTime() || 0;
+    new Date(c.createdAt || c.sentAt || c.receivedAt || 0).getTime() || 0;
   const sortedComms = [...communications].sort((a, b) => getTs(a) - getTs(b));
 
   return (
@@ -125,8 +125,8 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
                           <Clock className="w-3 h-3 mr-1" />
                           {formatDate(
                             comm.createdAt ||
-                              (comm.sent as any) ||
-                              (comm.received as any) ||
+                              comm.sentAt ||
+                              comm.receivedAt ||
                               new Date().toISOString(),
                           )}
                         </span>
@@ -241,8 +241,8 @@ const CommunicationThread: React.FC<CommunicationThreadProps> = ({
                     <div className="grid grid-cols-2 gap-2">
                       <div>Communication ID: {comm.communicationId}</div>
                       <div>Correlation ID: {comm.correlationId}</div>
-                      {comm.sent && <div>Sent: {formatDate(comm.sent)}</div>}
-                      {comm.received && <div>Received: {formatDate(comm.received)}</div>}
+                      {comm.sentAt && <div>Sent: {formatDate(comm.sentAt)}</div>}
+                      {comm.receivedAt && <div>Received: {formatDate(comm.receivedAt)}</div>}
                     </div>
                   </div>
                 </div>

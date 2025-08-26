@@ -1,7 +1,5 @@
-import paymentReconciliationInputSchema, {
-  validate,
-} from '../schemas/Input/paymentReconciliationInputSchema.js';
-import FHIRDataTypeUtils from '../utils/fhir-datatype-utils';
+import paymentReconciliationInputSchema from '../schemas/Input/paymentReconciliationInputSchema.js';
+import FHIRDataTypeUtils from '../utils/fhir-datatype-utils.js';
 
 class PaymentReconciliation {
   constructor() {
@@ -15,7 +13,7 @@ class PaymentReconciliation {
    */
   createPaymentReconciliation(input) {
     try {
-      const { error, value } = validate(input);
+      const { error, value } = paymentReconciliationInputSchema.validate(input);
       if (error) {
         return {
           success: false,

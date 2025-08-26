@@ -7,8 +7,8 @@ import {
   periodInputSchema,
   moneyInputSchema,
   quantityInputSchema,
-  addressInputSchema,
   attachmentInputSchema,
+  addressInputSchema,
 } from './inputSchema.js';
 
 /**

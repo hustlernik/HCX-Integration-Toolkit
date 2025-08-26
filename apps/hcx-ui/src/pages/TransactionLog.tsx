@@ -187,14 +187,34 @@ const TransactionLog: React.FC = () => {
                   <div id="modal-title" className="mb-2 font-semibold">
                     {modalType === 'request' ? 'Request' : 'Response'}
                   </div>
-                  {modalType === 'request' && modalTxn.requestFHIR && (
+                  {modalType === 'request' && Boolean(modalTxn.requestFHIR) && (
                     <pre className="bg-gray-100 p-2 rounded text-xs max-h-96 overflow-auto">
-                      {JSON.stringify(modalTxn.requestFHIR, null, 2)}
+                      {(() => {
+                        const val = modalTxn.requestFHIR as unknown;
+                        if (typeof val === 'string') {
+                          try {
+                            return JSON.stringify(JSON.parse(val), null, 2);
+                          } catch {
+                            return val;
+                          }
+                        }
+                        return JSON.stringify(val, null, 2);
+                      })()}
                     </pre>
                   )}
-                  {modalType === 'response' && modalTxn.responseFHIR ? (
+                  {modalType === 'response' && Boolean(modalTxn.responseFHIR) ? (
                     <pre className="bg-gray-100 p-2 rounded text-xs max-h-96 overflow-auto">
-                      {JSON.stringify(modalTxn.responseFHIR, null, 2)}
+                      {(() => {
+                        const val = modalTxn.responseFHIR as unknown;
+                        if (typeof val === 'string') {
+                          try {
+                            return JSON.stringify(JSON.parse(val), null, 2);
+                          } catch {
+                            return val;
+                          }
+                        }
+                        return JSON.stringify(val, null, 2);
+                      })()}
                     </pre>
                   ) : modalType === 'response' ? (
                     <div className="text-gray-400">No response yet.</div>

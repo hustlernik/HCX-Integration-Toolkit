@@ -1,5 +1,5 @@
 import paymentNoticeInputSchema from '../schemas/Input/paymentNoticeInputSchema.js';
-import FHIRDataTypeUtils from '../utils/fhir-datatype-utils';
+import FHIRDataTypeUtils from '../utils/fhir-datatype-utils.js';
 
 class PaymentNotice {
   constructor() {

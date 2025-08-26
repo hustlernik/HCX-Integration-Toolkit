@@ -1,4 +1,4 @@
-import { object, string, alternatives, array, number, boolean } from 'joi';
+import Joi from 'joi';
 import {
   extensionInputSchema,
   codeableConceptInputSchema,
@@ -7,58 +7,61 @@ import {
   identifierInputSchema,
   quantityInputSchema,
   moneyInputSchema,
-} from './inputSchema';
+} from './inputSchema.js';
 
-const coverageInputSchema = object({
-  resourceType: string().valid('Coverage').required(),
-  status: string().valid('active', 'cancelled', 'draft', 'entered-in-error').required(),
-  beneficiary: alternatives().try(string(), referenceInputSchema).required(),
-  payor: array().items(alternatives().try(string(), referenceInputSchema)).min(1).required(),
+const coverageInputSchema = Joi.object({
+  resourceType: Joi.string().valid('Coverage').required(),
+  status: Joi.string().valid('active', 'cancelled', 'draft', 'entered-in-error').required(),
+  beneficiary: Joi.alternatives().try(Joi.string(), referenceInputSchema).required(),
+  payor: Joi.array()
+    .items(Joi.alternatives().try(Joi.string(), referenceInputSchema))
+    .min(1)
+    .required(),
 
-  identifier: array().items(identifierInputSchema),
-  type: alternatives().try(string(), codeableConceptInputSchema),
-  policyHolder: alternatives().try(string(), referenceInputSchema),
-  subscriber: alternatives().try(string(), referenceInputSchema),
-  subscriberId: string(),
-  dependent: string(),
-  relationship: alternatives().try(string(), codeableConceptInputSchema),
+  identifier: Joi.array().items(identifierInputSchema),
+  type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  policyHolder: Joi.alternatives().try(Joi.string(), referenceInputSchema),
+  subscriber: Joi.alternatives().try(Joi.string(), referenceInputSchema),
+  subscriberId: Joi.string(),
+  dependent: Joi.string(),
+  relationship: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   period: periodInputSchema,
-  order: number().integer().positive(),
-  network: string(),
+  order: Joi.number().integer().positive(),
+  network: Joi.string(),
 
-  class: array().items(
-    object({
-      extension: array().items(extensionInputSchema),
-      modifierExtension: array().items(extensionInputSchema),
-      type: alternatives().try(string(), codeableConceptInputSchema).required(),
-      value: string().required(),
-      name: string(),
+  class: Joi.array().items(
+    Joi.object({
+      extension: Joi.array().items(extensionInputSchema),
+      modifierExtension: Joi.array().items(extensionInputSchema),
+      type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+      value: Joi.string().required(),
+      name: Joi.string(),
     }),
   ),
 
-  costToBeneficiary: array().items(
-    object({
-      extension: array().items(extensionInputSchema),
-      modifierExtension: array().items(extensionInputSchema),
-      type: alternatives().try(string(), codeableConceptInputSchema),
+  costToBeneficiary: Joi.array().items(
+    Joi.object({
+      extension: Joi.array().items(extensionInputSchema),
+      modifierExtension: Joi.array().items(extensionInputSchema),
+      type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
       valueQuantity: quantityInputSchema,
       valueMoney: moneyInputSchema,
-      exception: array().items(
-        object({
-          extension: array().items(extensionInputSchema),
-          modifierExtension: array().items(extensionInputSchema),
-          type: alternatives().try(string(), codeableConceptInputSchema).required(),
+      exception: Joi.array().items(
+        Joi.object({
+          extension: Joi.array().items(extensionInputSchema),
+          modifierExtension: Joi.array().items(extensionInputSchema),
+          type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
           period: periodInputSchema,
         }),
       ),
     }),
   ),
 
-  subrogation: boolean(),
-  contract: array().items(alternatives().try(string(), referenceInputSchema)),
+  subrogation: Joi.boolean(),
+  contract: Joi.array().items(Joi.alternatives().try(Joi.string(), referenceInputSchema)),
 
-  extension: array().items(extensionInputSchema),
-  modifierExtension: array().items(extensionInputSchema),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
 })
   .custom((value, helpers) => {
     if (value.costToBeneficiary && Array.isArray(value.costToBeneficiary)) {
