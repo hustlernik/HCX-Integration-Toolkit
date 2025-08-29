@@ -104,7 +104,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
           sentAt: formData.sentAt || new Date().toISOString(),
           attachments: preparedAttachments.map((a) => ({
             title: a.title,
-            type: a.contentType,
+            contentType: a.contentType,
             url: a.url,
             data: a.data,
           })),

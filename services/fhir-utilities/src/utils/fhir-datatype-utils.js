@@ -58,7 +58,9 @@ class FHIRDataType {
       typeof value === 'number' ||
       (typeof value === 'string' && /^\d{10,}$/.test(value.trim()))
     ) {
-      const dt = new Date(Number(value));
+      const n = typeof value === 'number' ? value : Number(value.trim());
+      const ms = Math.abs(n) < 1e12 ? n * 1000 : n; // < 1e12 → seconds, else milliseconds
+      const dt = new Date(ms);
       if (isNaN(dt.getTime())) return null;
       const y = dt.getUTCFullYear();
       const m = String(dt.getUTCMonth() + 1).padStart(2, '0');
@@ -184,7 +186,7 @@ class FHIRDataType {
     if (extension.valueIdentifier !== undefined)
       result.valueIdentifier = this.transformIdentifier(extension.valueIdentifier);
     if (extension.valueMoney !== undefined)
-      result.valueMoney = this.transformQuantity(extension.valueMoney);
+      result.valueMoney = this.transformMoney(extension.valueMoney);
     if (extension.valuePeriod !== undefined)
       result.valuePeriod = this.transformPeriod(extension.valuePeriod);
     if (extension.valueQuantity !== undefined)
@@ -587,14 +589,12 @@ class FHIRDataType {
           )
         : undefined,
       patientInstruction: dosage.patientInstruction,
-      timing: dosage.timing,
+      timing: dosage.timing ? this.transformTiming(dosage.timing) : undefined,
       asNeededBoolean: dosage.asNeededBoolean,
       asNeededCodeableConcept: dosage.asNeededCodeableConcept
         ? this.transformCodeableConcept(dosage.asNeededCodeableConcept)
         : undefined,
-      site: dosage.site
-        ? dosage.site.map((site) => this.transformCodeableConcept(site))
-        : undefined,
+      site: dosage.site ? this.transformCodeableConcept(dosage.site) : undefined,
       route: dosage.route ? this.transformCodeableConcept(dosage.route) : undefined,
       method: dosage.method ? this.transformCodeableConcept(dosage.method) : undefined,
       doseAndRate: dosage.doseAndRate

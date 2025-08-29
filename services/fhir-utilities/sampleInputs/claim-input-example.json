@@ -349,7 +349,9 @@
       "focal": true,
       "identifier": {
         "value": "POL-2024-001",
-        "type": "PIPC"
+        "type": {
+          "text": "Policy Number"
+        }
       },
       "coverage": {
         "reference": "Coverage/coverage-001",

@@ -96,6 +96,9 @@ const relatedClaimInputSchema = Joi.object({
   claim: referenceInputSchema,
   relationship: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   reference: identifierInputSchema,
+  id: Joi.string(),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
 });
 
 // Item Detail Schema
