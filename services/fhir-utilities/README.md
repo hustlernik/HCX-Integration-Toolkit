@@ -6,10 +6,30 @@ A scalable FHIR microservice for creating, validating, and managing FHIR resourc
 
 ### Prerequisites
 
-- Node.js 16+
-- npm 8+ or yarn 1.22+
+- Docker and Docker Compose (recommended)
+- OR Node.js 16+ with npm 8+ or yarn 1.22+
 
-### Installation
+### Installation with Docker
+
+1. Ensure Docker and Docker Compose are installed on your system
+2. Clone the repository:
+   ```bash
+   git clone https://github.com/hustlernik/Test.git
+   ```
+3. Navigate to the `fhir-utilities` directory:
+   ```bash
+   cd HCX-Integration-Toolkit/services/fhir-utilities
+   ```
+4. Build and start the service:
+   ```bash
+   docker-compose up --build
+   ```
+   For running in detached mode:
+   ```bash
+   docker-compose up -d --build
+   ```
+
+### Manual Installation
 
 1. Clone the repository:
    ```bash
@@ -22,6 +42,10 @@ A scalable FHIR microservice for creating, validating, and managing FHIR resourc
 3. Install the dependencies:
    ```bash
    npm install
+   ```
+4. Start the service:
+   ```bash
+   npm start
    ```
 
 ## Available Scripts
@@ -40,7 +64,7 @@ npm run lint
 npm run lint:fix
 ```
 
-## 🌐 API Endpoints
+## API Endpoints
 
 | Endpoint                             | Method | Description                             |
 | ------------------------------------ | ------ | --------------------------------------- |
@@ -56,13 +80,16 @@ npm run lint:fix
 | `/api/payment-notice`                | POST   | Create a PaymentNotice resource         |
 | `/api/payment-reconciliation`        | POST   | Create a PaymentReconciliation resource |
 
-## 📝 Creating FHIR Resources
+**Note:** The service runs on port `4002` by default.
+
+## Creating FHIR Resources
 
 ### Example: Creating a Patient Resource
 
 ```javascript
 // Example request to create a Patient
 const patientData = {
+  resourceType: 'Patient',
   identifier: [
     {
       system: 'https://healthid.ndhm.gov.in',
