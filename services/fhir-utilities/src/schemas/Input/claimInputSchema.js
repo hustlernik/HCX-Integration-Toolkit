@@ -68,6 +68,9 @@ const insuranceInputSchema = Joi.object({
   businessArrangement: Joi.string(),
   preAuthRef: Joi.array().items(Joi.string()),
   claimResponse: referenceInputSchema,
+  id: Joi.string(),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
 });
 
 // Accident Schema
@@ -76,7 +79,10 @@ const accidentInputSchema = Joi.object({
   type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   locationAddress: addressInputSchema,
   locationReference: referenceInputSchema,
-});
+  id: Joi.string(),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
+}).oxor('locationAddress', 'locationReference');
 
 // Care Team Schema
 const careTeamInputSchema = Joi.object({
@@ -91,6 +97,9 @@ const careTeamInputSchema = Joi.object({
 const payeeInputSchema = Joi.object({
   type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
   party: referenceInputSchema,
+  id: Joi.string(),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
 });
 
 // Related Claim Schema
@@ -131,8 +140,14 @@ const itemDetailInputSchema = Joi.object({
       factor: Joi.number(),
       net: moneyInputSchema,
       udi: Joi.array().items(referenceInputSchema),
+      id: Joi.string(),
+      extension: Joi.array().items(extensionInputSchema),
+      modifierExtension: Joi.array().items(extensionInputSchema),
     }),
   ),
+  id: Joi.string(),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
 });
 
 // Item Schema

@@ -92,6 +92,10 @@ class Coverage {
       resource.subscriber = this.datatypeUtils.transformReference(input.subscriber);
     }
 
+    if (input.policyHolder) {
+      resource.policyHolder = this.datatypeUtils.transformReference(input.policyHolder);
+    }
+
     if (input.subscriberId) {
       resource.subscriberId = input.subscriberId;
     }

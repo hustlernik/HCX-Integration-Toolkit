@@ -174,7 +174,7 @@ const patientData = {
   resourceType: 'Patient',
   identifier: [
     {
-      system: 'https://healthid.ndhm.gov.in',
+      system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-identifier-type-code',
       value: 'patient-123',
     },
   ],
