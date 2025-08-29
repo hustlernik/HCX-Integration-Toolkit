@@ -12,7 +12,7 @@ The service ensures compliance with the specified FHIR version and implementatio
 ### Prerequisites
 
 - Docker and Docker Compose (recommended)
-- OR Node.js 16+ with npm 8+ or yarn 1.22+
+- OR Node.js 18+ with npm 9+ or yarn 1.22+
 
 ### Installation with Docker
 
