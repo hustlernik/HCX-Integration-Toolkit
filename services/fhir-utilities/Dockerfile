@@ -15,9 +15,7 @@ ENV NODE_ENV=production
 RUN npm ci --omit=dev && npm cache clean --force
 
 # Needed for docker-compose healthcheck
-USER root
 RUN apk add --no-cache curl
-USER node
 
 # Copy the rest of the application code
 COPY --chown=node:node . .
