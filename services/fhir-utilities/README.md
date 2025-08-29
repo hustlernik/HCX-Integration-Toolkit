@@ -104,8 +104,17 @@ const patientData = {
   resourceType: 'Patient',
   identifier: [
     {
-      system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-identifier-type-code',
+      system: 'https://healthid.ndhm.gov.in',
       value: 'patient-123',
+      type: {
+        coding: [
+          {
+            system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-identifier-type-code',
+            code: 'MR',
+            display: 'Medical Record Number',
+          },
+        ],
+      },
     },
   ],
   name: [
