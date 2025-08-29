@@ -116,8 +116,16 @@ const addItemInputSchema = Joi.object({
     }),
   modifier: Joi.array().items(Joi.alternatives().try(Joi.string(), codeableConceptInputSchema)),
   programCode: Joi.array().items(Joi.alternatives().try(Joi.string(), codeableConceptInputSchema)),
+const addItemInputSchema = Joi.object({
+  // ... other fields ...
   servicedDate: Joi.date().iso(),
   servicedPeriod: periodInputSchema,
+  // ... other fields ...
+})
+.xor('servicedDate', 'servicedPeriod')
+.messages({
+  'object.xor': 'Provide either servicedDate or servicedPeriod, but not both',
+});
   locationCodeableConcept: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   locationAddress: addressInputSchema,
   locationReference: referenceInputSchema,
