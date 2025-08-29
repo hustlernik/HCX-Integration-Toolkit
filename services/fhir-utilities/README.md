@@ -1,6 +1,11 @@
 # FHIR Utilities Service 🏥
 
-A scalable FHIR microservice for creating, validating, and managing FHIR resources. This service is part of the HCX Integration Toolkit and supports creating resources that comply with NRCES and NHCX-specific profiles.
+A scalable FHIR microservice for creating, validating, and managing FHIR resources. This service is part of the HCX Integration Toolkit and targets HL7 FHIR R4 (4.0.1) with support for:
+
+- **NRCES IG** (v6.5.0)
+- **NHCX IG** (v0.7.0)
+
+The service ensures compliance with the specified FHIR version and implementation guides, including required profiles, extensions, and value sets.
 
 ## Getting Started
 
@@ -14,7 +19,7 @@ A scalable FHIR microservice for creating, validating, and managing FHIR resourc
 1. Ensure Docker and Docker Compose are installed on your system
 2. Clone the repository:
    ```bash
-   git clone https://github.com/hustlernik/Test.git
+   git clone https://github.com/hustlernik/HCX-Integration-Toolkit.git
    ```
 3. Navigate to the `fhir-utilities` directory:
    ```bash
@@ -33,7 +38,7 @@ A scalable FHIR microservice for creating, validating, and managing FHIR resourc
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/hustlernik/Test.git
+   git clone https://github.com/hustlernik/HCX-Integration-Toolkit.git
    ```
 2. Navigate to the `fhir-utilities` directory:
    ```bash
@@ -60,25 +65,32 @@ npm run dev
 # Lint code
 npm run lint
 
-# Lint and fix code
+# Lint and automatically fix issues
 npm run lint:fix
 ```
 
 ## API Endpoints
 
-| Endpoint                             | Method | Description                             |
-| ------------------------------------ | ------ | --------------------------------------- |
-| `/health`                            | GET    | Health check endpoint                   |
-| `/api/patient`                       | POST   | Create a Patient resource               |
-| `/api/claim`                         | POST   | Create a Claim resource                 |
-| `/api/claim-response`                | POST   | Create a ClaimResponse resource         |
-| `/api/coverage-eligibility-request`  | POST   | Create a CoverageEligibilityRequest     |
-| `/api/coverage-eligibility-response` | POST   | Create a CoverageEligibilityResponse    |
-| `/api/insurance-plan`                | POST   | Create an InsurancePlan resource        |
-| `/api/coverage`                      | POST   | Create a Coverage resource              |
-| `/api/task`                          | POST   | Create a Task resource                  |
-| `/api/payment-notice`                | POST   | Create a PaymentNotice resource         |
-| `/api/payment-reconciliation`        | POST   | Create a PaymentReconciliation resource |
+| `/api/patient` | POST | Create a Patient resource |
+| `/api/patient/schema` | GET | Get Patient input schema |
+| `/api/claim` | POST | Create a Claim resource |
+| `/api/claim/schema` | GET | Get Claim input schema |
+| `/api/claim-response` | POST | Create a ClaimResponse resource |
+| `/api/claim-response/schema` | GET | Get ClaimResponse input schema |
+| `/api/coverage-eligibility-request` | POST | Create a CoverageEligibilityRequest |
+| `/api/coverage-eligibility-request/schema` | GET | Get CoverageEligibilityRequest schema |
+| `/api/coverage-eligibility-response` | POST | Create a CoverageEligibilityResponse |
+| `/api/coverage-eligibility-response/schema`| GET | Get CoverageEligibilityResponse schema |
+| `/api/insurance-plan` | POST | Create an InsurancePlan resource |
+| `/api/insurance-plan/schema` | GET | Get InsurancePlan input schema |
+| `/api/coverage` | POST | Create a Coverage resource |
+| `/api/coverage/schema` | GET | Get Coverage input schema |
+| `/api/task` | POST | Create a Task resource |
+| `/api/task/schema` | GET | Get Task input schema |
+| `/api/payment-notice` | POST | Create a PaymentNotice resource |
+| `/api/payment-notice/schema` | GET | Get PaymentNotice input schema |
+| `/api/payment-reconciliation` | POST | Create a PaymentReconciliation resource |
+| `/api/payment-reconciliation/schema` | GET | Get PaymentReconciliation input schema |
 
 **Note:** The service runs on port `4002` by default.
 
@@ -124,7 +136,7 @@ const patientData = {
 };
 
 // Using fetch API
-const response = await fetch('http://localhost:3000/api/patient', {
+const response = await fetch('http://localhost:4002/api/patient', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -174,7 +186,7 @@ const eligibilityRequest = {
   ],
 };
 
-const response = await fetch('http://localhost:3000/api/coverage-eligibility-request', {
+const response = await fetch('http://localhost:4002/api/coverage-eligibility-request', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -206,10 +218,10 @@ You can view the input schema for any resource by making a GET request to the sc
 
 ```bash
 # Get schema for Patient resource
-curl http://localhost:3000/api/patient/schema
+curl http://localhost:4002/api/patient/schema
 
 # Get schema for CoverageEligibilityRequest
-curl http://localhost:3000/api/coverage-eligibility-request/schema
+curl http://localhost:4002/api/coverage-eligibility-request/schema
 ```
 
 ## Testing with Examples

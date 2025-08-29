@@ -11,9 +11,6 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4002
-    volumes:
-      - ./:/usr/src/app
-      - /usr/src/app/node_modules
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:4002/health']
