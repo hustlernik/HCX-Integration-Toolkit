@@ -24,7 +24,7 @@ module.exports = {
     // Subject (description) rules
     'subject-case': [2, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
     'subject-empty': [2, 'never'],
-    'subject-full-stop': [2, 'never', '.'],
+    'subject-full-stop': [0, 'never', '.'],
     'subject-max-length': [2, 'always', 85],
     'subject-min-length': [2, 'always', 3],
 
