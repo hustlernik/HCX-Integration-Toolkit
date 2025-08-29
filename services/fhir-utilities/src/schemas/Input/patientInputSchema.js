@@ -36,6 +36,7 @@ const patientInputSchema = Joi.object({
     'any.required': 'Gender is required (NDHM mandatory element)',
     'any.only': 'Gender must be one of: male, female, other, unknown',
   }),
+const patientInputSchema = Joi.object({
   birthDate: Joi.date().iso().required().messages({
     'any.required': 'Birth date is required (NDHM mandatory element)',
     'date.format': 'Birth date must be in ISO format (YYYY-MM-DD)',
@@ -43,6 +44,9 @@ const patientInputSchema = Joi.object({
   deceasedBoolean: Joi.boolean(),
   deceasedDateTime: Joi.date().iso(),
   address: Joi.array().items(addressInputSchema),
+})
+  .oxor('deceasedBoolean', 'deceasedDateTime')
+  .oxor('multipleBirthBoolean', 'multipleBirthInteger');
   maritalStatus: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   language: Joi.alternatives().try(
     Joi.string()
