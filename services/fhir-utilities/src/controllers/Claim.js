@@ -14,7 +14,10 @@ class Claim {
 
   createClaim(input) {
     try {
-      const { error, value } = claimInputSchema.validate(input);
+      const { error, value } = claimInputSchema.validate(input, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
       if (error) {
         return {
           success: false,
