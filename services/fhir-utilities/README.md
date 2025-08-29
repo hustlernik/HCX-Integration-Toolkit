@@ -234,6 +234,47 @@ For additional validation, you can use the official FHIR validator:
 
 [https://validator.fhir.org/](https://validator.fhir.org/)
 
+## How It Works
+
+The service follows these steps to process FHIR resources:
+
+1. **Input Validation**: Validates the input against the defined Joi schemas
+2. **Transformation**: Converts simplified input to FHIR-compliant resources
+3. **Constraint Enforcement**: Ensures all required fields and constraints are met
+4. **Response**: Returns the validated and transformed FHIR resource
+
+### Request Flow
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor Client
+  participant UI as Frontend
+  participant ProviderAPI as Provider Backend
+  participant FHIRSvc as FHIR Utilities (/api)
+  participant Router as FHIR Router
+  participant Controller as Resource Controller
+  participant Schema as Joi Schema
+  participant Utils as FHIRDataTypeUtils
+
+  UI->>ProviderAPI: POST /hcx/v1/communication/respond (provider)
+  ProviderAPI-->>UI: 200/4xx/5xx
+
+  UI->>FHIRSvc: POST /api/{resource} (payload with nested responseForm)
+  FHIRSvc->>Router: route request
+  Router->>Controller: create*(req.body)
+  Controller->>Schema: validate(input)
+  alt valid
+    Controller->>Utils: transform to FHIR datatypes
+    Controller->>Controller: enforce constraints, prune empties, add system fields
+    Controller-->>Router: { success: true, data: resource }
+    Router-->>UI: 200 JSON
+  else invalid
+    Controller-->>Router: { success: false, error, details }
+    Router-->>UI: 400 JSON
+  end
+```
+
 ## NHCX Compliance
 
 When working with NHCX, ensure your resources include the required extensions and conform to the NHCX Implementation Guide. Pay special attention to:

@@ -156,7 +156,10 @@ const itemInputSchema = Joi.object({
   subSite: Joi.array().items(Joi.alternatives().try(Joi.string(), codeableConceptInputSchema)),
   encounter: Joi.array().items(referenceInputSchema),
   detail: Joi.array().items(itemDetailInputSchema),
-});
+  id: Joi.string(),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
+}).oxor('locationCodeableConcept', 'locationAddress', 'locationReference');
 
 const claimInputSchema = Joi.object({
   resourceType: Joi.string().valid('Claim').required().messages({

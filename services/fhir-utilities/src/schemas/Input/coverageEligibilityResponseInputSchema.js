@@ -181,6 +181,10 @@ const coverageEligibilityResponseInputSchema = Joi.object({
   error: Joi.array().items(errorInputSchema),
   extension: Joi.array().items(extensionInputSchema),
   modifierExtension: Joi.array().items(extensionInputSchema),
-});
+})
+  .xor('servicedDate', 'servicedPeriod')
+  .messages({
+    'object.xor': 'Provide either servicedDate or servicedPeriod (but not both)',
+  });
 
 export default coverageEligibilityResponseInputSchema;

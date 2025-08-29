@@ -109,10 +109,6 @@ class Claim {
       resource.patient = this.datatypeUtils.transformReference(input.patient);
     }
 
-    if (input.servicedDate) {
-      resource.servicedDate = this.datatypeUtils.normalizeToFHIRDate(input.servicedDate);
-    }
-
     if (input.billablePeriod) {
       resource.billablePeriod = this.datatypeUtils.transformPeriod(input.billablePeriod);
     }
@@ -406,7 +402,7 @@ class Claim {
             type: procedure.type
               ? procedure.type.map((type) => this.datatypeUtils.transformCodeableConcept(type))
               : undefined,
-            date: procedure.date,
+            date: this.datatypeUtils.normalizeToFHIRDate(procedure.date),
             procedureCodeableConcept: procedure.procedureCodeableConcept
               ? this.datatypeUtils.transformCodeableConcept(procedure.procedureCodeableConcept)
               : undefined,
@@ -769,8 +765,9 @@ class Claim {
    * @param {Object} resource - FHIR resource
    */
   ensureFHIRConstraints(resource) {
-    this.removeEmptyElements(resource);
-    this.validateExtensions(resource);
+    const cleaned = this.removeEmptyElements(resource);
+    this.validateExtensions(cleaned);
+    return cleaned;
   }
 
   /**

@@ -54,7 +54,12 @@ const coverageInputSchema = Joi.object({
           period: periodInputSchema,
         }),
       ),
-    }),
+    })
+      .xor('valueQuantity', 'valueMoney')
+      .messages({
+        'object.missing': 'Cost to beneficiary must have either valueQuantity or valueMoney',
+        'object.xor': 'Cost to beneficiary cannot have both valueQuantity and valueMoney',
+      }),
   ),
 
   subrogation: Joi.boolean(),
@@ -62,27 +67,9 @@ const coverageInputSchema = Joi.object({
 
   extension: Joi.array().items(extensionInputSchema),
   modifierExtension: Joi.array().items(extensionInputSchema),
-})
-  .custom((value, helpers) => {
-    if (value.costToBeneficiary && Array.isArray(value.costToBeneficiary)) {
-      for (const cost of value.costToBeneficiary) {
-        const hasValueQuantity = cost.valueQuantity !== undefined;
-        const hasValueMoney = cost.valueMoney !== undefined;
-
-        if (!hasValueQuantity && !hasValueMoney) {
-          return helpers.error('Cost to beneficiary must have either valueQuantity or valueMoney');
-        }
-        if (hasValueQuantity && hasValueMoney) {
-          return helpers.error('Cost to beneficiary cannot have both valueQuantity and valueMoney');
-        }
-      }
-    }
-
-    return value;
-  })
-  .messages({
-    'any.required': '{{#label}} is required according to NDHM profile',
-    'array.min': '{{#label}} must have at least {{#limit}} item(s) according to NDHM profile',
-  });
+}).messages({
+  'any.required': '{{#label}} is required according to NDHM profile',
+  'array.min': '{{#label}} must have at least {{#limit}} item(s) according to NDHM profile',
+});
 
 export default coverageInputSchema;
