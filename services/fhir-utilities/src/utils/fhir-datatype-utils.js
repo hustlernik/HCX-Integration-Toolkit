@@ -589,14 +589,12 @@ class FHIRDataType {
           )
         : undefined,
       patientInstruction: dosage.patientInstruction,
-      timing: dosage.timing,
+      timing: dosage.timing ? this.transformTiming(dosage.timing) : undefined,
       asNeededBoolean: dosage.asNeededBoolean,
       asNeededCodeableConcept: dosage.asNeededCodeableConcept
         ? this.transformCodeableConcept(dosage.asNeededCodeableConcept)
         : undefined,
-      site: dosage.site
-        ? dosage.site.map((site) => this.transformCodeableConcept(site))
-        : undefined,
+      site: dosage.site ? this.transformCodeableConcept(dosage.site) : undefined,
       route: dosage.route ? this.transformCodeableConcept(dosage.route) : undefined,
       method: dosage.method ? this.transformCodeableConcept(dosage.method) : undefined,
       doseAndRate: dosage.doseAndRate
