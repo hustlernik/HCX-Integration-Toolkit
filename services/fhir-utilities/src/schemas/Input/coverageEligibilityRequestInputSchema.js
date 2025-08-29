@@ -153,9 +153,17 @@ const coverageEligibilityRequestInputSchema = Joi.object({
   patient: referenceInputSchema.required().messages({
     'any.required': 'Patient reference is required',
   }),
+const coverageEligibilityRequestInputSchema = Joi.object({
+  // … other fields …
   servicedDate: Joi.date().iso(),
   servicedPeriod: periodInputSchema,
   created: Joi.date().iso().messages({
+    // … existing messages …
+  }),
+  // … other fields …
+}).xor('servicedDate', 'servicedPeriod').messages({
+  'object.xor': 'Provide either servicedDate or servicedPeriod, not both',
+});
     'date.format': 'Created date must be in ISO format',
   }),
   enterer: referenceInputSchema.required().messages({
