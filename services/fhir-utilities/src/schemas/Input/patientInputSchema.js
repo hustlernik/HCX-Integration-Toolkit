@@ -36,7 +36,7 @@ const patientInputSchema = Joi.object({
     'any.required': 'Gender is required (NDHM mandatory element)',
     'any.only': 'Gender must be one of: male, female, other, unknown',
   }),
-  maritalStatus: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  maritalStatus: codeableConceptInputSchema,
   language: Joi.string()
     .valid(
       'ar',

@@ -14,7 +14,7 @@ import {
 
 // Benefit Schema
 const benefitInputSchema = Joi.object({
-  type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required().messages({
+  type: codeableConceptInputSchema.required().messages({
     'any.required': 'Benefit type is required',
   }),
   allowedUnsignedInt: Joi.number().integer().min(0),
@@ -62,7 +62,7 @@ const insuranceInputSchema = Joi.object({
 
 // Error Schema
 const errorInputSchema = Joi.object({
-  code: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required().messages({
+  code: codeableConceptInputSchema.required().messages({
     'any.required': 'Error code is required',
   }),
 });
@@ -177,7 +177,7 @@ const coverageEligibilityResponseInputSchema = Joi.object({
   }),
   insurance: Joi.array().items(insuranceInputSchema),
   preAuthRef: Joi.string(),
-  form: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+  form: codeableConceptInputSchema,
   error: Joi.array().items(errorInputSchema),
   extension: Joi.array().items(extensionInputSchema),
   modifierExtension: Joi.array().items(extensionInputSchema),

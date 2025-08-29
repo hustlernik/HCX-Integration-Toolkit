@@ -1,4 +1,4 @@
-# FHIR Utilities Service 🏥
+# FHIR Utilities Service
 
 A scalable FHIR microservice for creating, validating, and managing FHIR resources. This service is part of the HCX Integration Toolkit and targets HL7 FHIR R4 (4.0.1) with support for:
 
@@ -157,7 +157,6 @@ const eligibilityRequest = {
   patient: {
     reference: 'Patient/patient-123',
   },
-  created: new Date().toISOString(),
   provider: {
     reference: 'Organization/org-123',
   },

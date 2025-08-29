@@ -32,7 +32,9 @@ const supportingInfoInputSchema = Joi.object({
   }),
   valueReference: referenceInputSchema,
   reason: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
-});
+})
+  .oxor('timingDate', 'timingPeriod')
+  .oxor('valueBoolean', 'valueString', 'valueQuantity', 'valueAttachment', 'valueReference');
 
 // Diagnosis Schema
 const diagnosisInputSchema = Joi.object({
@@ -45,7 +47,7 @@ const diagnosisInputSchema = Joi.object({
     .required(),
   onAdmission: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   packageCode: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
-});
+}).xor('diagnosisCodeableConcept', 'diagnosisReference');
 
 // Procedure Schema
 const procedureInputSchema = Joi.object({
@@ -55,7 +57,7 @@ const procedureInputSchema = Joi.object({
   procedureCodeableConcept: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
   procedureReference: referenceInputSchema,
   udi: Joi.array().items(referenceInputSchema),
-});
+}).xor('procedureCodeableConcept', 'procedureReference');
 
 // Insurance Schema
 const insuranceInputSchema = Joi.object({
@@ -162,7 +164,9 @@ const itemInputSchema = Joi.object({
   id: Joi.string(),
   extension: Joi.array().items(extensionInputSchema),
   modifierExtension: Joi.array().items(extensionInputSchema),
-}).oxor('locationCodeableConcept', 'locationAddress', 'locationReference');
+})
+  .oxor('servicedDate', 'servicedPeriod')
+  .oxor('locationCodeableConcept', 'locationAddress', 'locationReference');
 
 const claimInputSchema = Joi.object({
   resourceType: Joi.string().valid('Claim').required().messages({

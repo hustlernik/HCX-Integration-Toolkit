@@ -464,7 +464,7 @@ const taskInputSchema = Joi.object({
   extension: Joi.array().items(extensionInputSchema),
   modifierExtension: Joi.array().items(extensionInputSchema),
 })
-  .oxor(
+  .xor(
     'valueBase64Binary',
     'valueBoolean',
     'valueCanonical',
@@ -505,6 +505,6 @@ const taskInputSchema = Joi.object({
     'valueSignature',
     'valueTiming',
   )
-  .messages({ 'object.oxor': 'Only one value[x] is allowed per output element.' });
+  .messages({ 'object.xor': 'Only one value[x] is allowed per output element.' });
 
 export default taskInputSchema;
