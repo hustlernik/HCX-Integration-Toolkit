@@ -186,7 +186,7 @@ class FHIRDataType {
     if (extension.valueIdentifier !== undefined)
       result.valueIdentifier = this.transformIdentifier(extension.valueIdentifier);
     if (extension.valueMoney !== undefined)
-      result.valueMoney = this.transformQuantity(extension.valueMoney);
+      result.valueMoney = this.transformMoney(extension.valueMoney);
     if (extension.valuePeriod !== undefined)
       result.valuePeriod = this.transformPeriod(extension.valuePeriod);
     if (extension.valueQuantity !== undefined)
