@@ -1,5 +1,4 @@
 import Joi from 'joi';
-
 import {
   extensionInputSchema,
   codeableConceptInputSchema,
@@ -7,7 +6,10 @@ import {
   periodInputSchema,
   identifierInputSchema,
   quantityInputSchema,
-  contactInputSchema,
+  nameInputSchema,
+  contactPointInputSchema,
+  addressInputSchema,
+  moneyInputSchema,
 } from './inputSchema.js';
 
 /**
@@ -33,6 +35,16 @@ const claimConditionExtensionSchema = Joi.object({
     .valid('https://nrces.in/ndhm/fhir/r4/StructureDefinition/Claim-Condition')
     .required(),
   valueCodeableConcept: codeableConceptInputSchema,
+});
+
+const insurancePlanContactSchema = Joi.object({
+  id: Joi.string(),
+  extension: Joi.array().items(extensionInputSchema),
+  modifierExtension: Joi.array().items(extensionInputSchema),
+  purpose: codeableConceptInputSchema,
+  name: nameInputSchema,
+  telecom: Joi.array().items(contactPointInputSchema),
+  address: addressInputSchema,
 });
 
 const insurancePlanInputSchema = Joi.object({
@@ -124,7 +136,7 @@ const insurancePlanInputSchema = Joi.object({
     'any.required': 'Status is required according to NDHM profile',
   }),
 
-  type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required().messages({
+  type: Joi.alternatives().try(codeableConceptInputSchema).required().messages({
     'any.required': 'Type is required according to NDHM profile',
   }),
 
@@ -146,7 +158,7 @@ const insurancePlanInputSchema = Joi.object({
 
   coverageArea: Joi.array().items(referenceInputSchema),
 
-  contact: Joi.array().items(contactInputSchema),
+  contact: Joi.array().items(insurancePlanContactSchema),
 
   network: Joi.array().items(referenceInputSchema),
 
@@ -164,7 +176,7 @@ const insurancePlanInputSchema = Joi.object({
         ),
         modifierExtension: Joi.array().items(extensionInputSchema),
 
-        type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+        type: codeableConceptInputSchema.required(),
         network: Joi.array().items(referenceInputSchema),
 
         benefit: Joi.array()
@@ -179,7 +191,7 @@ const insurancePlanInputSchema = Joi.object({
               ),
               modifierExtension: Joi.array().items(extensionInputSchema),
 
-              type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+              type: codeableConceptInputSchema.required(),
             }),
           )
           .min(1)
@@ -209,16 +221,16 @@ const insurancePlanInputSchema = Joi.object({
       modifierExtension: Joi.array().items(extensionInputSchema),
 
       identifier: Joi.array().items(identifierInputSchema),
-      type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required(),
+      type: codeableConceptInputSchema.required(),
       coverageArea: Joi.array().items(referenceInputSchema),
       network: Joi.array().items(referenceInputSchema),
 
       generalCost: Joi.array().items(
         Joi.object({
           modifierExtension: Joi.array().items(extensionInputSchema),
-          type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
+          type: codeableConceptInputSchema,
           groupSize: Joi.number().integer().min(1),
-          cost: quantityInputSchema,
+          cost: moneyInputSchema,
           comment: Joi.string(),
         }),
       ),

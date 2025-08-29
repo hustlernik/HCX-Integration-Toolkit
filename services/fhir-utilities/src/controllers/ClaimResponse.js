@@ -349,7 +349,7 @@ class ClaimResponse {
     }
 
     if (addItem.servicedDate) {
-      transformed.servicedDate = addItem.servicedDate;
+      transformed.servicedDate = this.datatypeUtils.normalizeToFHIRDate(addItem.servicedDate);
     }
 
     if (addItem.servicedPeriod) {
@@ -630,7 +630,8 @@ class ClaimResponse {
     }
 
     if (payment.date) {
-      transformed.date = payment.date;
+      const dt = new Date(payment.date);
+      transformed.date = isNaN(dt.getTime()) ? String(payment.date) : dt.toISOString().slice(0, 10);
     }
 
     if (payment.amount) {

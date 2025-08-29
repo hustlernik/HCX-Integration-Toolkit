@@ -18,7 +18,6 @@ router.post('/', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      details: [error.message],
     });
   }
 });

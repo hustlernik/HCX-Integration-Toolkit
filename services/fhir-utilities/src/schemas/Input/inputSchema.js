@@ -164,9 +164,7 @@ export const extensionInputSchema = Joi.object({
   }),
   valueMoney: Joi.object({
     value: Joi.number().required(),
-    unit: Joi.string(),
-    system: Joi.string().uri(),
-    code: Joi.string(),
+    currency: Joi.string(),
   }),
   valuePeriod: Joi.object({
     start: Joi.date().iso(),
@@ -1067,6 +1065,7 @@ export const attachmentInputSchema = Joi.object({
 
 export const quantityInputSchema = Joi.object({
   value: Joi.number().required(),
+  comparator: Joi.string().valid('=', '<', '<=', '>', '>=').default('='),
   unit: Joi.string(),
   system: Joi.string().uri(),
   code: Joi.string(),

@@ -168,15 +168,20 @@ const claimInputSchema = Joi.object({
     'any.required': 'At least one identifier is required (NDHM mandatory element)',
     'array.min': 'At least one identifier is required (NDHM mandatory element)',
   }),
-  status: Joi.string().required().messages({
-    'any.required': 'Status is required',
-  }),
+  status: Joi.string()
+    .valid('active', 'cancelled', 'draft', 'entered-in-error')
+    .required()
+    .messages({
+      'any.required': 'Status is required',
+      'any.only': 'Status must be one of: active, cancelled, draft, entered-in-error',
+    }),
   type: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema).required().messages({
     'any.required': 'Type is required (NDHM mandatory element)',
   }),
   subType: Joi.alternatives().try(Joi.string(), codeableConceptInputSchema),
-  use: Joi.string().required().messages({
+  use: Joi.string().valid('claim', 'preauthorization', 'predetermination').required().messages({
     'any.required': 'Use is required',
+    'any.only': 'Use must be one of: claim, preauthorization, predetermination',
   }),
   patient: referenceInputSchema.required().messages({
     'any.required': 'Patient is required (NDHM mandatory element)',

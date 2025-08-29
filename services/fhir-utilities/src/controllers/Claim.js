@@ -109,6 +109,10 @@ class Claim {
       resource.patient = this.datatypeUtils.transformReference(input.patient);
     }
 
+    if (input.servicedDate) {
+      resource.servicedDate = this.datatypeUtils.normalizeToFHIRDate(input.servicedDate);
+    }
+
     if (input.billablePeriod) {
       resource.billablePeriod = this.datatypeUtils.transformPeriod(input.billablePeriod);
     }

@@ -18,7 +18,6 @@ router.post('/', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      details: [error.message],
     });
   }
 });
@@ -35,7 +34,6 @@ router.get('/schema', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to retrieve schema',
-      details: [error.message],
     });
   }
 });

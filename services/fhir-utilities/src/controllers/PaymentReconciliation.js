@@ -333,40 +333,40 @@ class PaymentReconciliation {
     }
 
     if (resource.paymentDate) {
-      narrative += `<p><strong>Payment Date:</strong> ${resource.paymentDate}</p>`;
+      narrative += `<p><strong>Payment Date:</strong> ${this.escapeHtml(resource.paymentDate)}</p>`;
     }
 
     if (resource.paymentAmount && resource.paymentAmount.value) {
       const currency = resource.paymentAmount.currency || 'INR';
-      narrative += `<p><strong>Payment Amount:</strong> ${resource.paymentAmount.value} ${currency}</p>`;
+      narrative += `<p><strong>Payment Amount:</strong> ${this.escapeHtml(resource.paymentAmount.value)} ${currency}</p>`;
     }
 
     if (resource.outcome) {
-      narrative += `<p><strong>Outcome:</strong> ${resource.outcome}</p>`;
+      narrative += `<p><strong>Outcome:</strong> ${this.escapeHtml(resource.outcome)}</p>`;
     }
 
     if (resource.disposition) {
-      narrative += `<p><strong>Disposition:</strong> ${resource.disposition}</p>`;
+      narrative += `<p><strong>Disposition:</strong> ${this.escapeHtml(resource.disposition)}</p>`;
     }
 
     if (resource.paymentIssuer && resource.paymentIssuer.reference) {
-      narrative += `<p><strong>Payment Issuer:</strong> ${resource.paymentIssuer.reference}</p>`;
+      narrative += `<p><strong>Payment Issuer:</strong> ${this.escapeHtml(resource.paymentIssuer.reference)}</p>`;
     }
 
     if (resource.requestor && resource.requestor.reference) {
-      narrative += `<p><strong>Requestor:</strong> ${resource.requestor.reference}</p>`;
+      narrative += `<p><strong>Requestor:</strong> ${this.escapeHtml(resource.requestor.reference)}</p>`;
     }
 
     if (resource.request && resource.request.reference) {
-      narrative += `<p><strong>Request:</strong> ${resource.request.reference}</p>`;
+      narrative += `<p><strong>Request:</strong> ${this.escapeHtml(resource.request.reference)}</p>`;
     }
 
     if (resource.detail && resource.detail.length > 0) {
-      narrative += `<p><strong>Details:</strong> ${resource.detail.length} detail(s)</p>`;
+      narrative += `<p><strong>Details:</strong> ${this.escapeHtml(resource.detail.length)} detail(s)</p>`;
     }
 
     if (resource.processNote && resource.processNote.length > 0) {
-      narrative += `<p><strong>Process Notes:</strong> ${resource.processNote.length} note(s)</p>`;
+      narrative += `<p><strong>Process Notes:</strong> ${this.escapeHtml(resource.processNote.length)} note(s)</p>`;
     }
 
     narrative += `</div>`;
