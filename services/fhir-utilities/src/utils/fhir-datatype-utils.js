@@ -58,7 +58,9 @@ class FHIRDataType {
       typeof value === 'number' ||
       (typeof value === 'string' && /^\d{10,}$/.test(value.trim()))
     ) {
-      const dt = new Date(Number(value));
+      const n = typeof value === 'number' ? value : Number(value.trim());
+      const ms = Math.abs(n) < 1e12 ? n * 1000 : n; // < 1e12 → seconds, else milliseconds
+      const dt = new Date(ms);
       if (isNaN(dt.getTime())) return null;
       const y = dt.getUTCFullYear();
       const m = String(dt.getUTCMonth() + 1).padStart(2, '0');
