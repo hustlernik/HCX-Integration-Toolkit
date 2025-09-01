@@ -1,14 +1,14 @@
 export interface NHCXProtocolHeaders {
-  'x-hcx-sender_code': string | undefined;
-  'x-hcx-api_call_id': string | undefined;
-  'x-hcx-recipient_code': string | undefined;
-  'x-hcx-request_id'?: string | undefined;
-  'x-hcx-correlation_id': string | undefined;
-  'x-hcx-workflow_id'?: string | undefined;
+  'x-hcx-sender_code': string;
+  'x-hcx-api_call_id': string;
+  'x-hcx-recipient_code': string;
+  'x-hcx-request_id'?: string;
+  'x-hcx-correlation_id': string;
+  'x-hcx-workflow_id'?: string;
   'x-hcx-timestamp': string | number;
   'x-hcx-debug_flag'?: 'Error' | 'Info' | 'Debug' | undefined;
   'x-hcx-ben-abha-id': string;
-  'x-hcx-entity-type'?: string | undefined;
+  'x-hcx-entity-type'?: string;
   'x-hcx-status':
     | 'request.initiated'
     | 'request.queued'

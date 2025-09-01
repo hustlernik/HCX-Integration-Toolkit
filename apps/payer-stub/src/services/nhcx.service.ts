@@ -75,19 +75,19 @@ export class NHCXService {
   }): Record<string, any> {
     const entityType = params?.entityType || 'communication';
     const status = params?.status || 'request.initiated';
-    const benAbhaId = params?.benAbhaId || process.env.BEN_APHA_ID;
+    const benAbhaId = params?.benAbhaId || process.env.HCX_BEN_ABHA_ID;
 
     const headers: Record<string, any> = {
       'x-hcx-api_call_id': uuidv4(),
       'x-hcx-correlation_id': uuidv4(),
       'x-hcx-timestamp': Math.floor(Date.now() / 1000).toString(),
-      'x-hcx-sender_code': String(process.env.PAYER_CODE).trim(),
-      'x-hcx-recipient_code': String(process.env.PROVIDER_CODE).trim(),
+      'x-hcx-sender_code': (process.env.HCX_SENDER_CODE || '').trim(),
+      'x-hcx-recipient_code': (process.env.HCX_RECIPIENT_CODE || '').trim(),
       'x-hcx-status': status,
       'x-hcx-entity-type': entityType,
       'x-hcx-workflow_id': String(process.env.HCX_WORKFLOW_ID),
       'x-hcx-request_id': uuidv4(),
-      'x-hcx-ben-abha-id': benAbhaId || '',
+      'x-hcx-ben-abha-id': process.env.HCX_BEN_ABHA_ID || '',
     };
     return headers;
   }
@@ -628,7 +628,9 @@ export class NHCXService {
    */
   public async getAccessToken(): Promise<string> {
     try {
-      const sessionUrl = 'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions';
+      const sessionUrl = (
+        process.env.SESSION_API_URL || 'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions'
+      ).trim();
 
       const clientId = process.env.ABDM_CLIENT_ID;
       const clientSecret = process.env.ABDM_CLIENT_SECRET;

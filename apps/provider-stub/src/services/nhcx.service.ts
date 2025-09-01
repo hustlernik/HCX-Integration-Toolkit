@@ -98,9 +98,12 @@ export class NHCXService {
       const clientId = process.env.ABDM_CLIENT_ID;
       const clientSecret = process.env.ABDM_CLIENT_SECRET;
       const grantType = process.env.ABDM_GRANT_TYPE || 'client_credentials';
+      const sessionUrl = (
+        process.env.SESSION_API_URL || 'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions'
+      ).trim();
 
       logger.info('[Provider NHCXService] Requesting ABDM session token', undefined, {
-        url: process.env.SESSION_API_URL,
+        url: sessionUrl,
         grantType,
       });
 
@@ -110,7 +113,7 @@ export class NHCXService {
       const timestamp = new Date().toISOString();
       const hostHeader = (() => {
         try {
-          return new URL('https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions').host;
+          return new URL(sessionUrl).host;
         } catch {
           return undefined as any;
         }
@@ -118,7 +121,7 @@ export class NHCXService {
 
       try {
         const response = await axios.post(
-          'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions',
+          sessionUrl,
           {
             clientId,
             clientSecret,
@@ -142,7 +145,7 @@ export class NHCXService {
           '[Provider NHCXService] Obtained ABDM access token from Session API',
           undefined,
           {
-            url: process.env.SESSION_API_URL,
+            url: sessionUrl,
             requestId,
             status: response.status,
           },

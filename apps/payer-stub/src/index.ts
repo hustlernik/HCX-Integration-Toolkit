@@ -1,10 +1,7 @@
+import './loadEnv';
 import http from 'http';
-import path from 'path';
-import dotenv from 'dotenv';
 import app from './app';
 import { initSocket } from './socket/index';
-
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const server = http.createServer(app);
 

@@ -120,8 +120,8 @@ export class CommunicationNHCXController {
       protectedHeaders['x-hcx-api_call_id'] = requestProtectedHeaders['x-hcx-api_call_id'];
       protectedHeaders['x-hcx-request_id'] = requestProtectedHeaders['x-hcx-request_id'];
       protectedHeaders['x-hcx-status'] = 'response.complete';
-      protectedHeaders['x-hcx-sender_code'] = process.env.PROVIDER_CODE?.trim();
-      protectedHeaders['x-hcx-recipient_code'] = process.env.PAYER_CODE?.trim();
+      protectedHeaders['x-hcx-sender_code'] = process.env.PROVIDER_CODE?.trim() || '';
+      protectedHeaders['x-hcx-recipient_code'] = process.env.PAYER_CODE?.trim() || '';
       protectedHeaders['x-hcx-timestamp'] = Math.floor(Date.now() / 1000);
       protectedHeaders['x-hcx-ben-abha-id'] = requestProtectedHeaders['x-hcx-ben-abha-id'] || '';
       protectedHeaders['x-hcx-workflow_id'] = process.env.HCX_WORKFLOW_ID?.trim();

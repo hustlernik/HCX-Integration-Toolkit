@@ -64,9 +64,6 @@ export class InsurancePlanService {
         sender: protectedHeaders['x-hcx-sender_code'],
         recipient: protectedHeaders['x-hcx-recipient_code'],
       });
-      logger.debug('[InsurancePlanService] Insurance Plan request sent successfully', undefined, {
-        response,
-      });
       return response;
     } catch (error: unknown) {
       const status = axios.isAxiosError(error) ? error.response?.status : undefined;
