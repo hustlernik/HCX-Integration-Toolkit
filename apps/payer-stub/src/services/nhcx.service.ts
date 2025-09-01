@@ -7,8 +7,11 @@ export class NHCXService {
   private apiKey: string;
 
   constructor() {
-    this.nhcxBaseUrl = process.env.NHCX_BASE_URL || '';
-    this.apiKey = process.env.NHCX_API_KEY || '';
+    this.nhcxBaseUrl = (process.env.NHCX_BASE_URL || '').trim();
+    this.apiKey = (process.env.NHCX_API_KEY || '').trim();
+    if (!this.nhcxBaseUrl) {
+      throw new Error('NHCX_BASE_URL is not set.');
+    }
 
     logger.info('[Payer NHCXService] Init', undefined, {
       nhcxBaseUrl: this.nhcxBaseUrl,
@@ -75,7 +78,6 @@ export class NHCXService {
   }): Record<string, any> {
     const entityType = params?.entityType || 'communication';
     const status = params?.status || 'request.initiated';
-    const benAbhaId = params?.benAbhaId || process.env.HCX_BEN_ABHA_ID;
 
     const headers: Record<string, any> = {
       'x-hcx-api_call_id': uuidv4(),
@@ -87,7 +89,7 @@ export class NHCXService {
       'x-hcx-entity-type': entityType,
       'x-hcx-workflow_id': String(process.env.HCX_WORKFLOW_ID),
       'x-hcx-request_id': uuidv4(),
-      'x-hcx-ben-abha-id': process.env.HCX_BEN_ABHA_ID || '',
+      'x-hcx-ben-abha-id': params?.benAbhaId ?? process.env.HCX_BEN_ABHA_ID ?? '',
     };
     return headers;
   }
@@ -632,9 +634,12 @@ export class NHCXService {
         process.env.SESSION_API_URL || 'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions'
       ).trim();
 
-      const clientId = process.env.ABDM_CLIENT_ID;
-      const clientSecret = process.env.ABDM_CLIENT_SECRET;
-      const grantType = process.env.ABDM_GRANT_TYPE || 'client_credentials';
+      const clientId = (process.env.ABDM_CLIENT_ID || '').trim();
+      const clientSecret = (process.env.ABDM_CLIENT_SECRET || '').trim();
+      const grantType = (process.env.ABDM_GRANT_TYPE || 'client_credentials').trim();
+      if (!clientId || !clientSecret) {
+        throw new Error('ABDM_CLIENT_ID/ABDM_CLIENT_SECRET are not set.');
+      }
 
       const maskedClient = clientId ? clientId.slice(0, 4) + '***' : 'none';
       logger.info('[Payer NHCXService] Requesting ABDM session token', undefined, {
