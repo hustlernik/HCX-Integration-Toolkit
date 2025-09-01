@@ -44,20 +44,18 @@ export class InsurancePlanService {
       host: hostHeader,
     });
 
+    const responsePayload = JSON.stringify({ payload: encryptedPayload });
+
     try {
-      const response = await axios.post(
-        url,
-        { payload: encryptedPayload },
-        {
-          headers: {
-            bearer_auth: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            ...(hostHeader ? { Host: hostHeader } : {}),
-          },
-          timeout: 15_000,
+      const response = await axios.post(url, responsePayload, {
+        headers: {
+          bearer_auth: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...(hostHeader ? { Host: hostHeader } : {}),
         },
-      );
+        timeout: 15_000,
+      });
 
       logger.info('[InsurancePlanService] Insurance Plan request sent successfully', undefined, {
         status: response.status,
@@ -65,6 +63,9 @@ export class InsurancePlanService {
         url,
         sender: protectedHeaders['x-hcx-sender_code'],
         recipient: protectedHeaders['x-hcx-recipient_code'],
+      });
+      logger.debug('[InsurancePlanService] Insurance Plan request sent successfully', undefined, {
+        response,
       });
       return response;
     } catch (error: unknown) {

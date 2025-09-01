@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { logger } from '../utils/logger';
-import { config } from '../config';
 import { InsurancePlanNHCXController } from '../controllers/insurancePlan.nhcx.controller';
 import { CoverageEligibilityNHCXController } from '../controllers/coverageEligibility.nhcx.controller';
 import { ClaimNHCXController } from '../controllers/claim.nhcx.controller';
@@ -218,8 +217,8 @@ router.post(
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
-          sender_code: req.headers['x-hcx-recipient_code'] || config.payerCode,
-          recipient_code: req.headers['x-hcx-sender_code'] || config.providerCode,
+          sender_code: req.headers['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE,
+          recipient_code: req.headers['x-hcx-sender_code'] || process.env.HCX_RECIPIENT_CODE,
           entity_type: 'claim',
           protocol_status: 'request.error',
         },
@@ -260,8 +259,8 @@ router.post(
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
-          sender_code: req.headers['x-hcx-recipient_code'] || config.payerCode,
-          recipient_code: req.headers['x-hcx-sender_code'] || config.providerCode,
+          sender_code: req.headers['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE,
+          recipient_code: req.headers['x-hcx-sender_code'] || process.env.HCX_RECIPIENT_CODE,
           entity_type: 'claim',
           protocol_status: 'request.error',
         },
@@ -379,7 +378,7 @@ router.post('/v1/error', async (req, res) => {
       api_call_id: req.headers['x-hcx-api_call_id'] || '',
       correlation_id: req.headers['x-hcx-correlation_id'] || '',
       result: {
-        sender_code: req.headers['x-hcx-recipient_code'] || config.payerCode,
+        sender_code: req.headers['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE,
         recipient_code: req.headers['x-hcx-sender_code'] || 'nhcx',
         entity_type: entityType,
         protocol_status: 'request.queued',
@@ -414,8 +413,8 @@ router.post(
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
-          sender_code: req.headers['x-hcx-recipient_code'] || config.payerCode,
-          recipient_code: req.headers['x-hcx-sender_code'] || config.providerCode,
+          sender_code: req.headers['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE,
+          recipient_code: req.headers['x-hcx-sender_code'] || process.env.HCX_RECIPIENT_CODE,
           entity_type: 'insuranceplan',
           protocol_status: 'request.error',
         },
@@ -432,8 +431,8 @@ router.post(
         api_call_id: req.headers['x-hcx-api_call_id'] || '',
         correlation_id: req.headers['x-hcx-correlation_id'] || '',
         result: {
-          sender_code: req.headers['x-hcx-recipient_code'] || config.payerCode,
-          recipient_code: req.headers['x-hcx-sender_code'] || config.providerCode,
+          sender_code: req.headers['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE,
+          recipient_code: req.headers['x-hcx-sender_code'] || process.env.HCX_RECIPIENT_CODE,
           entity_type: 'insuranceplan',
           protocol_status: 'request.error',
         },

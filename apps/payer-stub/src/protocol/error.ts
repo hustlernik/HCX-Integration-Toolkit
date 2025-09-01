@@ -1,5 +1,4 @@
 import { NHCXProtocolHeaders } from '../types/nhcx';
-import { config } from '../config';
 
 export interface ProtocolErrorResponseBody {
   type: 'ProtocolResponse';
@@ -34,8 +33,8 @@ export function buildProtocolErrorResponse(
   return {
     type: 'ProtocolResponse',
     timestamp: Math.floor(Date.now() / 1000).toString(),
-    'x-hcx-sender_code': headers['x-hcx-recipient_code'] || config.payerCode || '',
-    'x-hcx-recipient_code': headers['x-hcx-sender_code'] || config.providerCode || '',
+    'x-hcx-sender_code': headers['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE || '',
+    'x-hcx-recipient_code': headers['x-hcx-sender_code'] || process.env.HCX_RECIPIENT_CODE || '',
     'x-hcx-api_call_id': headers['x-hcx-api_call_id'] || '',
     'x-hcx-correlation_id': headers['x-hcx-correlation_id'] || '',
     'x-hcx-debug_flag': 'Error',
@@ -47,6 +46,6 @@ export function buildProtocolErrorResponse(
       ...(details.trace ? { trace: details.trace } : {}),
     },
     'x-hcx-entity-type': entityType,
-    'x-hcx-ben-abha-id': headers['x-hcx-ben-abha-id'] || config.benAbhaId || '',
+    'x-hcx-ben-abha-id': headers['x-hcx-ben-abha-id'] || process.env.HCX_BEN_ABHA_ID || '',
   };
 }

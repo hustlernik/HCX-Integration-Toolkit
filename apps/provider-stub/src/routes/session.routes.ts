@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getAccessToken } from '../utils/accessToken';
 import { logger } from '../utils/logger';
-import { config } from '../config';
 
 const router = Router();
 
@@ -13,7 +12,7 @@ router.post('/hcx/v1/session', async (req: Request, res: Response) => {
   try {
     const clientId = process.env.ABDM_CLIENT_ID || '';
     const clientSecret = process.env.ABDM_CLIENT_SECRET || '';
-    const tokenUrl = config.sessionApiUrl || process.env.ABDM_TOKEN_URL || '';
+    const tokenUrl = process.env.SESSION_API_URL || '';
     const grantType = 'client_credentials';
 
     if (!clientId || !clientSecret || !tokenUrl) {

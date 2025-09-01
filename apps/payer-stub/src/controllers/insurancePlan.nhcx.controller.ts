@@ -6,7 +6,6 @@ import { logger } from '../utils/logger';
 import { buildAccepted202 } from '../protocol/ack';
 import { InsurancePlanDomainService } from '../services/insurancePlan.service';
 import { buildProtocolErrorResponse } from '../protocol/error';
-import { config } from '../config';
 import { Bundle } from 'fhir/r4';
 import { buildInsurancePlanTaskBundle } from '../fhir/task-bundle';
 
@@ -49,15 +48,15 @@ export class InsurancePlanNHCXController {
     const headers: any = {
       alg: 'RSA-OAEP-256',
       enc: 'A256GCM',
-      'x-hcx-sender_code': original['x-hcx-recipient_code'] || config.payerCode,
-      'x-hcx-recipient_code': original['x-hcx-sender_code'] || config.providerCode,
+      'x-hcx-sender_code': original['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE,
+      'x-hcx-recipient_code': original['x-hcx-sender_code'] || process.env.HCX_RECIPIENT_CODE,
       'x-hcx-api_call_id': original['x-hcx-api_call_id'] || `api_${Date.now()}`,
       'x-hcx-correlation_id': original['x-hcx-correlation_id'] || `corr_${Date.now()}`,
       'x-hcx-timestamp': timestamp,
       'x-hcx-status': status === 'response.error' ? 'response.error' : 'response.complete',
       'x-hcx-workflow_id': original['x-hcx-workflow_id'] || `wfl_${Date.now()}`,
       'x-hcx-request_id': original['x-hcx-request_id'] || `req_${Date.now()}`,
-      'x-hcx-ben-abha-id': original['x-hcx-ben-abha-id'] || config.benAbhaId,
+      'x-hcx-ben-abha-id': original['x-hcx-ben-abha-id'] || process.env.HCX_BEN_ABHA_ID,
       'x-hcx-entity-type': 'insuranceplan',
     };
     if (status === 'response.error' && errorDetails) {
@@ -260,7 +259,7 @@ export class InsurancePlanNHCXController {
 
       await this.nhcxService.sendInsurancePlanResponse(
         encryptedResponse,
-        `${config.nhcxBaseUrl}/insuranceplan/on_request`,
+        `${process.env.NHCX_BASE_URL}/insuranceplan/on_request`,
       );
 
       logger.info('Successfully sent InsurancePlanBundle response via NHCX gateway');
@@ -297,8 +296,9 @@ export class InsurancePlanNHCXController {
       const responseHeaders: any = {
         alg: 'RSA-OAEP-256',
         enc: 'A256GCM',
-        'x-hcx-sender_code': originalHeaders['x-hcx-recipient_code'] || config.payerCode,
-        'x-hcx-recipient_code': originalHeaders['x-hcx-sender_code'] || config.providerCode,
+        'x-hcx-sender_code': originalHeaders['x-hcx-recipient_code'] || process.env.HCX_SENDER_CODE,
+        'x-hcx-recipient_code':
+          originalHeaders['x-hcx-sender_code'] || process.env.HCX_RECIPIENT_CODE,
         'x-hcx-api_call_id': originalHeaders['x-hcx-api_call_id'] || `api_${Date.now()}`,
         'x-hcx-correlation_id': originalHeaders['x-hcx-correlation_id'] || `corr_${Date.now()}`,
         'x-hcx-timestamp': timestamp,
@@ -306,7 +306,7 @@ export class InsurancePlanNHCXController {
         'x-hcx-entity-type': 'insuranceplan',
         'x-hcx-workflow_id': originalHeaders['x-hcx-workflow_id'] || `wfl_${Date.now()}`,
         'x-hcx-request_id': originalHeaders['x-hcx-request_id'] || `req_${Date.now()}`,
-        'x-hcx-ben-abha-id': originalHeaders['x-hcx-ben-abha-id'] || config.benAbhaId,
+        'x-hcx-ben-abha-id': originalHeaders['x-hcx-ben-abha-id'] || process.env.HCX_BEN_ABHA_ID,
         'x-hcx-error_details': {
           code: errorCode,
           message: errorMessage,
@@ -324,7 +324,7 @@ export class InsurancePlanNHCXController {
 
       await this.nhcxService.sendInsurancePlanResponse(
         encryptedResponse,
-        `${config.nhcxBaseUrl}/insuranceplan/on_request`,
+        `${process.env.NHCX_BASE_URL}/insuranceplan/on_request`,
       );
       logger.info('Sent error OperationOutcome via NHCX', { errorCode });
     } catch (error) {

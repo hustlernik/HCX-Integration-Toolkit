@@ -1,15 +1,14 @@
 import axios from 'axios';
 import { logger } from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
-import { config } from '../config';
 
 export class NHCXService {
   private nhcxBaseUrl: string;
   private apiKey: string;
 
   constructor() {
-    this.nhcxBaseUrl = config.nhcxBaseUrl;
-    this.apiKey = config.nhcxApiKey;
+    this.nhcxBaseUrl = process.env.NHCX_BASE_URL || '';
+    this.apiKey = process.env.NHCX_API_KEY || '';
 
     logger.info('[Payer NHCXService] Init', undefined, {
       nhcxBaseUrl: this.nhcxBaseUrl,
@@ -76,17 +75,17 @@ export class NHCXService {
   }): Record<string, any> {
     const entityType = params?.entityType || 'communication';
     const status = params?.status || 'request.initiated';
-    const benAbhaId = params?.benAbhaId || config.benAbhaId;
+    const benAbhaId = params?.benAbhaId || process.env.BEN_APHA_ID;
 
     const headers: Record<string, any> = {
       'x-hcx-api_call_id': uuidv4(),
       'x-hcx-correlation_id': uuidv4(),
       'x-hcx-timestamp': Math.floor(Date.now() / 1000).toString(),
-      'x-hcx-sender_code': String(config.payerCode).trim(),
-      'x-hcx-recipient_code': String(config.providerCode).trim(),
+      'x-hcx-sender_code': String(process.env.PAYER_CODE).trim(),
+      'x-hcx-recipient_code': String(process.env.PROVIDER_CODE).trim(),
       'x-hcx-status': status,
       'x-hcx-entity-type': entityType,
-      'x-hcx-workflow_id': String(config.hcxWorkflowId),
+      'x-hcx-workflow_id': String(process.env.HCX_WORKFLOW_ID),
       'x-hcx-request_id': uuidv4(),
       'x-hcx-ben-abha-id': benAbhaId || '',
     };
@@ -629,11 +628,11 @@ export class NHCXService {
    */
   public async getAccessToken(): Promise<string> {
     try {
-      const sessionUrl = config.sessionApiUrl;
+      const sessionUrl = 'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions';
 
-      const clientId = config.abdmClientId;
-      const clientSecret = config.abdmClientSecret;
-      const grantType = config.abdmGrantType || 'client_credentials';
+      const clientId = process.env.ABDM_CLIENT_ID;
+      const clientSecret = process.env.ABDM_CLIENT_SECRET;
+      const grantType = process.env.ABDM_GRANT_TYPE || 'client_credentials';
 
       const maskedClient = clientId ? clientId.slice(0, 4) + '***' : 'none';
       logger.info('[Payer NHCXService] Requesting ABDM session token', undefined, {
