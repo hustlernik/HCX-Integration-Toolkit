@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { decryptFHIR, encryptFHIR } from '../utils/crypto';
 import { logger } from '../utils/logger';
 import { NHCXService } from '../services/nhcx.service';
-import { config } from '../config';
 import { NHCXProtocolHeaders } from '../types/nhcx';
 import { buildAccepted202 } from '../protocol/ack';
 import { mapClaimBundleToModel } from '../utils/fhir-mapping';
@@ -66,10 +65,11 @@ export class ClaimNHCXController {
         'x-hcx-api_call_id': protectedHeaders['x-hcx-api_call_id'] || '',
         'x-hcx-correlation_id': protectedHeaders['x-hcx-correlation_id'] || correlationId,
         'x-hcx-timestamp': protectedHeaders['x-hcx-timestamp'] || Math.floor(Date.now() / 1000),
-        'x-hcx-sender_code': protectedHeaders['x-hcx-sender_code'] || config.payerCode,
-        'x-hcx-recipient_code': protectedHeaders['x-hcx-recipient_code'] || config.providerCode,
+        'x-hcx-sender_code': protectedHeaders['x-hcx-sender_code'] || process.env.HCX_SENDER_CODE,
+        'x-hcx-recipient_code':
+          protectedHeaders['x-hcx-recipient_code'] || process.env.HCX_RECIPIENT_CODE,
         'x-hcx-status': (protectedHeaders['x-hcx-status'] as any) || 'request.initiated',
-        'x-hcx-ben-abha-id': protectedHeaders['x-hcx-ben-abha-id'] || config.benAbhaId,
+        'x-hcx-ben-abha-id': protectedHeaders['x-hcx-ben-abha-id'] || process.env.HCX_BEN_ABHA_ID,
       } as NHCXProtocolHeaders;
 
       const ack = buildAccepted202(nhcxHeaders, {
@@ -176,15 +176,15 @@ export class ClaimNHCXController {
       const responseHeaders: Record<string, any> = {
         alg: 'RSA-OAEP-256',
         enc: 'A256GCM',
-        'x-hcx-sender_code': config.payerCode,
+        'x-hcx-sender_code': process.env.HCX_SENDER_CODE,
         'x-hcx-api_call_id': (reqDoc as any).apiCallId || (reqDoc as any).correlationId,
         'x-hcx-request_id': (reqDoc as any).requestId || undefined,
-        'x-hcx-recipient_code': config.providerCode,
+        'x-hcx-recipient_code': process.env.HCX_RECIPIENT_CODE,
         'x-hcx-correlation_id': (reqDoc as any).correlationId,
         'x-hcx-timestamp': Math.floor(Date.now() / 1000).toString(),
-        'x-hcx-ben-abha-id': config.benAbhaId,
+        'x-hcx-ben-abha-id': process.env.HCX_BEN_ABHA_ID,
         'x-hcx-status': 'response.complete',
-        'x-hcx-workflow_id': config.hcxWorkflowId,
+        'x-hcx-workflow_id': process.env.HCX_WORKFLOW_ID,
         'x-hcx-entity-type': 'claim',
       };
       if (!responseHeaders['x-hcx-request_id']) delete responseHeaders['x-hcx-request_id'];

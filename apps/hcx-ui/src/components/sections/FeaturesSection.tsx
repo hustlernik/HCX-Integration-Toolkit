@@ -15,6 +15,7 @@ interface Feature {
   icon: LucideIcon;
   href: string;
   buttonText: string;
+  external?: boolean;
 }
 
 interface FeaturesSectionProps {
@@ -35,6 +36,7 @@ const defaultFeatures: Feature[] = [
     icon: FileSpreadsheet,
     href: '/converters',
     buttonText: 'Convert Files',
+    external: true,
   },
   {
     title: 'API Test Suite',
