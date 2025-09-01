@@ -37,7 +37,7 @@ app.get('/socket-health', (req, res) => {
   res.json({
     status: 'healthy',
     socket: 'available',
-    timestamp: new Date().toISOString(),
+    timestamp: Math.floor(Date.now() / 1000).toString(),
   });
 });
 

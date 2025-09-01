@@ -1,73 +1,3 @@
-# HCX Integration Toolkit
-
-Utility tools to facilitate HCX Integrations
-
-## Monorepo Structure
-
-```
-monorepo/
-├── apps/
-│   ├── hcx-ui/
-│   ├── provider-stub/
-│   └── payer-stub/
-├── services/
-│   ├── insurance-plan-converter/
-│   └── fhir-utilities/
-├── packages/
-│   ├── fhir-core/
-│   ├── hcx-client/
-│   └── ui-components/
-├── docs/
-│   └── static/
-├── config/
-│   ├── eslint.config.js
-│   ├── jest.config.js
-│   └── tsconfig.base.json
-├── tools/
-│   ├── generate-docs.ts
-│   ├── seed-db.ts
-│   └── hcx-simulator.ts
-├── docker/
-│   ├── docker-compose.dev.yaml
-│   ├── Dockerfile.ui
-│   ├── Dockerfile.converter
-│   └── Dockerfile.fhir-utils
-├── .github/
-├── pnpm-workspace.yaml
-├── turbo.json
-├── package.json
-└── README.md
-```
-
-## Workspace Setup
-
-- Uses [pnpm](https://pnpm.io/) for fast, disk-efficient dependency management.
-- Uses [Turborepo](https://turbo.build/) for high-performance monorepo builds, caching, and task orchestration.
-
-## Getting Started
-
-1. Install [pnpm](https://pnpm.io/installation) and [Turborepo](https://turbo.build/).
-2. Run `pnpm install` at the root to install all dependencies.
-3. Use `pnpm build`, `pnpm dev`, `pnpm lint`, and `pnpm test` to run tasks across the monorepo.
-
-## Structure
-
-- `apps/`: Runnable applications (UI, stubs)
-- `services/`: API/microservices
-- `packages/`: Shared libraries
-- `docs/`: Documentation
-- `config/`: Shared configuration
-- `tools/`: Internal CLI/dev tools
-- `docker/`: Dockerfiles and Compose setups
-- `.github/`: GitHub Actions, templates, workflows
-
-## CI/CD
-
-- GitHub Actions workflows in `.github/workflows/` for build, lint, and test.
-- Remote caching and task orchestration via Turborepo.
-
----
-
 # FHIR Utilities Service
 
 A scalable FHIR microservice for creating, validating, and managing FHIR resources. This service is part of the HCX Integration Toolkit and targets HL7 FHIR R4 (4.0.1) with support for:
@@ -82,7 +12,7 @@ The service ensures compliance with the specified FHIR version and implementatio
 ### Prerequisites
 
 - Docker and Docker Compose (recommended)
-- OR Node.js 16+ with npm 8+ or yarn 1.22+
+- OR Node.js 18+ with npm 9+ or yarn 1.22+
 
 ### Installation with Docker
 
@@ -176,6 +106,15 @@ const patientData = {
     {
       system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-identifier-type-code',
       value: 'patient-123',
+      type: {
+        coding: [
+          {
+            system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-identifier-type-code',
+            code: 'ABHA',
+            display: 'Ayushman Bharat Health Account',
+          },
+        ],
+      },
     },
   ],
   name: [
@@ -227,7 +166,6 @@ const eligibilityRequest = {
   patient: {
     reference: 'Patient/patient-123',
   },
-  created: new Date().toISOString(),
   provider: {
     reference: 'Organization/org-123',
   },

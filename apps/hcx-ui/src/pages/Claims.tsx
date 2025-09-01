@@ -238,6 +238,7 @@ const Claims: React.FC = () => {
 
   const handleCommunicationRequest = async (data: CommunicationRequestData) => {
     if (!selectedClaim) return;
+    if (responseSubmitting) return; // Prevent duplicate submissions
 
     setResponseSubmitting(true);
 
@@ -1236,7 +1237,7 @@ const Claims: React.FC = () => {
                       correlationId={selectedClaim.correlationId}
                       patientName={selectedClaim.patient.name}
                       providerName={selectedClaim.provider.name}
-                      onSubmit={handleCommunicationRequest}
+                      // onSubmit={handleCommunicationRequest}
                       onCancel={() => setResponseAction(null)}
                       isSubmitting={responseSubmitting}
                     />

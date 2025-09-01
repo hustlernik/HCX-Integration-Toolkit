@@ -22,7 +22,6 @@ import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 import type {
   Communication,
   ClaimSummary,
-  OriginalRequest,
   CommunicationRequestData,
   CommunicationResponseData,
   AttachmentItem,
@@ -45,8 +44,7 @@ const Communications: React.FC = () => {
   const [selectedCommunications, setSelectedCommunications] = useState<Communication[]>([]);
   const [showThread, setShowThread] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
-  const [showResponseForm, setShowResponseForm] = useState(false);
-  const [responseToRequest, setResponseToRequest] = useState<OriginalRequest | null>(null);
+  // Response form removed - payers only send requests, providers send responses
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -101,44 +99,40 @@ const Communications: React.FC = () => {
   const dedupeByCommId = (items: Communication[]) => {
     const map = new Map<string, Communication>();
     for (const c of items) {
-      const key = c.communicationId || `${c.correlationId}:${c.sent || c.createdAt}`;
+      const key = c.communicationId || `${c.correlationId}:${c.sentAt || c.createdAt}`;
       if (!map.has(key)) map.set(key, c);
     }
     return Array.from(map.values());
   };
 
   const handleCommunicationRequest = async (data: CommunicationRequestData) => {
+    if (isSubmitting) return; // Prevent duplicate submissions
     setIsSubmitting(true);
     try {
-      const correlationId = `corr-${Date.now()}`;
       const headers = {
         'Content-Type': 'application/json',
-        'x-hcx-api_call_id': `comm-req-${Date.now()}`,
-        'x-hcx-correlation_id': correlationId,
-        'x-hcx-workflow_id': 'communication',
-        'x-hcx-timestamp': new Date().toISOString(),
-        'x-hcx-sender_code': 'payer-001',
-        'x-hcx-recipient_code': 'provider-001',
       } as const;
 
       const payload = {
-        correlationId,
+        claimCorrelationId: selectedClaim?.correlationId, // Use claim's correlation ID
         claimId: selectedClaim?.claimId,
-        reasonCode: data.reasonCode,
-        reasonDisplay: data.reasonDisplay,
-        message: data.message,
-        priority: data.priority,
-        dueDate: data.dueDate,
-        category: data.category,
-        medium: data.medium,
-        attachments: data.attachments?.map((a) => ({
-          title: a.title,
-          contentType: a.contentType,
-          language: a.language,
-          creation: a.creation,
-          data: a.mode === 'data' ? a.data : undefined,
-          url: a.mode === 'url' ? a.url : undefined,
-        })),
+        responseForm: {
+          reasonCode: data.reasonCode,
+          reasonDisplay: data.reasonDisplay,
+          message: data.message,
+          priority: data.priority,
+          dueDate: data.dueDate,
+          category: data.category,
+          medium: data.medium,
+          attachments: data.attachments?.map((a) => ({
+            title: a.title,
+            contentType: a.contentType,
+            language: a.language,
+            creation: a.creation,
+            data: a.mode === 'data' ? a.data : undefined,
+            url: a.mode === 'url' ? a.url : undefined,
+          })),
+        },
       };
 
       const response = await axios.post(API_ENDPOINTS.PAYER.COMMUNICATION_REQUEST, payload, {
@@ -159,57 +153,7 @@ const Communications: React.FC = () => {
     }
   };
 
-  const handleCommunicationResponse = async (data: CommunicationResponseData) => {
-    if (!responseToRequest) return;
-
-    setIsSubmitting(true);
-    try {
-      const formData = new FormData();
-      formData.append('correlationId', responseToRequest.correlationId);
-      formData.append('message', data.message);
-      formData.append('status', data.status);
-
-      if ('fhirStatus' in data && data.fhirStatus) {
-        formData.append('fhirStatus', data.fhirStatus);
-      }
-
-      if ('sentAt' in data && data.sentAt) {
-        formData.append('sentAt', data.sentAt);
-      }
-
-      data.attachments.forEach((att: AttachmentItem, index) => {
-        if (att.mode === 'data' && att.file) {
-          const f = att.file;
-          formData.append(`attachment_${index}`, f, f.name);
-          formData.append(`attachment_${index}_name`, f.name);
-          formData.append(`attachment_${index}_size`, String(f.size));
-          if (f.type) formData.append(`attachment_${index}_type`, f.type);
-        }
-
-        if (att.mode === 'url' && att.url) {
-          formData.append(`attachment_${index}_url`, att.url);
-        }
-
-        if (att.title) formData.append(`attachment_${index}_title`, att.title);
-        if (att.contentType) formData.append(`attachment_${index}_contentType`, att.contentType);
-        if (att.language) formData.append(`attachment_${index}_language`, att.language);
-        if (att.creation) formData.append(`attachment_${index}_creation`, att.creation);
-      });
-
-      const response = await axios.post(API_ENDPOINTS.PAYER.COMMUNICATION_RESPONSE, formData, {
-        validateStatus: () => true,
-      });
-
-      if (response.status >= 200 && response.status < 300) {
-        setShowResponseForm(false);
-        setResponseToRequest(null);
-      }
-    } catch (error) {
-      console.error('Error sending communication response:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // Response handler removed - payers only send requests, providers send responses
 
   const viewCommunications = async (claim: ClaimSummary) => {
     try {
@@ -413,25 +357,25 @@ const Communications: React.FC = () => {
                     const originalComm = selectedCommunications.find(
                       (c) => c.communicationId === commId,
                     );
-                    if (originalComm) {
-                      setResponseToRequest({
-                        communicationId: commId,
-                        correlationId: originalComm.correlationId,
-                        claimId: selectedClaim.claimId,
-                        patientName: selectedClaim.patientName,
-                        payerName: selectedClaim.payerName,
-                        reasonCode:
-                          originalComm.reasonCode[0]?.coding[0]?.display || 'Information Request',
-                        message:
-                          originalComm.payload.find((p) => p.contentString)?.contentString || '',
-                        requestedDocs: originalComm.payload
-                          .filter((p) => p.contentCodeableConcept)
-                          .map((p) => p.contentCodeableConcept?.coding?.[0]?.code || '')
-                          .filter(Boolean) as string[],
-                        dueDate: originalComm.dueDate,
-                      });
-                      setShowResponseForm(true);
-                    }
+                    // if (originalComm) {
+                    //   setResponseToRequest({
+                    //     communicationId: commId,
+                    //     correlationId: originalComm.correlationId,
+                    //     claimId: selectedClaim.claimId,
+                    //     patientName: selectedClaim.patientName,
+                    //     payerName: selectedClaim.payerName,
+                    //     reasonCode:
+                    //       originalComm.reasonCode[0]?.coding[0]?.display || 'Information Request',
+                    //     message:
+                    //       originalComm.payload.find((p) => p.contentString)?.contentString || '',
+                    //     requestedDocs: originalComm.payload
+                    //       .filter((p) => p.contentCodeableConcept)
+                    //       .map((p) => p.contentCodeableConcept?.coding?.[0]?.code || '')
+                    //       .filter(Boolean) as string[],
+                    //     dueDate: originalComm.dueDate,
+                    //   });
+                    //   // setShowResponseForm(true);
+                    // }
                   }}
                   onDownloadAttachment={(attachment) => {
                     console.log('Download attachment:', attachment);
@@ -457,7 +401,7 @@ const Communications: React.FC = () => {
                   correlationId={selectedClaim.correlationId}
                   patientName={selectedClaim.patientName}
                   providerName={selectedClaim.providerName}
-                  onSubmit={handleCommunicationRequest}
+                  // onSubmit={handleCommunicationRequest}
                   onCancel={() => {
                     setShowRequestForm(false);
                     setSelectedClaim(null);
@@ -468,18 +412,7 @@ const Communications: React.FC = () => {
             </DialogContent>
           </Dialog>
 
-          {showResponseForm && responseToRequest && (
-            <CommunicationResponseForm
-              communicationId={responseToRequest.communicationId}
-              originalRequest={responseToRequest}
-              onSubmit={handleCommunicationResponse}
-              onCancel={() => {
-                setShowResponseForm(false);
-                setResponseToRequest(null);
-              }}
-              isSubmitting={isSubmitting}
-            />
-          )}
+          {/* Response form removed - payers only send requests, providers send responses */}
         </div>
       </main>
     </>

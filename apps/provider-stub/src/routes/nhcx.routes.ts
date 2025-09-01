@@ -179,7 +179,10 @@ router.get('/hcx/v1/transactions', async (req, res) => {
     if (workflow) filter.workflow = workflow;
     if (status) filter.status = status;
 
-    const txs = await TransactionLog.find(filter).sort({ createdAt: -1 }).limit(Number(limit));
+    const txs = await TransactionLog.find(filter)
+      .select('+requestFHIR +responseFHIR')
+      .sort({ createdAt: -1 })
+      .limit(Number(limit));
 
     res.json({
       transactions: txs,

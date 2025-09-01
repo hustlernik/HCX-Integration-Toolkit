@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  fhir-utilities:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fhir-utilities
+    ports:
+      - '4002:4002'
+    environment:
+      - NODE_ENV=production
+      - PORT=4002
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4002/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s

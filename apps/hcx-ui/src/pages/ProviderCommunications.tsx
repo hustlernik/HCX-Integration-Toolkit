@@ -72,11 +72,12 @@ const ProviderCommunications: React.FC = () => {
   const handleCommunicationResponse = useCallback(
     async (data: CommunicationResponseData) => {
       if (!selectedComm) return;
+      if (isSubmitting) return; // Prevent duplicate submissions
 
       setIsSubmitting(true);
       try {
         const formData = new FormData();
-        formData.append('correlationId', selectedComm.correlationId);
+        formData.append('correlationId', selectedComm.correlationId); // Keep same correlation ID as the request
         formData.append('claimId', selectedComm.claimId);
         formData.append('message', data.message);
         formData.append('status', data.status);
@@ -99,10 +100,10 @@ const ProviderCommunications: React.FC = () => {
           if (att.creation) formData.append(`attachment_${index}_creation`, att.creation);
         });
 
-        const response = await axios.post(API_ENDPOINTS.PAYER.COMMUNICATION_RESPONSE, formData, {
+        const response = await axios.post(API_ENDPOINTS.PROVIDER.COMMUNICATION_RESPOND, formData, {
           headers: {
             'x-hcx-api_call_id': `comm-resp-${Date.now()}`,
-            'x-hcx-correlation_id': selectedComm.correlationId,
+            'x-hcx-correlation_id': selectedComm.correlationId, // Use SAME correlation ID as request
             'x-hcx-workflow_id': 'communication',
             'x-hcx-timestamp': new Date().toISOString(),
             'x-hcx-sender_code': 'provider-001',
@@ -301,7 +302,6 @@ const ProviderCommunications: React.FC = () => {
                     <TableRow>
                       <TableHead>Claim ID</TableHead>
                       <TableHead>Patient</TableHead>
-                      <TableHead>Payer</TableHead>
                       <TableHead>Reason</TableHead>
                       <TableHead>Priority</TableHead>
                       <TableHead>Status</TableHead>
@@ -319,7 +319,6 @@ const ProviderCommunications: React.FC = () => {
                         <TableRow key={comm.id}>
                           <TableCell className="font-medium">{comm.claimId}</TableCell>
                           <TableCell>{comm.patientName}</TableCell>
-                          <TableCell>{comm.payerName}</TableCell>
                           <TableCell>
                             <div className="max-w-xs">
                               <div className="font-medium text-sm">{comm.reasonDisplay}</div>
@@ -374,10 +373,10 @@ const ProviderCommunications: React.FC = () => {
                               )}
                               <Button
                                 size="sm"
-                                disabled={comm.status === 'responded'}
+                                disabled={comm.status === 'responded' || isSubmitting}
                                 className="h-8 px-3 flex items-center bg-primary text-white hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={() => {
-                                  if (comm.status === 'responded') return;
+                                  if (comm.status === 'responded' || isSubmitting) return;
                                   setSelectedComm(comm);
                                   setShowResponseForm(true);
                                 }}
@@ -416,8 +415,9 @@ const ProviderCommunications: React.FC = () => {
                 payerName: selectedComm.payerName,
                 reasonCode: selectedComm.reasonDisplay,
                 message: selectedComm.message,
-                requestedDocs: selectedComm.requestedDocs,
-                dueDate: selectedComm.dueDate,
+                requestedDocs: (selectedComm.requestedDocuments || [])
+                  .map((d) => d.type)
+                  .filter(Boolean),
                 providerName: undefined,
               }}
               onSubmit={handleCommunicationResponse}

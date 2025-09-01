@@ -109,7 +109,6 @@ const ApiTesting: React.FC = () => {
     setEditedResource(selectedResource);
   }, [selectedResource]);
 
-  // Get the last header and its properties for the dependency array
   const lastHeader = headers[headers.length - 1];
   const lastHeaderKey = lastHeader?.key;
   const lastHeaderValue = lastHeader?.value;
@@ -247,22 +246,37 @@ const ApiTesting: React.FC = () => {
   }
 
   useEffect(() => {
-    const socket = io(API_CONFIG.PROVIDER.BASE_URL);
+    const socket = io(API_CONFIG.PROVIDER.BASE_URL, {
+      transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 500,
+      timeout: 10000,
+      autoConnect: true,
+      forceNew: true,
+    });
 
     const handleSocketResponse = (data: any) => {
-      if (data && typeof data === 'object') {
-        const fhirResource = data.resource || data.bundle || data.entry?.[0]?.resource || data;
-        setResponse(fhirResource);
-      } else {
-        setResponse(data);
-      }
+      setResponse(data);
       setResponseStatus('ResponseReceived');
     };
 
+    socket.on('connect', () => console.log('[WS] connected', socket.id));
+    socket.on('connect_error', (err) => console.error('[WS] connect_error', err.message));
+    socket.on('error', (err) => console.error('[WS] error', err));
+    socket.on('reconnect_attempt', (n) => console.log('[WS] reconnect_attempt', n));
+    socket.on('reconnect', (n) => console.log('[WS] reconnected', n));
+    socket.on('disconnect', (reason) => console.warn('[WS] disconnected', reason));
+
     socket.on('insurance-plan-response', handleSocketResponse);
     socket.on('coverage-eligibility-response', handleSocketResponse);
+    socket.on('claim-response', handleSocketResponse);
 
     return () => {
+      socket.off('insurance-plan-response', handleSocketResponse);
+      socket.off('coverage-eligibility-response', handleSocketResponse);
+      socket.off('claim-response', handleSocketResponse);
+      socket.removeAllListeners();
       socket.disconnect();
     };
   }, []);
