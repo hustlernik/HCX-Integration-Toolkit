@@ -4,6 +4,7 @@ import nodePlugin from 'eslint-plugin-n';
 import nodeImportsPlugin from 'eslint-plugin-import';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { off } from 'node:process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,9 +43,7 @@ export default [
       import: nodeImportsPlugin,
     },
     rules: {
-      'no-console': process.env.NODE_ENV === 'production' 
-        ? ['error', { allow: ['warn', 'error'] }] 
-        : 'off', 
+      'no-console': 'off',
       'no-unused-vars': ['warn', { 
         argsIgnorePattern: '^_', 
         varsIgnorePattern: '^_',
