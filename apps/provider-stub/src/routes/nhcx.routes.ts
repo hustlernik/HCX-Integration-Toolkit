@@ -163,6 +163,26 @@ const handleCoverageEligibilityOnCheck = async (req: any, res: any) => {
   }
 };
 
+const handleError = async (req: any, res: any) => {
+  console.log('Error details:', res);
+  try {
+    const errorDetails = res.req.body['x-hcx-error_details'];
+
+    if (errorDetails) {
+      console.log('HCX Error Details:', errorDetails);
+      return errorDetails;
+    } else {
+      console.log('No HCX error details found');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error parsing HCX error details:', error);
+    return null;
+  }
+};
+
+router.post('/v1/error/response', handleError);
+
 router.post('/v1/coverageeligibility/on_check', handleCoverageEligibilityOnCheck);
 
 router.post('/hcx/v1/coverageeligibility/on_check', handleCoverageEligibilityOnCheck);

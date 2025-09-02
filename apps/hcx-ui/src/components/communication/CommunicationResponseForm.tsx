@@ -47,6 +47,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
   const [isSubmittingState, setIsSubmittingState] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const submitting = isSubmittingState;
+  const submittingRef = useRef(false);
 
   const readFileAsBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -63,7 +64,8 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return; // Prevent submission if already submitting
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setIsSubmittingState(true);
 
     try {
@@ -111,7 +113,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
         },
       };
 
-      const res = await axios.post(endpoint, payload, { headers });
+      const res = await axios.post(endpoint, payload, { headers, timeout: 20000 });
       const contentType = res.headers?.['content-type'] || '';
       if (contentType.includes('application/json') || typeof res.data === 'object') {
         console.log('Communication response sent successfully:', res.data);
@@ -127,6 +129,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
       alert(`Failed to send communication response: ${errorMessage}`);
     } finally {
       setIsSubmittingState(false);
+      submittingRef.current = false;
     }
   };
 

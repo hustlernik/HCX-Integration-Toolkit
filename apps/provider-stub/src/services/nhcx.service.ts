@@ -1,18 +1,16 @@
 import axios from 'axios';
 import { logger } from '../utils/logger';
-import { config } from '../config';
 import { formatHcxTimestamp } from '../utils/time';
 import { v4 as uuidv4 } from 'uuid';
 
 export class NHCXService {
   private nhcxBaseUrl!: string;
   private apiKey!: string;
-  public config: typeof import('../config').config;
 
   constructor() {
-    this.nhcxBaseUrl = config.nhcxBaseUrl;
-    this.apiKey = config.nhcxApiKey;
-    this.config = config;
+    this.nhcxBaseUrl = process.env.NHCX_BASE_URL || 'https://apisbx.abdm.gov.in/hcx/v1';
+    this.apiKey = process.env.NHCX_API_KEY || '';
+
     logger.info('[Provider NHCXService] Init', undefined, {
       nhcxBaseUrl: this.nhcxBaseUrl,
       hasStaticApiKey: Boolean(this.apiKey),
@@ -27,20 +25,20 @@ export class NHCXService {
     entityType?: string;
     status?: string;
     benAbhaId?: string;
-  }): Record<string, string> {
+  }): Record<string, string | undefined> {
     const entityType = params?.entityType || 'insuranceplan';
     const status = params?.status || 'request.initiated';
     const benAbhaId = params?.benAbhaId || process.env.BEN_ABHA_ID;
 
-    const headers: Record<string, string> = {
+    const headers: Record<string, string | undefined> = {
       'x-hcx-api_call_id': uuidv4(),
       'x-hcx-correlation_id': uuidv4(),
       'x-hcx-timestamp': formatHcxTimestamp(),
-      'x-hcx-sender_code': config.providerCode.trim(),
-      'x-hcx-recipient_code': config.payerCode.trim(),
+      'x-hcx-sender_code': process.env.PROVIDER_CODE?.trim(),
+      'x-hcx-recipient_code': process.env.PAYER_CODE?.trim(),
       'x-hcx-status': status,
       'x-hcx-entity-type': entityType,
-      'x-hcx-workflow_id': config.hcxWorkflowId,
+      'x-hcx-workflow_id': process.env.HCX_WORKFLOW_ID?.trim(),
       'x-hcx-request_id': uuidv4(),
       'x-hcx-ben-abha-id': benAbhaId || '',
     };
@@ -97,12 +95,15 @@ export class NHCXService {
 
   public async getAccessToken(): Promise<string> {
     try {
-      const clientId = config.abdmClientId;
-      const clientSecret = config.abdmClientSecret;
-      const grantType = config.abdmGrantType || 'client_credentials';
+      const clientId = process.env.ABDM_CLIENT_ID;
+      const clientSecret = process.env.ABDM_CLIENT_SECRET;
+      const grantType = process.env.ABDM_GRANT_TYPE || 'client_credentials';
+      const sessionUrl = (
+        process.env.SESSION_API_URL || 'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions'
+      ).trim();
 
       logger.info('[Provider NHCXService] Requesting ABDM session token', undefined, {
-        url: config.sessionApiUrl,
+        url: sessionUrl,
         grantType,
       });
 
@@ -112,7 +113,7 @@ export class NHCXService {
       const timestamp = new Date().toISOString();
       const hostHeader = (() => {
         try {
-          return new URL(config.sessionApiUrl).host;
+          return new URL(sessionUrl).host;
         } catch {
           return undefined as any;
         }
@@ -120,7 +121,7 @@ export class NHCXService {
 
       try {
         const response = await axios.post(
-          config.sessionApiUrl,
+          sessionUrl,
           {
             clientId,
             clientSecret,
@@ -144,7 +145,7 @@ export class NHCXService {
           '[Provider NHCXService] Obtained ABDM access token from Session API',
           undefined,
           {
-            url: config.sessionApiUrl,
+            url: sessionUrl,
             requestId,
             status: response.status,
           },
@@ -158,7 +159,7 @@ export class NHCXService {
         const responseHeaders = axios.isAxiosError(error) ? error.response?.headers : undefined;
 
         logger.error('[Provider NHCXService] Failed to obtain ABDM access token', undefined, {
-          url: config.sessionApiUrl,
+          url: process.env.SESSION_API_URL,
           requestId,
           status,
           error: errorMessage,

@@ -1,15 +1,17 @@
 import axios from 'axios';
 import { logger } from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
-import { config } from '../config';
 
 export class NHCXService {
   private nhcxBaseUrl: string;
   private apiKey: string;
 
   constructor() {
-    this.nhcxBaseUrl = config.nhcxBaseUrl;
-    this.apiKey = config.nhcxApiKey;
+    this.nhcxBaseUrl = (process.env.NHCX_BASE_URL || '').trim();
+    this.apiKey = (process.env.NHCX_API_KEY || '').trim();
+    if (!this.nhcxBaseUrl) {
+      throw new Error('NHCX_BASE_URL is not set.');
+    }
 
     logger.info('[Payer NHCXService] Init', undefined, {
       nhcxBaseUrl: this.nhcxBaseUrl,
@@ -76,19 +78,18 @@ export class NHCXService {
   }): Record<string, any> {
     const entityType = params?.entityType || 'communication';
     const status = params?.status || 'request.initiated';
-    const benAbhaId = params?.benAbhaId || config.benAbhaId;
 
     const headers: Record<string, any> = {
       'x-hcx-api_call_id': uuidv4(),
       'x-hcx-correlation_id': uuidv4(),
       'x-hcx-timestamp': Math.floor(Date.now() / 1000).toString(),
-      'x-hcx-sender_code': String(config.payerCode).trim(),
-      'x-hcx-recipient_code': String(config.providerCode).trim(),
+      'x-hcx-sender_code': (process.env.HCX_SENDER_CODE || '').trim(),
+      'x-hcx-recipient_code': (process.env.HCX_RECIPIENT_CODE || '').trim(),
       'x-hcx-status': status,
       'x-hcx-entity-type': entityType,
-      'x-hcx-workflow_id': String(config.hcxWorkflowId),
+      'x-hcx-workflow_id': String(process.env.HCX_WORKFLOW_ID),
       'x-hcx-request_id': uuidv4(),
-      'x-hcx-ben-abha-id': benAbhaId || '',
+      'x-hcx-ben-abha-id': params?.benAbhaId ?? process.env.HCX_BEN_ABHA_ID ?? '',
     };
     return headers;
   }
@@ -629,11 +630,16 @@ export class NHCXService {
    */
   public async getAccessToken(): Promise<string> {
     try {
-      const sessionUrl = config.sessionApiUrl;
+      const sessionUrl = (
+        process.env.SESSION_API_URL || 'https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions'
+      ).trim();
 
-      const clientId = config.abdmClientId;
-      const clientSecret = config.abdmClientSecret;
-      const grantType = config.abdmGrantType || 'client_credentials';
+      const clientId = (process.env.ABDM_CLIENT_ID || '').trim();
+      const clientSecret = (process.env.ABDM_CLIENT_SECRET || '').trim();
+      const grantType = (process.env.ABDM_GRANT_TYPE || 'client_credentials').trim();
+      if (!clientId || !clientSecret) {
+        throw new Error('ABDM_CLIENT_ID/ABDM_CLIENT_SECRET are not set.');
+      }
 
       const maskedClient = clientId ? clientId.slice(0, 4) + '***' : 'none';
       logger.info('[Payer NHCXService] Requesting ABDM session token', undefined, {

@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getAccessToken } from '../utils/accessToken';
 import { logger } from '../utils/logger';
-import { config } from '../config';
 
 const router = Router();
 
@@ -11,10 +10,10 @@ const router = Router();
 
 router.post('/hcx/v1/session', async (req: Request, res: Response) => {
   try {
-    const clientId = config.abdmClientId || process.env.ABDM_CLIENT_ID || '';
-    const clientSecret = config.abdmClientSecret || process.env.ABDM_CLIENT_SECRET || '';
-    const tokenUrl = config.sessionApiUrl || process.env.ABDM_TOKEN_URL || '';
-    const grantType = config.abdmGrantType || 'client_credentials';
+    const clientId = process.env.ABDM_CLIENT_ID || '';
+    const clientSecret = process.env.ABDM_CLIENT_SECRET || '';
+    const tokenUrl = process.env.ABDM_TOKEN_URL || '';
+    const grantType = process.env.ABDM_GRANT_TYPE || 'client_credentials';
 
     if (!clientId || !clientSecret || !tokenUrl) {
       logger.warn('Missing required ABDM session params');
