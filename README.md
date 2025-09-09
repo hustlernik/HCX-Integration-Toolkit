@@ -123,10 +123,8 @@ This creates a self-signed X.509 certificate (`certificate.crt`) valid for 365 d
 Encode the certificate using a base64 encoder. You can use the following command:
 
 ```bash
-base64 -i certificate.crt -o certificate.base64
+openssl base64 -A -in certificate.crt -out certificate.base64
 ```
-
-Or use an online tool like [Base64 Encoder](https://www.base64encode.org/).
 
 ## Sample X.509 Certificate
 
