@@ -303,7 +303,7 @@ sudo apt install ngrok
 We've included an `ngrok.yml` configuration file in the project root that sets up tunnels for both Payer and Provider stubs. Here's what the configuration looks like:
 
 ```yaml
-version: '2'
+version: '3'
 authtoken: ${NGROK_AUTH_TOKEN} # Set this in your environment or replace with your token
 
 # Payer Stub Configuration
@@ -312,16 +312,12 @@ tunnels:
     addr: 3001
     proto: http
     host_header: payer-stub.local
-    bind_tls: true
-    inspect: true
 
   # Provider Stub Configuration
   provider-stub:
     addr: 4001
     proto: http
     host_header: provider-stub.local
-    bind_tls: true
-    inspect: true
 
 # Global web interface for monitoring all tunnels
 web_addr: localhost:4040
@@ -581,14 +577,14 @@ const response = await fetch('http://localhost:4002/api/coverage-eligibility-req
 
 #### NHCX Protocol Endpoints
 
-| Endpoint                               | Method | Description                                 |
-| -------------------------------------- | ------ | ------------------------------------------- |
-| `/hcx/v1/session`                      | POST   | Authentication and session management       |
-| `/hcx/v1/coverageeligibility/on_check` | POST   | Handle coverage eligibility check responses |
-| `/hcx/v1/claim/adjudicate`             | POST   | Process claim adjudication requests         |
-| `/hcx/v1/communication/request`        | POST   | Handle communication requests               |
-| `/hcx/v1/communication/on_request`     | POST   | Handle communication responses              |
-| `/hcx/v1/error`                        | POST   | Handle error responses                      |
+| Endpoint                           | Method | Description                                 |
+| ---------------------------------- | ------ | ------------------------------------------- |
+| `/v1/session`                      | POST   | Authentication and session management       |
+| `/v1/coverageeligibility/on_check` | POST   | Handle coverage eligibility check responses |
+| `/v1/claim/adjudicate`             | POST   | Process claim adjudication requests         |
+| `/v1/communication/request`        | POST   | Handle communication requests               |
+| `/v1/communication/on_request`     | POST   | Handle communication responses              |
+| `/v1/error`                        | POST   | Handle error responses                      |
 
 #### FHIR Resource Endpoints
 
