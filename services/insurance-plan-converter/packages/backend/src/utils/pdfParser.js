@@ -2,7 +2,7 @@
  * @fileoverview Utility for parsing PDF files to extract text content.
  */
 
-import pdf from 'pdf-parse';
+import pdf from './pdfParseMock.js';
 
 /**
  * Parses a PDF file buffer and extracts its text content.

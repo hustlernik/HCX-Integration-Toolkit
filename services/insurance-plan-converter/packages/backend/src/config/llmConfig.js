@@ -15,9 +15,7 @@ function getOpenAIApiKey() {
 function getGoogleApiKey() {
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
-    console.info(
-      'Info: GOOGLE_API_KEY environment variable not set. This is okay if using Application Default Credentials for Vertex AI.',
-    );
+    console.warn('GOOGLE_API_KEY not set. This is OK if using ADC for Vertex AI.');
   }
   return apiKey;
 }

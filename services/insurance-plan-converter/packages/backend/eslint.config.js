@@ -16,13 +16,6 @@ export default [
   },
   {
     files: ['**/*.js'],
-    rules: {
-      'no-console': 'off',
-      'n/no-missing-import': 'off',
-      'n/no-extraneous-import': 'off',
-      'n/no-missing-require': 'off',
-      'n/no-extraneous-require': 'off',
-    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: {
@@ -46,6 +39,8 @@ export default [
     },
     rules: {
       'no-console': 'off',
+      'n/no-extraneous-import': 'off',
+      'n/no-extraneous-require': 'off',
       'no-unused-vars': [
         'warn',
         {

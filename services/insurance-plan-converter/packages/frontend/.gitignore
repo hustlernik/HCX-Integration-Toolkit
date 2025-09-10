@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
++# Secrets and key material — DO NOT COMMIT
++*.pem
++*.key
++*.p12
++*.crt
++*.der
++*.pfx
++id_rsa
++id_rsa.*
++id_dsa
++id_ecdsa
++*.keystore
++*.jks
++# Common cloud/service credentials
++service-account*.json
++firebase-adminsdk-*.json
++gcloud-*.json
++credentials.csv
