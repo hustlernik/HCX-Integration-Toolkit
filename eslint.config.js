@@ -61,12 +61,16 @@ export default [
       },
     },
     rules: {
-      'no-console': process.env.NODE_ENV === 'production' ? ['error', { allow: ['warn', 'error'] }] : 'off',
-      'no-unused-vars': ['warn', { 
-        argsIgnorePattern: '^_', 
-        varsIgnorePattern: '^_',
-        caughtErrors: 'none'
-      }],
+      'no-console':
+        process.env.NODE_ENV === 'production' ? ['error', { allow: ['warn', 'error'] }] : 'off',
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrors: 'none',
+        },
+      ],
       'no-undef': 'error',
       'no-control-regex': 'off',
       'n/no-missing-require': 'error',
