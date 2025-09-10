@@ -12,12 +12,7 @@ const __dirname = path.dirname(__filename);
 export default [
   js.configs.recommended,
   {
-    ignores: [
-      'node_modules/**',
-      'dist/**',
-      'coverage/**',
-      '**/*.config.js',
-    ],
+    ignores: ['node_modules/**', 'dist/**', 'coverage/**', '**/*.config.js'],
   },
   {
     files: ['**/*.js'],
@@ -51,11 +46,14 @@ export default [
     },
     rules: {
       'no-console': 'off',
-      'no-unused-vars': ['warn', { 
-        argsIgnorePattern: '^_', 
-        varsIgnorePattern: '^_',
-        caughtErrors: 'none'
-      }],
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrors: 'none',
+        },
+      ],
       'no-undef': 'error',
       'no-useless-escape': 'off',
       'no-control-regex': 'off',
