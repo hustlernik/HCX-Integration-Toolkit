@@ -21,6 +21,9 @@ export default [
   },
   {
     files: ['**/*.js'],
+    rules: {
+      'no-console': 'off', 
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: {

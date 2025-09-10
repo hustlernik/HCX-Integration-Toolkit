@@ -155,7 +155,7 @@ export default [
     rules: {
       ...reactHooksPlugin.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      'no-console': 'warn',
+      'no-console': 'off',
       'no-debugger': 'error',
       'react/prop-types': 'off',
     },
