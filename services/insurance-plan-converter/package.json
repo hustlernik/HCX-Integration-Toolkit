@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm -r --filter \"*/packages/backend\" --filter \"*/packages/frontend\" dev",
-    "dev:backend": "cd packages/backend && pnpm dev",
-    "start:backend": "cd packages/backend && pnpm start",
-    "dev:frontend": "cd packages/frontend && pnpm dev",
-    "build:frontend": "cd packages/frontend && pnpm build"
+    "dev": "pnpm --filter \"@insurance-plan-converter/backend\" dev & pnpm --filter \"@insurance-plan-converter/frontend\" dev",
+    "dev:backend": "pnpm --filter \"@insurance-plan-converter/backend\" dev",
+    "start:backend": "pnpm --filter \"@insurance-plan-converter/backend\" start",
+    "dev:frontend": "pnpm --filter \"@insurance-plan-converter/frontend\" dev",
+    "build:frontend": "pnpm --filter \"@insurance-plan-converter/frontend\" build"
   },
   "engines": {
     "node": ">=16.0.0",
