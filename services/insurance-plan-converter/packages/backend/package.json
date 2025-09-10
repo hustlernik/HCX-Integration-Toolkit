@@ -19,12 +19,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/vertexai": "^1.6.0",
+    "@google-cloud/vertexai": "^1.10.0",
     "axios": "^1.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
-    "multer": "^2.0.0",
+    "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
     "pdf-parse": "^1.1.1",
     "xlsx": "^0.18.5"
