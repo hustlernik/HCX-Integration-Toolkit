@@ -83,7 +83,7 @@ monorepo/
 
 This section explains how to generate X.509 RSA certificates for NHCX participants, which are required for secure communication.
 
-### Step 1: Generate a 2048-bit RSA Private Key
+## Step 1: Generate a 2048-bit RSA Private Key
 
 ```bash
 openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048
@@ -91,7 +91,7 @@ openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048
 
 This command generates a `private.key` file containing an RSA Private Key.
 
-### Step 2: Create a Certificate Signing Request (CSR)
+## Step 2: Create a Certificate Signing Request (CSR)
 
 ```bash
 openssl req -new -key private.key -out request.csr
@@ -110,7 +110,7 @@ When prompted, provide the following details:
 
 This generates a `request.csr` file.
 
-### Step 3: Generate a Self-Signed X.509 Certificate
+## Step 3: Generate a Self-Signed X.509 Certificate
 
 ```bash
 openssl x509 -req -in request.csr -signkey private.key -out certificate.crt -days 365
@@ -118,22 +118,20 @@ openssl x509 -req -in request.csr -signkey private.key -out certificate.crt -day
 
 This creates a self-signed X.509 certificate (`certificate.crt`) valid for 365 days.
 
-### Step 4: Base64 Encode the Certificate
+## Step 4: Base64 Encode the Certificate
 
 Encode the certificate using a base64 encoder. You can use the following command:
 
 ```bash
-base64 -i certificate.crt -o certificate.base64
+openssl base64 -A -in certificate.crt -out certificate.base64
 ```
 
-Or use an online tool like [Base64 Encoder](https://www.base64encode.org/).
-
-### Sample X.509 Certificate
+## Sample X.509 Certificate
 
 ```
 -----BEGIN CERTIFICATE-----
 MIID0zCCArugAwIBAgIUaxmygMvtb6JvQyB19mvjr2cd7fowDQYJKoZIhvcNAQEL
-BQAweTELMAkGA1UEBhMCSU4xEjAQBgNVBAgMCUpoYXJraGFuZDEQMA4GA1UEBwwH
+BQAweTELMAkkA1UEBhMCSU4xEjAQBgNVBAgMCUpoYXJraGFuZDEQMA4GA1UEBwwH
 RGhhbmJhZDELMAkGA1UECgwCTkExCzAJBgNVBAsMAk5BMQswCQYDVQQDDAJOQTEd
 MBsGCSqGSIb3DQEJARYOdGVzdEBlbWFpbC5jb20wHhcNMjUwNzEzMTkyMDA4WhcN
 MjYwNzEzMTkyMDA4WjB5MQswCQYDVQQGEwJJTjESMBAGA1UECAwJSmhhcmtoYW5k
@@ -223,8 +221,7 @@ HCX-Integration-Toolkit/
 | `PORT`                      | No       | `4001`                              | Port for the Provider Stub service                       |
 | `PROVIDER_CODE`             | Yes      | -                                   | Provider's HCX participant code (e.g., `1000004178@hcx`) |
 | `PAYER_CODE`                | Yes      | -                                   | Payer's HCX participant code (e.g., `1000004161@hcx`)    |
-| `NHCX_BASE_URL`             | No       | `https://apisbx.abdm.gov.in/hcx/v1` | Base URL for NHCX API                                    |
-| `NHCX_API_KEY`              | Yes      | -                                   | API key for NHCX authentication                          |
+| `NHCX_BASE_URL`             | No       | `https://apisbx.abdm.gov.in/hcx/v1` | Base URL for NHCX API authentication                     |
 | `PROVIDER_PRIVATE_KEY_PATH` | Yes      | -                                   | Path to provider's private key                           |
 | `RECIPIENT_PUBLIC_KEY_PATH` | Yes      | -                                   | Path to recipient's public key                           |
 
@@ -306,7 +303,7 @@ sudo apt install ngrok
 We've included an `ngrok.yml` configuration file in the project root that sets up tunnels for both Payer and Provider stubs. Here's what the configuration looks like:
 
 ```yaml
-version: '2'
+version: '3'
 authtoken: ${NGROK_AUTH_TOKEN} # Set this in your environment or replace with your token
 
 # Payer Stub Configuration
@@ -315,16 +312,12 @@ tunnels:
     addr: 3001
     proto: http
     host_header: payer-stub.local
-    bind_tls: true
-    inspect: true
 
   # Provider Stub Configuration
   provider-stub:
     addr: 4001
     proto: http
     host_header: provider-stub.local
-    bind_tls: true
-    inspect: true
 
 # Global web interface for monitoring all tunnels
 web_addr: localhost:4040
@@ -425,29 +418,29 @@ npm run lint:fix
 
 ## API Endpoints
 
-| Endpoint                                  | Method | Description                                      |
-| ----------------------------------------- | ------ | ------------------------------------------------ |
-| `/health`                                 | GET    | Service health check                             |
-| `/api/claim`                              | POST   | Create or validate a Claim resource              |
-| `/api/claim/schema`                       | GET    | Get Claim resource schema                        |
-| `/api/claimresponse`                      | POST   | Create or validate a ClaimResponse resource      |
-| `/api/claimresponse/schema`               | GET    | Get ClaimResponse schema                         |
-| `/api/coverage`                           | POST   | Create or validate a Coverage resource           |
-| `/api/coverage/schema`                    | GET    | Get Coverage resource schema                     |
-| `/api/coverageeligibilityrequest`         | POST   | Create or validate a CoverageEligibilityRequest  |
-| `/api/coverageeligibilityrequest/schema`  | GET    | Get CoverageEligibilityRequest schema            |
-| `/api/coverageeligibilityresponse`        | POST   | Create or validate a CoverageEligibilityResponse |
-| `/api/coverageeligibilityresponse/schema` | GET    | Get CoverageEligibilityResponse schema           |
-| `/api/insuranceplan`                      | POST   | Create or validate an InsurancePlan resource     |
-| `/api/insuranceplan/schema`               | GET    | Get InsurancePlan schema                         |
-| `/api/patient`                            | POST   | Create or validate a Patient resource            |
-| `/api/patient/schema`                     | GET    | Get Patient resource schema                      |
-| `/api/paymentnotice`                      | POST   | Create or validate a PaymentNotice resource      |
-| `/api/paymentnotice/schema`               | GET    | Get PaymentNotice schema                         |
-| `/api/paymentreconciliation`              | POST   | Create or validate a PaymentReconciliation       |
-| `/api/paymentreconciliation/schema`       | GET    | Get PaymentReconciliation schema                 |
-| `/api/task`                               | POST   | Create or validate a Task resource               |
-| `/api/task/schema`                        | GET    | Get Task resource schema                         |
+| Endpoint                                    | Method | Description                                      |
+| ------------------------------------------- | ------ | ------------------------------------------------ |
+| `/health`                                   | GET    | Service health check                             |
+| `/api/claim`                                | POST   | Create or validate a Claim resource              |
+| `/api/claim/schema`                         | GET    | Get Claim resource schema                        |
+| `/api/claimresponse`                        | POST   | Create or validate a ClaimResponse resource      |
+| `/api/claimresponse/schema`                 | GET    | Get ClaimResponse schema                         |
+| `/api/coverage`                             | POST   | Create or validate a Coverage resource           |
+| `/api/coverage/schema`                      | GET    | Get Coverage resource schema                     |
+| `/api/coverage-eligibility-request`         | POST   | Create or validate a CoverageEligibilityRequest  |
+| `/api/coverage-eligibility-request/schema`  | GET    | Get CoverageEligibilityRequest schema            |
+| `/api/coverage-eligibility-response`        | POST   | Create or validate a CoverageEligibilityResponse |
+| `/api/coverage-eligibility-response/schema` | GET    | Get CoverageEligibilityResponse schema           |
+| `/api/insuranceplan`                        | POST   | Create or validate an InsurancePlan resource     |
+| `/api/insuranceplan/schema`                 | GET    | Get InsurancePlan schema                         |
+| `/api/patient`                              | POST   | Create or validate a Patient resource            |
+| `/api/patient/schema`                       | GET    | Get Patient resource schema                      |
+| `/api/paymentnotice`                        | POST   | Create or validate a PaymentNotice resource      |
+| `/api/paymentnotice/schema`                 | GET    | Get PaymentNotice schema                         |
+| `/api/paymentreconciliation`                | POST   | Create or validate a PaymentReconciliation       |
+| `/api/paymentreconciliation/schema`         | GET    | Get PaymentReconciliation schema                 |
+| `/api/task`                                 | POST   | Create or validate a Task resource               |
+| `/api/task/schema`                          | GET    | Get Task resource schema                         |
 
 **Note:** The service runs on port `4002` by default.
 
@@ -556,42 +549,42 @@ const response = await fetch('http://localhost:4002/api/coverage-eligibility-req
 
 ### FHIR Utilities Service (Port 4002)
 
-| Endpoint                                  | Method | Description                                      |
-| ----------------------------------------- | ------ | ------------------------------------------------ |
-| `/health`                                 | GET    | Service health check                             |
-| `/api/claim`                              | POST   | Create or validate a Claim resource              |
-| `/api/claim/schema`                       | GET    | Get Claim resource schema                        |
-| `/api/claimresponse`                      | POST   | Create or validate a ClaimResponse resource      |
-| `/api/claimresponse/schema`               | GET    | Get ClaimResponse schema                         |
-| `/api/coverage`                           | POST   | Create or validate a Coverage resource           |
-| `/api/coverage/schema`                    | GET    | Get Coverage resource schema                     |
-| `/api/coverageeligibilityrequest`         | POST   | Create or validate a CoverageEligibilityRequest  |
-| `/api/coverageeligibilityrequest/schema`  | GET    | Get CoverageEligibilityRequest schema            |
-| `/api/coverageeligibilityresponse`        | POST   | Create or validate a CoverageEligibilityResponse |
-| `/api/coverageeligibilityresponse/schema` | GET    | Get CoverageEligibilityResponse schema           |
-| `/api/insuranceplan`                      | POST   | Create or validate an InsurancePlan resource     |
-| `/api/insuranceplan/schema`               | GET    | Get InsurancePlan schema                         |
-| `/api/patient`                            | POST   | Create or validate a Patient resource            |
-| `/api/patient/schema`                     | GET    | Get Patient resource schema                      |
-| `/api/paymentnotice`                      | POST   | Create or validate a PaymentNotice resource      |
-| `/api/paymentnotice/schema`               | GET    | Get PaymentNotice schema                         |
-| `/api/paymentreconciliation`              | POST   | Create or validate a PaymentReconciliation       |
-| `/api/paymentreconciliation/schema`       | GET    | Get PaymentReconciliation schema                 |
-| `/api/task`                               | POST   | Create or validate a Task resource               |
-| `/api/task/schema`                        | GET    | Get Task resource schema                         |
+| Endpoint                                    | Method | Description                                      |
+| ------------------------------------------- | ------ | ------------------------------------------------ |
+| `/health`                                   | GET    | Service health check                             |
+| `/api/claim`                                | POST   | Create or validate a Claim resource              |
+| `/api/claim/schema`                         | GET    | Get Claim resource schema                        |
+| `/api/claimresponse`                        | POST   | Create or validate a ClaimResponse resource      |
+| `/api/claimresponse/schema`                 | GET    | Get ClaimResponse schema                         |
+| `/api/coverage`                             | POST   | Create or validate a Coverage resource           |
+| `/api/coverage/schema`                      | GET    | Get Coverage resource schema                     |
+| `/api/coverage-eligibility-request`         | POST   | Create or validate a CoverageEligibilityRequest  |
+| `/api/coverage-eligibility-request/schema`  | GET    | Get CoverageEligibilityRequest schema            |
+| `/api/coverage-eligibility-response`        | POST   | Create or validate a CoverageEligibilityResponse |
+| `/api/coverage-eligibility-response/schema` | GET    | Get CoverageEligibilityResponse schema           |
+| `/api/insuranceplan`                        | POST   | Create or validate an InsurancePlan resource     |
+| `/api/insuranceplan/schema`                 | GET    | Get InsurancePlan schema                         |
+| `/api/patient`                              | POST   | Create or validate a Patient resource            |
+| `/api/patient/schema`                       | GET    | Get Patient resource schema                      |
+| `/api/paymentnotice`                        | POST   | Create or validate a PaymentNotice resource      |
+| `/api/paymentnotice/schema`                 | GET    | Get PaymentNotice schema                         |
+| `/api/paymentreconciliation`                | POST   | Create or validate a PaymentReconciliation       |
+| `/api/paymentreconciliation/schema`         | GET    | Get PaymentReconciliation schema                 |
+| `/api/task`                                 | POST   | Create or validate a Task resource               |
+| `/api/task/schema`                          | GET    | Get Task resource schema                         |
 
 ### Payer Stub (Port 3001)
 
 #### NHCX Protocol Endpoints
 
-| Endpoint                               | Method | Description                                 |
-| -------------------------------------- | ------ | ------------------------------------------- |
-| `/hcx/v1/session`                      | POST   | Authentication and session management       |
-| `/hcx/v1/coverageeligibility/on_check` | POST   | Handle coverage eligibility check responses |
-| `/hcx/v1/claim/adjudicate`             | POST   | Process claim adjudication requests         |
-| `/hcx/v1/communication/request`        | POST   | Handle communication requests               |
-| `/hcx/v1/communication/on_request`     | POST   | Handle communication responses              |
-| `/hcx/v1/error`                        | POST   | Handle error responses                      |
+| Endpoint                           | Method | Description                                 |
+| ---------------------------------- | ------ | ------------------------------------------- |
+| `/v1/session`                      | POST   | Authentication and session management       |
+| `/v1/coverageeligibility/on_check` | POST   | Handle coverage eligibility check responses |
+| `/v1/claim/adjudicate`             | POST   | Process claim adjudication requests         |
+| `/v1/communication/request`        | POST   | Handle communication requests               |
+| `/v1/communication/on_request`     | POST   | Handle communication responses              |
+| `/v1/error`                        | POST   | Handle error responses                      |
 
 #### FHIR Resource Endpoints
 
@@ -611,19 +604,19 @@ const response = await fetch('http://localhost:4002/api/coverage-eligibility-req
 
 #### NHCX Protocol Endpoints
 
-| Endpoint                              | Method | Description                           |
-| ------------------------------------- | ------ | ------------------------------------- |
-| `/hcx/v1/session`                     | POST   | Authentication and session management |
-| `/hcx/v1/insuranceplan/request`       | POST   | Request insurance plan information    |
-| `/hcx/v1/coverageeligibility/request` | POST   | Submit coverage eligibility request   |
-| `/hcx/v1/coverageeligibility/check`   | POST   | Check coverage eligibility status     |
-| `/hcx/v1/claim/submit`                | POST   | Submit a claim                        |
-| `/hcx/v1/claim/on_submit`             | POST   | Handle claim submission responses     |
-| `/hcx/v1/communication/request`       | POST   | Initiate communication                |
-| `/hcx/v1/communication/on_request`    | POST   | Handle incoming communications        |
-| `/hcx/v1/communication/respond`       | POST   | Respond to communications             |
-| `/hcx/v1/communication/inbox`         | GET    | Get communication inbox               |
-| `/v1/error/response`                  | POST   | Handle error responses                |
+| Endpoint                          | Method | Description                           |
+| --------------------------------- | ------ | ------------------------------------- |
+| `/v1/session`                     | POST   | Authentication and session management |
+| `/v1/insuranceplan/request`       | POST   | Request insurance plan information    |
+| `/v1/coverageeligibility/request` | POST   | Submit coverage eligibility request   |
+| `/v1/coverageeligibility/check`   | POST   | Check coverage eligibility status     |
+| `/v1/claim/submit`                | POST   | Submit a claim                        |
+| `/v1/claim/on_submit`             | POST   | Handle claim submission responses     |
+| `/v1/communication/request`       | POST   | Initiate communication                |
+| `/v1/communication/on_request`    | POST   | Handle incoming communications        |
+| `/v1/communication/respond`       | POST   | Respond to communications             |
+| `/v1/communication/inbox`         | GET    | Get communication inbox               |
+| `/v1/error/response`              | POST   | Handle error responses                |
 
 #### Management Endpoints
 
