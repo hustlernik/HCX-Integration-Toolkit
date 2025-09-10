@@ -1,0 +1,17 @@
+{
+  "name": "insurance-plan-converter",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter \"@insurance-plan-converter/backend\" dev & pnpm --filter \"@insurance-plan-converter/frontend\" dev",
+    "dev:backend": "pnpm --filter \"@insurance-plan-converter/backend\" dev",
+    "start:backend": "pnpm --filter \"@insurance-plan-converter/backend\" start",
+    "dev:frontend": "pnpm --filter \"@insurance-plan-converter/frontend\" dev",
+    "build:frontend": "pnpm --filter \"@insurance-plan-converter/frontend\" build"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=7.0.0"
+  },
+  "packageManager": "pnpm@8.15.4"
+}

@@ -131,7 +131,7 @@ const ProviderCommunications: React.FC = () => {
         setIsSubmitting(false);
       }
     },
-    [selectedComm],
+    [selectedComm, isSubmitting],
   );
 
   const acknowledgeRequest = useCallback(

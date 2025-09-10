@@ -1,0 +1,49 @@
+{
+  "name": "@insurance-plan-converter/backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend for FHIR Utility Tool",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
+  },
+  "keywords": [
+    "fhir",
+    "backend",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vertexai": "^1.10.0",
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "node-fetch": "^3.3.2",
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^17.21.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "globals": "^15.0.0",
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

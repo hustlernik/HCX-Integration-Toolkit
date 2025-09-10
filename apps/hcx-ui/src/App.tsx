@@ -11,6 +11,7 @@ import Policies from './pages/Policies';
 import Claims from './pages/Claims';
 import Communications from './pages/Communications';
 import ProviderCommunications from './pages/ProviderCommunications';
+import FhirUtilityTool from './pages/FhirUtilityTool';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => {
             <Route path="/claims" element={<Claims />} />
             <Route path="/communications" element={<Communications />} />
             <Route path="/provider/communications" element={<ProviderCommunications />} />
+            <Route path="/converters" element={<FhirUtilityTool />} />
           </Routes>
         </TooltipProvider>
       </BrowserRouter>

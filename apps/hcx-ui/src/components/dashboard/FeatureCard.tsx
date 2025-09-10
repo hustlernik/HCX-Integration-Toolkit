@@ -17,9 +17,17 @@ interface FeatureCardProps {
   icon: LucideIcon;
   href: string;
   buttonText: string;
+  external?: boolean;
 }
 
-const FeatureCard = ({ title, description, icon: Icon, href, buttonText }: FeatureCardProps) => {
+const FeatureCard = ({
+  title,
+  description,
+  icon: Icon,
+  href,
+  buttonText,
+  external = false,
+}: FeatureCardProps) => {
   return (
     <Card className="flex flex-col h-full transition-all duration-200 hover:shadow-md">
       <CardHeader>
@@ -31,11 +39,19 @@ const FeatureCard = ({ title, description, icon: Icon, href, buttonText }: Featu
       </CardHeader>
       <CardContent className="flex-grow">{/* Content can be added here if needed */}</CardContent>
       <CardFooter>
-        <Link to={href} className="w-full">
-          <Button variant="outline" className="w-full">
-            {buttonText}
-          </Button>
-        </Link>
+        {external ? (
+          <a href={href} className="w-full" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" className="w-full">
+              {buttonText}
+            </Button>
+          </a>
+        ) : (
+          <Link to={href} className="w-full">
+            <Button variant="outline" className="w-full">
+              {buttonText}
+            </Button>
+          </Link>
+        )}
       </CardFooter>
     </Card>
   );
