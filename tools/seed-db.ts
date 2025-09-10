@@ -84,5 +84,5 @@ async function seedDatabase(): Promise<void> {
 
 seedDatabase().catch((error: unknown) => {
   console.error('Failed to seed database:', error);
-  process.exit(1);
+  throw new Error('Failed to seed database');
 });
