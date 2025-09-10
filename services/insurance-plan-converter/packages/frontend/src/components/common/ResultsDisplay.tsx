@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConversionResult } from '@/pages/Index';
-import { CheckCircle, AlertTriangle, XCircle, Download, Eye, Code } from 'lucide-react';
+import { AlertTriangle, XCircle, Download, Eye, Code } from 'lucide-react';
 
 type ErrorType = string | Error | Record<string, unknown> | null;
 
@@ -120,11 +120,6 @@ export const ResultsDisplay = ({ results, error }: ResultsDisplayProps) => {
               </>
             ) : (
               <>
-                {results.success ? (
-                  <CheckCircle className="w-8 h-8 text-green-500" />
-                ) : (
-                  <XCircle className="w-8 h-8 text-red-500" />
-                )}
                 <div>
                   <h2 className="text-xl font-semibold">
                     {results.success ? 'Conversion Successful' : 'Conversion Failed'}

@@ -1,4 +1,4 @@
-const xlsx = require('xlsx');
+import xlsx from 'xlsx';
 
 /**
  * Parse Excel buffer into a simple JSON structure.
@@ -19,4 +19,4 @@ function parseExcelBuffer(buffer) {
   return result;
 }
 
-export default { parseExcelBuffer };
+export { parseExcelBuffer };

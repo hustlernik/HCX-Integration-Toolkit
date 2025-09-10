@@ -12,4 +12,4 @@ function validateFhirResource(resource) {
   return { isValid: true, errors, warnings };
 }
 
-export default { validateFhirResource };
+export { validateFhirResource };

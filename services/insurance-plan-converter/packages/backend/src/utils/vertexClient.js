@@ -1,4 +1,4 @@
-const { VertexAI } = require('@google-cloud/vertexai');
+import { VertexAI } from '@google-cloud/vertexai';
 
 const project = process.env.GOOGLE_CLOUD_PROJECT;
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
@@ -94,4 +94,4 @@ async function generateJson(prompt, genConfig = {}) {
   }
 }
 
-module.exports = { generateJson };
+export { generateJson };

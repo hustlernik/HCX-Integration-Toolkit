@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import { FileUploadZone } from '@/components/common/FileUploadZone';
 import { ProcessingProgress } from '@/components/common/ProcessingProgress';
 import { ResultsDisplay } from '@/components/common/ResultsDisplay';
@@ -42,17 +43,18 @@ const Index = () => {
 
     try {
       setProcessingStep('Processing InsurancePlan conversion...');
-      const response = await fetch('http://localhost:5001/api/insuranceplan/convert', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await axios.post(
+        'http://localhost:5001/api/insuranceplan/convert',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
 
       setProcessingStep('Processing response...');
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
-      }
+      const data = response.data;
 
       let bundle = null;
       let resources = [];
@@ -89,16 +91,23 @@ const Index = () => {
       console.error('Conversion error:', error);
 
       const errorMessages: string[] = [];
-      if (error instanceof Error) {
-        errorMessages.push(error.message);
-
-        try {
-          const parsedJsonError = JSON.parse(error.message);
-          if (parsedJsonError.message) errorMessages.push(parsedJsonError.message);
-          if (parsedJsonError.errors && Array.isArray(parsedJsonError.errors)) {
-            errorMessages.push(...parsedJsonError.errors);
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          errorMessages.push(
+            error.response.data?.message || `HTTP error! status: ${error.response.status}`,
+          );
+          if (error.response.data?.errors && Array.isArray(error.response.data.errors)) {
+            errorMessages.push(...error.response.data.errors);
           }
-        } catch (e) {}
+        } else if (error.request) {
+          errorMessages.push(
+            'No response received from the server. Please check your network connection.',
+          );
+        } else {
+          errorMessages.push(error.message || 'An error occurred while setting up the request');
+        }
+      } else if (error instanceof Error) {
+        errorMessages.push(error.message);
       } else {
         errorMessages.push('An unknown error occurred during conversion.');
       }

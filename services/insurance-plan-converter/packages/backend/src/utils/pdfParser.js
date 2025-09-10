@@ -2,7 +2,7 @@
  * @fileoverview Utility for parsing PDF files to extract text content.
  */
 
-const pdf = require('pdf-parse');
+import pdf from 'pdf-parse';
 
 /**
  * Parses a PDF file buffer and extracts its text content.
@@ -29,6 +29,4 @@ async function extractTextFromPdf(pdfBuffer) {
   }
 }
 
-export default {
-  extractTextFromPdf,
-};
+export { extractTextFromPdf };

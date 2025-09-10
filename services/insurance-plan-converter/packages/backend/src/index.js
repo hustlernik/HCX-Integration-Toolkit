@@ -1,5 +1,5 @@
-import { resolve } from 'path';
-require('dotenv').config({ path: resolve(__dirname, '../.env') });
+import dotenv from 'dotenv';
+dotenv.config();
 import express, { json } from 'express';
 import cors from 'cors';
 import multer, { memoryStorage } from 'multer';
@@ -8,7 +8,7 @@ import { validateFhirResource } from './common/fhirValidator.js';
 import { extractTextFromPdf } from './utils/pdfParser.js';
 import { parseExcelBuffer } from './utils/excelToJson.js';
 import { buildInsurancePlanPrompt } from './prompt/InsurancePlan.js';
-import { generateJson } from './utils/vertexClient.js';
+import { generateJson } from './utils/openRouterClient.js';
 
 const app = express();
 app.use(cors());
