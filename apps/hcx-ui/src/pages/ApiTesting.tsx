@@ -401,17 +401,8 @@ const ApiTesting: React.FC = () => {
                   <div className="mb-2 font-medium">FHIR Bundle</div>
                   <textarea
                     className="w-full min-h-[250px] max-h-[400px] font-mono text-xs border rounded p-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                    value={
-                      workflow === 'coverage-eligibility'
-                        ? JSON.stringify(coverageEligibilityExample, null, 2)
-                        : bodyText
-                    }
-                    readOnly={workflow === 'coverage-eligibility'}
-                    onChange={
-                      workflow === 'coverage-eligibility'
-                        ? undefined
-                        : (e) => setBodyText(e.target.value)
-                    }
+                    value={bodyText}
+                    onChange={(e) => setBodyText(e.target.value)}
                     spellCheck={false}
                   />
                   {bodyError && bodyText && (

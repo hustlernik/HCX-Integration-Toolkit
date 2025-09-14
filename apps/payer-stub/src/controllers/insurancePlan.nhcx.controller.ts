@@ -8,11 +8,13 @@ import { InsurancePlanDomainService } from '../services/insurancePlan.service';
 import { buildProtocolErrorResponse } from '../protocol/error';
 import { Bundle } from 'fhir/r4';
 import { buildInsurancePlanTaskBundle } from '../fhir/task-bundle';
+import { EncryptionService } from '../services/encryption.service';
 
 export class InsurancePlanNHCXController {
   private nhcxService: NHCXService = new NHCXService();
   private recipientPublicKeyPath: string = process.env.RECIPIENT_PUBLIC_KEY_PATH || '';
   private domainService: InsurancePlanDomainService = new InsurancePlanDomainService();
+  private encryptionService: EncryptionService = new EncryptionService();
 
   private formatHcxTimestamp(date = new Date()): string {
     const pad = (n: number) => String(n).padStart(2, '0');
@@ -245,20 +247,27 @@ export class InsurancePlanNHCXController {
         recipientCode: responseHeaders['x-hcx-recipient_code'],
       });
 
-      const encryptedResponse = await encryptFHIR(
-        insurancePlanBundle,
-        responseHeaders,
-        {},
-        this.recipientPublicKeyPath,
-      );
+      const encryptionResponse = await this.encryptionService.encryptPayload({
+        resourceType: 'InsurancePlanResponse',
+        sender: process.env.HCX_SENDER_CODE || '',
+        receiver: process.env.HCX_RECIPIENT_CODE || '',
+        payload: insurancePlanBundle,
+        apiCallId: responseHeaders['x-hcx-api_call_id'],
+        workflowId: responseHeaders['x-hcx-workflow_id'],
+        requestId: responseHeaders['x-hcx-request_id'],
+        correlationId: responseHeaders['x-hcx-correlation_id'],
+        status: responseHeaders['x-hcx-status'],
+      });
+
+      const { encryptedPayload } = encryptionResponse;
 
       logger.debug('Prepared encrypted InsurancePlanBundle for NHCX', {
-        payloadLength: encryptedResponse.length,
+        payloadLength: encryptedPayload.length,
         correlationId: responseHeaders['x-hcx-correlation_id'],
       });
 
       await this.nhcxService.sendInsurancePlanResponse(
-        encryptedResponse,
+        encryptedPayload,
         `${process.env.NHCX_BASE_URL}/insuranceplan/on_request`,
       );
 

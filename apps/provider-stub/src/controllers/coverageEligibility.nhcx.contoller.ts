@@ -67,10 +67,7 @@ export class CoverageEligibilityNHCXController {
       }
 
       try {
-        await this.coverageEligibilityService.sendRequest(
-          payload,
-          protectedHeaders as Record<string, string>,
-        );
+        await this.coverageEligibilityService.sendRequest(payload);
       } catch (sendErr) {
         logger.error('Failed to send coverage eligibility request to NHCX', sendErr as any, {
           correlationId,

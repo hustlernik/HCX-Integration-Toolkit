@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { NHCXService } from '../services/nhcx.service';
 import { NHCXProtocolHeaders } from '../types/nhcx';
-import { decryptFHIR, encryptFHIR } from '../utils/crypto';
+import { decryptFHIR } from '../utils/crypto';
+import { EncryptionService } from '../services/encryption.service';
 import { logger } from '../utils/logger';
 import { buildAccepted202 } from '../protocol/ack';
 import CoverageEligibilityRequest from '../models/CoverageEligibilityRequest';
@@ -12,9 +13,11 @@ import { prepareCoverageEligibilityResponseBundle } from '../utils/fhir-bundle';
 
 export class CoverageEligibilityNHCXController {
   private nhcxService: NHCXService;
+  private encryptionService: EncryptionService;
 
   constructor() {
     this.nhcxService = new NHCXService();
+    this.encryptionService = new EncryptionService();
   }
 
   /**
@@ -235,7 +238,18 @@ export class CoverageEligibilityNHCXController {
         correlationId: responseHeaders['x-hcx-correlation_id'],
         entityType: (responseHeaders as any)['x-hcx-entity-type'],
       });
-      const encrypted = await encryptFHIR(bundle, responseHeaders);
+
+      const encryptionResponse = await this.encryptionService.encryptPayload({
+        resourceType: 'CoverageEligibilityResponse',
+        sender: process.env.HCX_SENDER_CODE || '',
+        receiver: process.env.HCX_RECIPIENT_CODE || '',
+        payload: bundle,
+        apiCallId: responseHeaders['x-hcx-api_call_id'],
+        workflowId: responseHeaders['x-hcx-workflow_id'],
+        requestId: responseHeaders['x-hcx-request_id'],
+        correlationId: responseHeaders['x-hcx-correlation_id'],
+        status: responseHeaders['x-hcx-status'],
+      });
 
       res.status(202).json({
         status: 'success',
@@ -246,7 +260,7 @@ export class CoverageEligibilityNHCXController {
       setImmediate(async () => {
         try {
           await this.nhcxService.sendCoverageEligibilityResponse(
-            encrypted,
+            encryptionResponse.encryptedPayload,
             '/coverageeligibility/on_check',
           );
           logger.info('Sent coverage eligibility response via NHCX');
