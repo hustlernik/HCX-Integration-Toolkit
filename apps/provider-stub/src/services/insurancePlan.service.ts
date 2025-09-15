@@ -33,6 +33,22 @@ export class InsurancePlanService {
 
     const { encryptedPayload, correlationID } = encryptionResponse;
 
+    try {
+      await this.txnRepo.create({
+        correlationId: correlationID,
+        rawRequestJWE: encryptedPayload,
+        requestFHIR: payload,
+        status: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        workflow: 'Insurance Plan',
+      });
+    } catch (error) {
+      logger.error('Error creating transaction log', error, {
+        endpoint: '/hcx/v1/insuranceplan/request',
+      });
+    }
+
     const accessToken = await this.nhcx.getAccessToken();
 
     const url = `${this.nhcx.getBaseUrl()}/insuranceplan/request`;
@@ -61,28 +77,12 @@ export class InsurancePlanService {
         },
       );
 
-      try {
-        await this.txnRepo.create({
-          correlationId: correlationID,
-          rawRequestJWE: encryptedPayload,
-          requestFHIR: payload,
-          status: 'pending',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          workflow: 'Insurance Plan',
-        });
-      } catch (error) {
-        logger.error('Error creating transaction log', error, {
-          endpoint: '/hcx/v1/insuranceplan/request',
-        });
-      }
-
       logger.info('[InsurancePlanService] Insurance Plan request sent successfully', undefined, {
         status: response.status,
         correlationID,
         url,
-        sender: process.env.SENDER_CODE,
-        recipient: process.env.RECEIVER_CODE,
+        sender: process.env.SENDER_CODE || '',
+        recipient: process.env.RECEIVER_CODE || '',
       });
       return response;
     } catch (error: unknown) {

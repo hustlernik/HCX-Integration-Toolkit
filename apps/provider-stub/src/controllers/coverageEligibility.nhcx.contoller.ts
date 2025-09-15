@@ -49,17 +49,6 @@ export class CoverageEligibilityNHCXController {
           res.status(500).json({ error: 'Failed to generate correlation id' });
           return;
         }
-
-        await this.txnRepo.create({
-          correlationId,
-          protectedHeaders,
-          rawRequestJWE: '',
-          requestFHIR: payload,
-          status: 'pending',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          workflow: 'Coverage Eligibility',
-        });
       } catch (e) {
         logger.error('Error creating transaction log (coverage eligibility)', e);
         res.status(500).json({ error: 'Failed to create transaction log' });

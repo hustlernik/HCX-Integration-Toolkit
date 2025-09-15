@@ -3,12 +3,19 @@ import { NHCXService } from './nhcx.service';
 import { EncryptionService } from './encryption.service';
 import { logger } from '../utils/logger';
 import axios, { AxiosResponse } from 'axios';
+import { TransactionLogRepository } from '../repositories/transactionLog.repository';
 
 export class CoverageEligibilityService {
+  private txnRepo: TransactionLogRepository;
   private nhcx: NHCXService;
   private encryptionService: EncryptionService;
 
-  constructor(nhcx = new NHCXService(), encryptionService = new EncryptionService()) {
+  constructor(
+    txnRepo = new TransactionLogRepository(),
+    nhcx = new NHCXService(),
+    encryptionService = new EncryptionService(),
+  ) {
+    this.txnRepo = txnRepo;
     this.nhcx = nhcx;
     this.encryptionService = encryptionService;
   }
@@ -26,6 +33,16 @@ export class CoverageEligibilityService {
     });
 
     const { encryptedPayload, correlationID } = encryptionResponse;
+
+    await this.txnRepo.create({
+      correlationId: correlationID,
+      rawRequestJWE: encryptedPayload,
+      requestFHIR: payload,
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      workflow: 'Coverage Eligibility',
+    });
 
     const accessToken = await this.nhcx.getAccessToken();
     const url = `${this.nhcx.getBaseUrl()}/coverageeligibility/check`;

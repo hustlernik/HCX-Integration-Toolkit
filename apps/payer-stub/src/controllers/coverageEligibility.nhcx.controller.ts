@@ -239,10 +239,16 @@ export class CoverageEligibilityNHCXController {
         entityType: (responseHeaders as any)['x-hcx-entity-type'],
       });
 
+      const senderCode = process.env.HCX_SENDER_CODE;
+      const recipientCode = process.env.HCX_RECIPIENT_CODE;
+      if (!senderCode || !recipientCode) {
+        throw new Error('HCX sender/recipient codes are not configured');
+      }
+
       const encryptionResponse = await this.encryptionService.encryptPayload({
         resourceType: 'CoverageEligibilityResponse',
-        sender: process.env.HCX_SENDER_CODE || '',
-        receiver: process.env.HCX_RECIPIENT_CODE || '',
+        sender: senderCode,
+        receiver: recipientCode,
         payload: bundle,
         apiCallId: responseHeaders['x-hcx-api_call_id'],
         workflowId: responseHeaders['x-hcx-workflow_id'],

@@ -71,6 +71,7 @@ export class EncryptionService {
           headers: {
             'Content-Type': 'application/json',
           },
+          timeout: 10000,
         },
       );
 
