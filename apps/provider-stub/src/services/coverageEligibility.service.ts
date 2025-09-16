@@ -1,26 +1,48 @@
 import { encryptFHIR } from '../utils/crypto';
 import { NHCXService } from './nhcx.service';
+import { EncryptionService } from './encryption.service';
 import { logger } from '../utils/logger';
 import axios, { AxiosResponse } from 'axios';
+import { TransactionLogRepository } from '../repositories/transactionLog.repository';
 
 export class CoverageEligibilityService {
+  private txnRepo: TransactionLogRepository;
   private nhcx: NHCXService;
+  private encryptionService: EncryptionService;
 
-  constructor(nhcx = new NHCXService()) {
+  constructor(
+    txnRepo = new TransactionLogRepository(),
+    nhcx = new NHCXService(),
+    encryptionService = new EncryptionService(),
+  ) {
+    this.txnRepo = txnRepo;
     this.nhcx = nhcx;
+    this.encryptionService = encryptionService;
   }
 
   /**
    * Send Coverage Eligibility request to NHCX
    */
 
-  async sendRequest(
-    payload: Record<string, any>,
-    protectedHeaders: Record<string, string>,
-  ): Promise<AxiosResponse<any>> {
-    const correlationId = protectedHeaders['x-hcx-correlation_id'] as string;
+  async sendRequest(payload: Record<string, any>): Promise<AxiosResponse<any>> {
+    const encryptionResponse = await this.encryptionService.encryptPayload({
+      resourceType: 'CoverageEligibilityRequest',
+      sender: process.env.PROVIDER_CODE || '',
+      receiver: process.env.PAYER_CODE || '',
+      payload: payload,
+    });
 
-    const encryptedPayload = await encryptFHIR(payload, protectedHeaders, {});
+    const { encryptedPayload, correlationID } = encryptionResponse;
+
+    await this.txnRepo.create({
+      correlationId: correlationID,
+      rawRequestJWE: encryptedPayload,
+      requestFHIR: payload,
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      workflow: 'Coverage Eligibility',
+    });
 
     const accessToken = await this.nhcx.getAccessToken();
     const url = `${this.nhcx.getBaseUrl()}/coverageeligibility/check`;
@@ -28,23 +50,31 @@ export class CoverageEligibilityService {
 
     logger.info('[CoverageEligibilityService] POST /coverageeligibility/check', undefined, {
       url,
-      sender: protectedHeaders['x-hcx-sender_code'],
-      recipient: protectedHeaders['x-hcx-recipient_code'],
-      correlationId,
+      sender: process.env.PROVIDER_CODE || '',
+      recipient: process.env.PAYER_CODE || '',
+      correlationId: correlationID,
       host: hostHeader,
     });
 
     try {
+      const requestHeaders = {
+        bearer_auth: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...(hostHeader ? { Host: hostHeader } : {}),
+      };
+
+      logger.info('Sending encrypted coverage eligibility payload to NHCX', {
+        url,
+        headers: Object.keys(requestHeaders).filter((k) => k.toLowerCase() !== 'authorization'),
+        payloadLength: encryptedPayload.length,
+      });
+
       const response = await axios.post(
         url,
         { payload: encryptedPayload },
         {
-          headers: {
-            bearer_auth: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Host: hostHeader,
-          },
+          headers: requestHeaders,
           timeout: 15_000,
         },
       );
@@ -54,10 +84,10 @@ export class CoverageEligibilityService {
         undefined,
         {
           status: response.status,
-          correlationId,
+          correlationID,
           url,
-          sender: protectedHeaders['x-hcx-sender_code'],
-          recipient: protectedHeaders['x-hcx-recipient_code'],
+          sender: '1000004178@hcx',
+          recipient: '1000003538@hcx',
         },
       );
       return response;
@@ -72,7 +102,7 @@ export class CoverageEligibilityService {
         '[CoverageEligibilityService] Failed to send coverage eligibility request',
         undefined,
         {
-          correlationId,
+          correlationID,
           url,
           status,
           error: errorMessage,

@@ -14,6 +14,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
 const mongoUrl = process.env.MONGO_URL_DEV || 'mongodb://localhost:27017';
 const dbName = process.env.MONGO_DB_NAME || 'hcx-toolkit';
 

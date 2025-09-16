@@ -1,29 +1,53 @@
-import { encryptFHIR } from '../utils/crypto';
 import { TransactionLogRepository } from '../repositories/transactionLog.repository';
 import { NHCXService } from './nhcx.service';
+import { EncryptionService } from './encryption.service';
 import { logger } from '../utils/logger';
 import axios, { AxiosResponse } from 'axios';
 
 export class InsurancePlanService {
-  private repo: TransactionLogRepository;
+  private txnRepo: TransactionLogRepository;
   private nhcx: NHCXService;
+  private encryptionService: EncryptionService;
 
-  constructor(repo = new TransactionLogRepository(), nhcx = new NHCXService()) {
-    this.repo = repo;
+  constructor(
+    txnRepo = new TransactionLogRepository(),
+    nhcx = new NHCXService(),
+    encryptionService = new EncryptionService(),
+  ) {
+    this.txnRepo = txnRepo;
     this.nhcx = nhcx;
+    this.encryptionService = encryptionService;
   }
 
   /**
    * Send Insurance Plan request to NHCX
    */
 
-  async sendRequest(
-    payload: Record<string, any>,
-    protectedHeaders: Record<string, string>,
-  ): Promise<AxiosResponse<any>> {
-    const correlationId = protectedHeaders['x-hcx-correlation_id'] as string;
+  async sendRequest(payload: Record<string, any>): Promise<AxiosResponse<any>> {
+    const encryptionResponse = await this.encryptionService.encryptPayload({
+      resourceType: 'InsurancePlanRequest',
+      sender: process.env.PROVIDER_CODE || '',
+      receiver: process.env.PAYER_CODE || '',
+      payload: payload,
+    });
 
-    const encryptedPayload = await encryptFHIR(payload, protectedHeaders, {});
+    const { encryptedPayload, correlationID } = encryptionResponse;
+
+    try {
+      await this.txnRepo.create({
+        correlationId: correlationID,
+        rawRequestJWE: encryptedPayload,
+        requestFHIR: payload,
+        status: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        workflow: 'Insurance Plan',
+      });
+    } catch (error) {
+      logger.error('Error creating transaction log', error, {
+        endpoint: '/hcx/v1/insuranceplan/request',
+      });
+    }
 
     const accessToken = await this.nhcx.getAccessToken();
 
@@ -36,44 +60,55 @@ export class InsurancePlanService {
       }
     })();
 
-    logger.info('[InsurancePlanService] POST /insuranceplan/request', undefined, {
-      url,
-      sender: protectedHeaders['x-hcx-sender_code'],
-      recipient: protectedHeaders['x-hcx-recipient_code'],
-      correlationId,
-      host: hostHeader,
-    });
-
-    const responsePayload = JSON.stringify({ payload: encryptedPayload });
-
     try {
-      const response = await axios.post(url, responsePayload, {
-        headers: {
-          bearer_auth: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...(hostHeader ? { Host: hostHeader } : {}),
+      const requestHeaders = {
+        bearer_auth: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...(hostHeader ? { Host: hostHeader } : {}),
+      };
+
+      const response = await axios.post(
+        url,
+        { payload: encryptedPayload },
+        {
+          headers: requestHeaders,
+          timeout: 15_000,
         },
-        timeout: 15_000,
-      });
+      );
 
       logger.info('[InsurancePlanService] Insurance Plan request sent successfully', undefined, {
         status: response.status,
-        correlationId,
+        correlationID,
         url,
-        sender: protectedHeaders['x-hcx-sender_code'],
-        recipient: protectedHeaders['x-hcx-recipient_code'],
+        sender: process.env.SENDER_CODE || '',
+        recipient: process.env.RECEIVER_CODE || '',
       });
       return response;
     } catch (error: unknown) {
-      const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+      const status =
+        error && typeof error === 'object' && 'isAxiosError' in error && error.isAxiosError
+          ? (error as any).response?.status
+          : undefined;
+
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      const errorCode = (error as { code?: string })?.code;
-      const responseData = axios.isAxiosError(error) ? error.response?.data : undefined;
-      const responseHeaders = axios.isAxiosError(error) ? error.response?.headers : undefined;
+      const errorCode =
+        error && typeof error === 'object' && 'code' in error
+          ? (error as { code?: string }).code
+          : undefined;
+
+      const responseData =
+        error && typeof error === 'object' && 'isAxiosError' in error && error.isAxiosError
+          ? (error as any).response?.data
+          : undefined;
+
+      const responseHeaders =
+        error && typeof error === 'object' && 'isAxiosError' in error && error.isAxiosError
+          ? (error as any).response?.headers
+          : undefined;
 
       logger.error('[InsurancePlanService] Failed to send insurance plan request', undefined, {
-        correlationId,
+        correlationID,
         url,
         status,
         error: errorMessage,

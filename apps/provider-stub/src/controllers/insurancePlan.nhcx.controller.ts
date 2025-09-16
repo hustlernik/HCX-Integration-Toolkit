@@ -2,18 +2,15 @@ import { Request, Response } from 'express';
 import { NHCXService } from '../services/nhcx.service';
 import { InsurancePlanService } from '../services/insurancePlan.service';
 import { logger } from '../utils/logger';
-import type { OnRequestBody } from '../types/dtos';
 import { TransactionLogRepository } from '../repositories/transactionLog.repository';
 import { decryptFHIR } from '../utils/crypto';
 import { sendToWebSocket } from '../socket';
 
 export class InsurancePlanNHCXController {
-  private nhcxService: NHCXService;
   private insurancePlanService: InsurancePlanService;
   private txnRepo: TransactionLogRepository;
 
   constructor() {
-    this.nhcxService = new NHCXService();
     this.insurancePlanService = new InsurancePlanService();
     this.txnRepo = new TransactionLogRepository();
   }
@@ -32,46 +29,9 @@ export class InsurancePlanNHCXController {
         return;
       }
 
-      const protectedHeaders: Record<string, any> = this.nhcxService.buildProtectedHeaders({
-        entityType: 'insuranceplan',
-        status: 'request.initiated',
-      });
+      await this.insurancePlanService.sendRequest(payload as Record<string, String>);
 
-      const correlationId = protectedHeaders['x-hcx-correlation_id'];
-      if (!correlationId) {
-        logger.error('Missing x-hcx-correlation_id; aborting request', {
-          endpoint: '/hcx/v1/insuranceplan/request',
-        });
-        res.status(500).json({ error: 'Failed to generate correlation id' });
-        return;
-      }
-      try {
-        await this.txnRepo.create({
-          correlationId,
-          protectedHeaders,
-          rawRequestJWE: '',
-          requestFHIR: payload,
-          status: 'pending',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          workflow: 'Insurance Plan',
-        });
-      } catch (error) {
-        logger.error('Error creating transaction log', error, {
-          endpoint: '/hcx/v1/insuranceplan/request',
-        });
-        res.status(500).json({ error: 'Failed to create transaction log' });
-        return;
-      }
-
-      await this.insurancePlanService.sendRequest(
-        payload as Record<string, String>,
-        protectedHeaders,
-      );
-
-      res
-        .status(200)
-        .json({ status: 'Insurance Plan requested from payer ', correlationId: correlationId });
+      res.status(200).json({ status: 'Insurance Plan requested from payer' });
       return;
     } catch (error: any) {
       logger.error('Error processing insurance plan request', error, {
@@ -93,7 +53,7 @@ export class InsurancePlanNHCXController {
         endpoint: '/hcx/v1/insuranceplan/on_request',
       });
 
-      const { type, payload: payload } = req.body as OnRequestBody;
+      const { type, payload: payload } = res.req.body;
 
       if (!payload || type !== 'JWEPayload') {
         logger.warn('Missing or invalid JWE payload on on_request', {
