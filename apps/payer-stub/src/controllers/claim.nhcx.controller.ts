@@ -10,12 +10,15 @@ import ClaimResponse from '../models/ClaimResponse';
 import { prepareClaimResponseBundle } from '../utils/fhir-bundle';
 import { sendToWebSocket } from '../socket';
 import { v4 as uuidv4, v4 } from 'uuid';
+import { EncryptionService } from '../services/encryption.service';
 
 export class ClaimNHCXController {
   private nhcxService: NHCXService;
+  private encryptionService: EncryptionService;
 
   constructor() {
     this.nhcxService = new NHCXService();
+    this.encryptionService = new EncryptionService();
   }
   /**
    * Receive claim submit
@@ -200,11 +203,37 @@ export class ClaimNHCXController {
               correlationId: (reqDoc as any).correlationId,
             },
           );
-          const encrypted = await encryptFHIR(bundle, responseHeaders as any);
-          await this.nhcxService.sendClaimResponse(encrypted, '/claim/on_submit');
-          logger.info('Claim adjudication response sent via NHCX');
+
+          const senderCode = process.env.HCX_SENDER_CODE;
+          const recipientCode = process.env.HCX_RECIPIENT_CODE;
+          if (!senderCode || !recipientCode) {
+            throw new Error('HCX sender/recipient codes are not configured');
+          }
+
+          const encryptionResponse = await this.encryptionService.encryptPayload({
+            resourceType: 'ClaimResponse',
+            sender: senderCode,
+            receiver: recipientCode,
+            payload: bundle,
+            apiCallId: responseHeaders['x-hcx-api_call_id'],
+            workflowId: responseHeaders['x-hcx-workflow_id'],
+            requestId: responseHeaders['x-hcx-request_id'],
+            correlationId: responseHeaders['x-hcx-correlation_id'],
+            status: responseHeaders['x-hcx-status'],
+          });
+
+          await this.nhcxService.sendClaimResponse(
+            encryptionResponse.encryptedPayload,
+            '/claim/on_submit',
+          );
+
+          logger.info('Claim adjudication response sent via NHCX', {
+            correlationId: responseHeaders['x-hcx-correlation_id'],
+          });
         } catch (sendErr) {
-          logger.error('Failed to send claim adjudication response via NHCX', sendErr as any);
+          logger.error('Failed to send claim adjudication response via NHCX', sendErr as any, {
+            correlationId: (reqDoc as any).correlationId,
+          });
         }
       })();
 

@@ -345,6 +345,10 @@ web_addr: localhost:4040
 
 3. The web interface at http://localhost:4040 will show both tunnels and their public URLs.
 
+# Utility used for encryption
+
+[Encryption Utility](https://github.com/hustlernik/NHCX-Utility)
+
 # FHIR Utilities Service
 
 A scalable FHIR microservice for creating, validating, and managing FHIR resources. This service is part of the HCX Integration Toolkit and targets HL7 FHIR R4 (4.0.1) with support for:

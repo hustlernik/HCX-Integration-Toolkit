@@ -464,7 +464,6 @@ class FHIRDataType {
 
     return {
       value: quantity.value,
-      comparator: quantity.comparator,
       unit: quantity.unit,
       system: quantity.system,
       code: quantity.code,

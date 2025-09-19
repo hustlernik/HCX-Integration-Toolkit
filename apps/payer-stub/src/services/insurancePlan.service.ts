@@ -1,8 +1,8 @@
-import { Bundle, Task, InsurancePlan } from 'fhir/r4';
+import { Bundle, Task } from 'fhir/r4';
 import Policy from '../models/Policy';
 import { logger } from '../utils/logger';
-import { mapDbInsurancePlanToFHIR } from '../fhir/fhir-mapping';
-import { buildInsurancePlanBundle } from '../fhir/fhir-bundle';
+import { buildInsurancePlanBundle } from '../fhir/taskBundle';
+import axios from 'axios';
 
 export interface TaskInputs {
   policyNumber: string;
@@ -21,7 +21,7 @@ export class InsurancePlanDomainService {
    */
   static extractTaskInputs(bundle: Bundle): TaskInputs | null {
     try {
-      logger.debug('svc.extractTaskInputs:start');
+      logger.debug('extractTaskInputs:start');
       if (!bundle.entry || !Array.isArray(bundle.entry)) return null;
       let policyNumber = '';
       let providerId = '';
@@ -42,7 +42,7 @@ export class InsurancePlanDomainService {
       if (!policyNumber || !providerId) return null;
       return { policyNumber, providerId };
     } catch (e) {
-      logger.error('svc.extractTaskInputs:error', e);
+      logger.error('extractTaskInputs:error', e);
       return null;
     }
   }
@@ -50,16 +50,149 @@ export class InsurancePlanDomainService {
   /**
    * Fetch InsurancePlan resources for a policy and provider
    */
-  async fetchInsurancePlans(policyNumber: string, providerId: string): Promise<InsurancePlan[]> {
+  // async fetchInsurancePlans(policyNumber: string, providerId: string): Promise<InsurancePlan[]> {
+  //   try {
+  //     logger.info('fetchInsurancePlans', { policyNumber, providerId });
+  //     const policy = await Policy.findOne({ policyNumber }).populate('insurancePlan');
+  //     if (!policy || !policy.insurancePlan) return [];
+  //     const fhirPlan = mapDbInsurancePlanToFHIR(policy.insurancePlan, policy.policyNumber);
+  //     return [fhirPlan];
+  //   } catch (e) {
+  //     logger.error('fetchInsurancePlans:error', e);
+  //     return [];
+  //   }
+  // }
+
+  async fetchInsurancePlans(policyNumber: string, providerId: string) {
     try {
-      logger.info('svc.fetchInsurancePlans', { policyNumber, providerId });
+      logger.info('fetchInsurancePlans:start', { policyNumber, providerId });
+
       const policy = await Policy.findOne({ policyNumber }).populate('insurancePlan');
-      if (!policy || !policy.insurancePlan) return [];
-      const fhirPlan = mapDbInsurancePlanToFHIR(policy.insurancePlan, policy.policyNumber);
-      return [fhirPlan];
-    } catch (e) {
-      logger.error('svc.fetchInsurancePlans:error', e);
-      return [];
+      if (!policy || !policy.insurancePlan) {
+        logger.warn('fetchInsurancePlans:no-policy-or-plan-found', { policyNumber, providerId });
+        return [];
+      }
+
+      const ip: any = policy.insurancePlan;
+
+      const input: any = {
+        resourceType: 'InsurancePlan',
+        identifier: [
+          {
+            system: 'https://abcinsurance.com/policy',
+            value: policy.policyNumber,
+          },
+        ],
+        status: ip.status || 'active',
+        type: {
+          coding: [
+            {
+              system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-insuranceplan-type',
+              code: ip.insurancePlanType || 'Medical',
+              display: ip.insurancePlanType || 'Medical',
+            },
+          ],
+          text: ip.insurancePlanType || 'Medical',
+        },
+        name: ip.name || 'Health Insurance Plan',
+        period: {
+          start: policy.coverageStart ? new Date(policy.coverageStart).toISOString() : undefined,
+          end: policy.coverageEnd ? new Date(policy.coverageEnd).toISOString() : undefined,
+        },
+        ownedBy: {
+          reference: `Organization/${ip.ownedByOrgId || 'unknown-payer'}`,
+          display: ip.ownedByDisplay || ip.ownedByOrgId || 'Payer Organization',
+        },
+
+        coverage: [
+          {
+            type: {
+              coding: [
+                {
+                  system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-coverage-type',
+                  code: ip.planType || '00',
+                  display: ip.planType || 'In Patient Hospitalization',
+                },
+              ],
+              text: ip.planType || 'In Patient Hospitalization',
+            },
+            benefit: (Array.isArray(ip.benefitTypes) && ip.benefitTypes.length > 0
+              ? ip.benefitTypes
+              : ['Hospitalization']
+            ).map((b: string) => ({
+              type: {
+                coding: [
+                  {
+                    system: 'http://snomed.info/sct',
+                    code: b[0] || '309904001',
+                    display: b[0] || 'Hospitalization',
+                  },
+                ],
+                text: b[0] || 'Hospitalization',
+              },
+            })),
+          },
+        ],
+        plan: [
+          {
+            type: {
+              coding: [
+                {
+                  system: 'https://nrces.in/ndhm/fhir/r4/CodeSystem/ndhm-coverage-type',
+                  code: ip.planType || '00',
+                  display: ip.planType || 'In Patient Hospitalization',
+                },
+              ],
+              text: ip.planType || 'In Patient Hospitalization',
+            },
+            specificCost: (Array.isArray(ip.specificCosts) && ip.specificCosts.length > 0
+              ? ip.specificCosts
+              : [{ benefitCategory: 'General', benefitType: 'Hospitalization' }]
+            ).map((sc: { benefitCategory: string; benefitType: string }) => ({
+              category: {
+                coding: [
+                  {
+                    system: 'http://example.org/benefit-category',
+                    code: sc.benefitCategory,
+                    display: sc.benefitCategory,
+                  },
+                ],
+                text: sc.benefitCategory,
+              },
+              benefit: [
+                {
+                  type: {
+                    coding: [
+                      {
+                        system: 'http://example.org/benefit-type',
+                        code: sc.benefitType,
+                        display: sc.benefitType,
+                      },
+                    ],
+                    text: sc.benefitType,
+                  },
+                },
+              ],
+            })),
+          },
+        ],
+      };
+
+      console.log('input', input);
+      const response = await axios.post('http://localhost:4002/api/insurance-plan', input, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      console.log('Response data', response.data.data);
+      return response.data.data;
+    } catch (error: any) {
+      console.log('Error', error);
+      logger.error('fetchInsurancePlans:error', {
+        policyNumber,
+        providerId,
+        message: error,
+      });
+      return error.details;
     }
   }
 
@@ -71,12 +204,12 @@ export class InsurancePlanDomainService {
     correlationId: string,
   ): Promise<ProcessResult> {
     try {
-      logger.info('svc.processInsurancePlanRequest', { taskInputs, correlationId });
+      logger.info('processInsurancePlanRequest', { taskInputs, correlationId });
       const plans = await this.fetchInsurancePlans(taskInputs.policyNumber, taskInputs.providerId);
       const responseBundle = buildInsurancePlanBundle(plans);
       return { status: 'success', data: { responseBundle } };
     } catch (e) {
-      logger.error('svc.processInsurancePlanRequest:error', e);
+      logger.error('processInsurancePlanRequest:error', e);
       return {
         status: 'error',
         errorDetails: {

@@ -7,7 +7,6 @@ import { buildAccepted202 } from '../protocol/ack';
 import { InsurancePlanDomainService } from '../services/insurancePlan.service';
 import { buildProtocolErrorResponse } from '../protocol/error';
 import { Bundle } from 'fhir/r4';
-import { buildInsurancePlanTaskBundle } from '../fhir/task-bundle';
 import { EncryptionService } from '../services/encryption.service';
 
 export class InsurancePlanNHCXController {
@@ -219,13 +218,7 @@ export class InsurancePlanNHCXController {
         return;
       }
 
-      const taskBundle = buildInsurancePlanTaskBundle({
-        responseBundle: response.data?.responseBundle,
-      });
-
-      logger.debug('DEBUG: Created TaskBundle structure', { taskBundle });
-
-      await this.sendInsurancePlanResponse(taskBundle, responseHeaders);
+      await this.sendInsurancePlanResponse(response.data?.responseBundle, responseHeaders);
     } catch (error) {
       logger.error('Error in async processing', error);
     }
