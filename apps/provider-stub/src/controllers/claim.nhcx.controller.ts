@@ -37,7 +37,7 @@ export class ClaimNHCXController {
 
       await this.claimService.sendRequest(payload);
 
-      res.status(200).json({ status: 'Claim submitted to payer ' });
+      res.status(202).json({ status: 'Claim submitted to payer' });
       return;
     } catch (error: any) {
       logger.error('Error processing claim submit', error);

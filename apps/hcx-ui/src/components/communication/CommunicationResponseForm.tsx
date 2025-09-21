@@ -109,7 +109,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
         },
       };
 
-      const res = await axios.post(endpoint, payload, { headers });
+      const res = await axios.post(endpoint, payload, { headers, timeout: 20000 });
       const contentType = res.headers?.['content-type'] || '';
       if (contentType.includes('application/json') || typeof res.data === 'object') {
         console.log('Communication response sent successfully:', res.data);
