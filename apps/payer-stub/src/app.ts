@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 app.use('/api', insurancePlanRouter);
-app.use('/api/beneficiaries', beneficiaryRouter);
+app.use('/api/beneficiary', beneficiaryRouter);
 app.use('/api/policies', policyRouter);
 app.use('/coverage-eligibility', coverageEligibilityRouter);
 app.use('/', nhcxRouter);

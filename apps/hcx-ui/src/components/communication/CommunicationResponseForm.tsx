@@ -21,7 +21,6 @@ type ResponseAttachmentItem = AttachmentItem & { file?: File };
 const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
   communicationId,
   originalRequest,
-  // onSubmit,
   onCancel,
 }) => {
   const [formData, setFormData] = useState<{
@@ -47,7 +46,6 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
   const [isSubmittingState, setIsSubmittingState] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const submitting = isSubmittingState;
-  const submittingRef = useRef(false);
 
   const readFileAsBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -64,12 +62,10 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submittingRef.current) return;
-    submittingRef.current = true;
+    if (submitting) return; // Prevent submission if already submitting
     setIsSubmittingState(true);
 
     try {
-      // Send response via provider service; payer endpoint '/hcx/v1/communication/response' does not exist
       const endpoint = API_ENDPOINTS.PROVIDER.COMMUNICATION_RESPOND;
       const headers = {
         'Content-Type': 'application/json',
@@ -90,7 +86,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
           creation: a.creation,
           data: a.mode === 'data' && a.file ? await readFileAsBase64(a.file) : undefined,
           url: a.mode === 'url' ? a.url : undefined,
-          file: a.file, // Include file for FormData submission
+          file: a.file,
           mode: a.mode,
         })),
       );
@@ -106,7 +102,7 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
           sentAt: formData.sentAt || new Date().toISOString(),
           attachments: preparedAttachments.map((a) => ({
             title: a.title,
-            contentType: a.contentType,
+            type: a.contentType,
             url: a.url,
             data: a.data,
           })),
@@ -120,7 +116,6 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
       } else {
         console.warn('Communication response sent but received non-JSON response');
       }
-      // onSubmit({ ...formData, attachments });
     } catch (error) {
       console.error('Error sending communication response:', error);
       const errorMessage = axios.isAxiosError(error)
@@ -129,7 +124,6 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
       alert(`Failed to send communication response: ${errorMessage}`);
     } finally {
       setIsSubmittingState(false);
-      submittingRef.current = false;
     }
   };
 
@@ -302,19 +296,6 @@ const CommunicationResponseForm: React.FC<CommunicationResponseFormProps> = ({
                 onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                 required
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Sent At</label>
-              <Input
-                type="datetime-local"
-                className="w-full max-w-xs"
-                value={formData.sentAt || ''}
-                onChange={(e) => setFormData((prev) => ({ ...prev, sentAt: e.target.value }))}
-              />
-              <div className="text-xs text-gray-600 mt-1">
-                Optional timestamp indicating when the communication was sent.
-              </div>
             </div>
 
             <div>

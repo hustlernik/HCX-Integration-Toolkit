@@ -84,6 +84,9 @@ export class InsurancePlanService {
         sender: process.env.SENDER_CODE || '',
         recipient: process.env.RECEIVER_CODE || '',
       });
+
+      console.log('RESPONSE 202', response.data);
+
       return response;
     } catch (error: unknown) {
       const status =

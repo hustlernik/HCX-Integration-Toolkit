@@ -35,33 +35,9 @@ export class ClaimNHCXController {
         hasPayload: Boolean(payload),
       });
 
-      const protectedHeaders: Record<string, any> = this.nhcxService.buildProtectedHeaders({
-        entityType: 'claim',
-        status: 'request.initiated',
-      });
+      await this.claimService.sendRequest(payload);
 
-      const correlationId = protectedHeaders['x-hcx-correlation_id'];
-
-      try {
-        await this.txnRepo.create({
-          correlationId,
-          protectedHeaders,
-          rawRequestJWE: '',
-          requestFHIR: payload,
-          status: 'pending',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          workflow: 'Claim',
-        });
-      } catch (error) {
-        logger.error('Error creating transaction log', error, { endpoint: '/hcx/v1/claim/submit' });
-        res.status(500).json({ error: 'Failed to create transaction log' });
-        return;
-      }
-
-      await this.claimService.sendRequest(payload, protectedHeaders as Record<string, string>);
-
-      res.status(200).json({ status: 'Claim submitted to payer ', correlationId: correlationId });
+      res.status(202).json({ status: 'Claim submitted to payer' });
       return;
     } catch (error: any) {
       logger.error('Error processing claim submit', error);
